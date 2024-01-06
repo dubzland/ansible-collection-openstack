@@ -1,0 +1,18 @@
+---
+argument_specs:
+  main:
+    short_description: |
+      Prepares linux hosts for installing OpenStack components.
+    description:
+      - Sets up the cloud-archive apt repository
+      - Records OpenStack version information for later retrieval
+      - Installs the OpenStack python client
+    options:
+      openstack_bootstrap_repository_version:
+        type: str
+        description: Git tag corresponding to the desired OpenStack version.
+        required: true
+      openstack_bootstrap_repository_version_codename:
+        type: str
+        description: Apt repository codename by which this version is known.
+        required: true

@@ -1,0 +1,42 @@
+---
+- name: Ensure the Ubuntu cloud-archive keyring is present
+  ansible.builtin.apt:
+    name: ubuntu-cloud-keyring
+    state: present
+
+- name: Ensure the OpenStack repository is configured
+  ansible.builtin.apt_repository:
+    repo: "{{ openstack_bootstrap_repository }}"
+    state: present
+    update_cache: true
+
+- name: Ensure the custom facts directory exists
+  ansible.builtin.file:
+    path: /etc/ansible/facts.d
+    state: "directory"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Record the OpenStack version information
+  community.general.ini_file:
+    dest: /etc/ansible/facts.d/openstack.fact
+    section: repository
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+    mode: "0644"
+  loop:
+    - key: codename
+      value: "{{ openstack_bootstrap_repository_version_codename }}"
+    - key: version
+      value: "{{ openstack_bootstrap_repository_version }}"
+
+- name: Refresh local facts to pick up version information
+  ansible.builtin.setup:
+    gather_subset: "!all"
+
+- name: Ensure the OpenStack python client is installed
+  ansible.builtin.apt:
+    name: python3-openstackclient
+    state: present
+  when: "'controller' in group_names"

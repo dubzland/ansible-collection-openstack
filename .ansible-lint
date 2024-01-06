@@ -1,0 +1,5 @@
+---
+exclude_paths:
+  - .venv/
+  - roles/**/argument_specs.yml
+  - tests/output/

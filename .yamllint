@@ -1,0 +1,12 @@
+---
+extends: default
+ignore: |
+  .gitlab-ci.yml
+  .venv/
+  molecule/
+rules:
+  comments:
+    min-spaces-from-content: 1
+  line-length:
+    max: 100
+    allow-non-breakable-words: true

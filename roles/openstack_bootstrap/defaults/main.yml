@@ -1,0 +1,3 @@
+---
+openstack_bootstrap_repository_version: stable/2023.1
+openstack_bootstrap_repository_version_codename: antelope

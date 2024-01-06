@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  role_name: openstack_bootstrap
+  author: dubzland
+  description: Prepares linux hosts for OpenStack installation
+  license: MIT
+  min_ansible_version: "2.13"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+  galaxy_tags:
+    - devops
+    - openstack
+    - cloud
+    - linux
+    - ubuntu
+
+dependencies: []

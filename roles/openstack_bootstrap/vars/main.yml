@@ -1,0 +1,7 @@
+---
+openstack_bootstrap_repository_url: http://ubuntu-cloud.archive.canonical.com/ubuntu
+openstack_bootstrap_repository: >-
+  deb
+  {{ openstack_bootstrap_repository_url }}
+  jammy-updates/{{ openstack_bootstrap_repository_version_codename }}
+  main
