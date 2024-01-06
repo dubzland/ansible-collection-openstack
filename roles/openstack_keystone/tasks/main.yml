@@ -1,0 +1,203 @@
+---
+- name: Ensure the Keystone database is present
+  community.mysql.mysql_db:
+    name: "{{ openstack_keystone_db_name }}"
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Ensure the Keystone database user is present
+  community.mysql.mysql_user:
+    name: "{{ openstack_keystone_db_user }}"
+    host: "{{ item }}"
+    password: "{{ openstack_keystone_db_password }}"
+    priv: "{{ openstack_keystone_db_name }}.*:ALL"
+    login_unix_socket: /run/mysqld/mysqld.sock
+  loop:
+    - localhost
+    - "%"
+
+- name: Ensure the Keystone packages are installed
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ openstack_keystone_packages }}"
+
+- name: Ensure the Keystone configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: etc/keystone/keystone.conf.j2
+    dest: /etc/keystone/keystone.conf
+    owner: keystone
+    group: keystone
+    mode: "0640"
+  notify: Restart Apache2
+
+- name: Check current state of the Keystone DB
+  ansible.builtin.command:
+    cmd: keystone-manage db_sync --check
+  become: true
+  become_user: keystone
+  register: keystone_db_sync_check
+  failed_when: "keystone_db_sync_check.rc == 1"
+  changed_when: "keystone_db_sync_check.rc not in [0, 2, 3, 4]"
+
+- name: Set the Keystone DB sync facts
+  dubzland.openstack.openstack_fact:
+    section: keystone
+    option: "{{ item.name }}"
+    value: "{{ item.state }}"
+  with_items:
+    - name: "need_db_expand"
+      state: "{{ (keystone_db_sync_check.rc | int == 2) | bool }}"
+    - name: "need_db_migrate"
+      state: "{{ (keystone_db_sync_check.rc | int in [2, 3]) | bool }}"
+    - name: "need_db_contract"
+      state: "{{ (keystone_db_sync_check.rc | int in [2, 3, 4]) | bool }}"
+
+- name: Refresh local facts to pick up sync status
+  ansible.builtin.setup:
+    gather_subset: "!all"
+
+- name: Perform a Keystone DB sync expand
+  ansible.builtin.command:
+    cmd: keystone-manage db_sync --expand
+  changed_when: false
+  become: true
+  become_user: keystone
+  when:
+    - "ansible_local['openstack']['keystone']['need_db_expand'] | bool"
+  register: keystone_db_sync_expand
+
+- name: Update the db sync expand fact
+  dubzland.openstack.openstack_fact:
+    section: keystone
+    option: need_db_expand
+    value: false
+  when: keystone_db_sync_expand is not skipped
+
+- name: Perform a Keystone DB sync migrate
+  ansible.builtin.command:
+    cmd: keystone-manage db_sync --migrate
+  changed_when: false
+  become: true
+  become_user: keystone
+  when:
+    - "ansible_local['openstack']['keystone']['need_db_migrate'] | bool"
+  register: keystone_db_sync_migrate
+
+- name: Update the db sync migrate fact
+  dubzland.openstack.openstack_fact:
+    section: keystone
+    option: need_db_migrate
+    value: false
+  when: keystone_db_sync_migrate is not skipped
+
+- name: Perform a Keystone DB sync contract
+  ansible.builtin.command:
+    cmd: keystone-manage db_sync --contract
+  changed_when: false
+  become: true
+  become_user: keystone
+  when:
+    - "ansible_local['openstack']['keystone']['need_db_contract'] | bool"
+  register: keystone_db_sync_contract
+
+- name: Update the db sync contract fact
+  dubzland.openstack.openstack_fact:
+    section: keystone
+    option: need_db_contract
+    value: false
+  when: keystone_db_sync_contract is not skipped
+
+- name: Ensure the fernet repository is initialized
+  ansible.builtin.command:
+    cmd: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+    creates: /etc/keystone/fernet-keys/0
+  when: openstack_keystone_token_provider == 'fernet'
+
+- name: Ensure the credential repository is initialized
+  ansible.builtin.command:
+    cmd: keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
+    creates: /etc/keystone/credential-keys/0
+
+- name: Bootstrap keystone admin and endpoint
+  ansible.builtin.command:
+    cmd: >
+      keystone-manage bootstrap
+      --bootstrap-username {{ openstack_keystone_admin_user }}
+      --bootstrap-password {{ openstack_keystone_admin_password }}
+      --bootstrap-admin-url {{ openstack_keystone_controller_http_host }}:5000/v3/
+      --bootstrap-internal-url {{ openstack_keystone_controller_http_host }}:5000/v3/
+      --bootstrap-public-url {{ openstack_keystone_controller_http_host }}:5000/v3/
+      --bootstrap-region-id {{ openstack_keystone_region_name }}
+  no_log: true
+  become: true
+  become_user: keystone
+  changed_when: false
+  register: add_service
+  until: add_service is success
+  retries: 5
+  delay: 10
+
+- name: Ensure the ServerName directive is present in the apache configuration
+  ansible.builtin.lineinfile:
+    dest: /etc/apache2/apache2.conf
+    regexp: "^ServerName"
+    line: "ServerName {{ ansible_fqdn }}"
+  notify: Restart Apache2
+
+- name: Ensure the admin credential rc is present
+  ansible.builtin.template:
+    src: root/openrc.j2
+    dest: /root/openrc
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Ensure the OpenStack configuration directory exists for root
+  ansible.builtin.file:
+    path: /root/.config/openstack
+    state: directory
+    owner: root
+    group: root
+    mode: "0770"
+
+- name: Ensure the OpenStack cloud configuration file exists for root
+  ansible.builtin.template:
+    src: clouds.yaml.j2
+    dest: /root/.config/openstack/clouds.yaml
+    owner: root
+    group: root
+    mode: "0640"
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure the service project exists in OpenStack Keystone
+  openstack.cloud.project:
+    cloud: local
+    domain: default
+    name: service
+    description: Service Project
+    state: present
+
+- name: Ensure the service role exists in OpenStack Keystone
+  openstack.cloud.identity_role:
+    cloud: local
+    state: present
+    name: service
+
+- name: Record facts about the initial OpenStack Keystone installation
+  dubzland.openstack.openstack_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_items:
+    - section: controller
+      key: address
+      value: "{{ openstack_keystone_controller_address }}"
+    - section: controller
+      key: http_host
+      value: "{{ openstack_keystone_controller_http_host }}"
+    - section: mysql
+      key: address
+      value: "{{ openstack_keystone_mysql_address }}"

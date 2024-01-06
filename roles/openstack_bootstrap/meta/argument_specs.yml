@@ -1,7 +1,7 @@
 ---
 argument_specs:
   main:
-    short_description: |
+    short_description: |-
       Prepares linux hosts for installing OpenStack components.
     description:
       - Sets up the cloud-archive apt repository
@@ -11,8 +11,9 @@ argument_specs:
       openstack_bootstrap_repository_version:
         type: str
         description: Git tag corresponding to the desired OpenStack version.
-        required: true
+        default: stable/2023.1
       openstack_bootstrap_repository_version_codename:
         type: str
-        description: Apt repository codename by which this version is known.
-        required: true
+        description: |
+          Apt repository codename by which this version is known. Must match O(openstack_bootstrap_repository_version).
+        default: antelope

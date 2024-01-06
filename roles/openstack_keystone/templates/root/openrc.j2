@@ -1,0 +1,9 @@
+#!/bin/sh
+
+export OS_USERNAME={{ openstack_keystone_admin_user }}
+export OS_PASSWORD={{ openstack_keystone_admin_password }}
+export OS_PROJECT_NAME=admin
+export OS_USER_DOMAIN_NAME={{ openstack_keystone_domain_name }}
+export OS_PROJECT_DOMAIN_NAME={{ openstack_keystone_domain_name }}
+export OS_AUTH_URL={{ openstack_keystone_controller_http_host }}:5000/v3
+export OS_IDENTITY_API_VERSION=3
