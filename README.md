@@ -26,15 +26,17 @@ Also tested against the current development version of `ansible-core`.
 | Name                                                          | Description                                        |
 | ------------------------------------------------------------- | -------------------------------------------------- |
 | [dubzland.openstack.openstack_bootstrap][openstack_bootstrap] | Prepares hosts for installing OpenStack components |
+| [dubzland.openstack.openstack_keystone][openstack_keystone]   | Installs OpenStack Keystone authentication         |
 
 ## Licensing
 
-This collection is primarily licensed and distributed as a whole under the GNU General Public License v3.0 or later.
+This collection is primarily licensed and distributed as a whole under the MIT License.
 
-See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-minio/blob/main/LICENSE) for the full text.
+See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-openstack/blob/main/LICENSE) for the full text.
 
 ## Author
 
 - [Josh Williams](https://dubzland.com)
 
 [openstack_bootstrap]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_bootstrap_role.html
+[openstack_keystone]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_keystone_role.html

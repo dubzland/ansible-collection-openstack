@@ -1,0 +1,68 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Keystone authentication service
+    description:
+      - Creates the necessary keystone database and user.
+      - Installs required operating system packages.
+      - Creates the keystone configuration file.
+      - Populates the keystone database with initial cluster data.
+      - Records custom Ansible facts for utilization by other OpenStack components.
+      - Creates the necessary users, services, and endpoints for Keystone in the database.
+      - Assumes a MySQL server has been installed on the OpenStack Keystone host and configured according to the OpenStack documentation.
+    options:
+      openstack_keystone_db_name:
+        type: str
+        default: keystone
+        description: Name of the MySQL database to be created for OpenStack Keystone.
+      openstack_keystone_db_user:
+        type: str
+        default: keystone
+        description: User created on the MySQL server for the OpenStack Keystone service.
+      openstack_keystone_db_password:
+        type: str
+        required: true
+        description: Password assigned to the O(openstack_keystone_db_user) for the OpenStack Keystone database.
+      openstack_keystone_admin_user:
+        type: str
+        default: admin
+        description: Initial administrative user created in the OpenStack Keystone database.
+      openstack_keystone_admin_password:
+        type: str
+        required: true
+        description: Password assigned to the O(openstack_keystone_admin_user) user.
+      openstack_keystone_controller_address:
+        type: str
+        default: "{{ ansible_default_ipv4['address'] }}"
+        description: IP address used to refer to the OpenStack Keystone controller.
+      openstack_keystone_controller_http_host:
+        type: str
+        default: "http://{{ openstack_keystone_controller_address }}"
+        description: HTTP address used to reference the OpenStack Keystone service in the endpoint definitions and configuration files.
+      openstack_keystone_mysql_address:
+        type: str
+        default: "{{ openstack_keystone_controller_address }}"
+        description: IP address or hostname/fqdn used to reference the MySQL database server in configuration files. B(Note:) Creation of the initial OpenStack Keystone database will happen via local Unix socket.
+      openstack_keystone_log_dir:
+        type: path
+        default: /var/log/keystone
+        description: Directory on the controller node where OpenStack Keystone logs will be written.
+      openstack_keystone_packages:
+        type: list
+        elements: str
+        default:
+          - keystone
+        description: List of operating system packages to install for OpenStack Keystone.
+      openstack_keystone_token_provider:
+        type: str
+        default: fernet
+        description: Token provider configured for OpenStack Keystone.  If V(fernet) (the default), the repository will be initialized automatically.
+      openstack_keystone_domain_name:
+        type: str
+        default: Default
+        description: Default domain configured for the OpenStack cloud.
+      openstack_keystone_region_name:
+        type: str
+        default: RegionOne
+        description: Default region configured for the OpenStack cloud.

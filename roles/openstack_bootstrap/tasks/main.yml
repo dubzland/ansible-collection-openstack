@@ -19,12 +19,10 @@
     mode: "0755"
 
 - name: Record the OpenStack version information
-  community.general.ini_file:
-    dest: /etc/ansible/facts.d/openstack.fact
+  dubzland.openstack.openstack_fact:
     section: repository
     option: "{{ item.key }}"
     value: "{{ item.value }}"
-    mode: "0644"
   loop:
     - key: codename
       value: "{{ openstack_bootstrap_repository_version_codename }}"
