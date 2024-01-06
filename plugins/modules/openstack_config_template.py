@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: Josh Williams <jdubz@dubzland.com>
-# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
-# SPDX-License-Identifier: GPL-3.0-or-later
+# MIT License (see LICENSE or https://opensource.org/license/mit/)
+# SPDX-License-Identifier: MIT
 
 from __future__ import absolute_import, division, print_function
 
