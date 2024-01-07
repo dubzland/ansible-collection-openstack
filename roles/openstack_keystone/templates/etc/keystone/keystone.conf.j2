@@ -2,7 +2,7 @@
 log_dir = {{ openstack_keystone_log_dir }}
 
 [database]
-connection = mysql+pymysql://{{ openstack_keystone_db_user }}:{{ openstack_keystone_db_password }}@{{ openstack_keystone_mysql_address }}:3306/{{ openstack_keystone_db_name }}
+connection = mysql+pymysql://{{ openstack_keystone_db_user }}:{{ openstack_keystone_db_password }}@{{ _mysql_address }}:3306/{{ openstack_keystone_db_name }}
 
 [token]
 provider = {{ openstack_keystone_token_provider }}

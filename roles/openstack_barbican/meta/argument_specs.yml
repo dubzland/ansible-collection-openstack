@@ -1,0 +1,56 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Barbican key management component.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+    options:
+      openstack_barbican_db_name:
+        type: str
+        default: barbican
+        description: Name of the MySQL database created.
+      openstack_barbican_db_user:
+        type: str
+        default: barbican
+        description: Database user created for the OpenStack Barbican component.
+      openstack_barbican_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_barbican_db_user).
+      openstack_barbican_service_user:
+        type: str
+        default: barbican
+        description: User created in OpenStack Keystone for the Barbican component.
+      openstack_barbican_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_barbican_service_user).
+      openstack_barbican_crypto_key:
+        type: str
+        required: true
+        description: >
+          Cryptographic key used to encrypt secrets stored in the Barbican
+          database. The simplest way to generate a valid key is via C(openssl).
+          Example: C(openssl rand -hex 16 | tr -d '\n' | base64)
+      openstack_barbican_packages:
+        type: list
+        elements: str
+        default:
+          - barbican-api
+          - barbican-keystone-listener
+          - barbican-worker
+          - python3-barbicanclient
+        description: List of packages installed on the controller for the Barbican component.
+      openstack_barbican_services:
+        type: list
+        elements: str
+        default:
+          - barbican-keystone-listener
+          - barbican-worker
+          - apache2
+        description: Services to be restarted during install (and/or configuration changes).

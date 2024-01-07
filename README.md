@@ -25,7 +25,9 @@ Also tested against the current development version of `ansible-core`.
 
 | Name                                                          | Description                                        |
 | ------------------------------------------------------------- | -------------------------------------------------- |
+| [dubzland.openstack.openstack_keystone][openstack_barbican]   | Installs OpenStack Barbican key management         |
 | [dubzland.openstack.openstack_bootstrap][openstack_bootstrap] | Prepares hosts for installing OpenStack components |
+| [dubzland.openstack.openstack_component][openstack_component] | Common component installation tasks                |
 | [dubzland.openstack.openstack_keystone][openstack_keystone]   | Installs OpenStack Keystone authentication         |
 
 ## Licensing
@@ -40,3 +42,4 @@ See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-openstack/blo
 
 [openstack_bootstrap]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_bootstrap_role.html
 [openstack_keystone]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_keystone_role.html
+[openstack_barbican]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_barbican_role.html

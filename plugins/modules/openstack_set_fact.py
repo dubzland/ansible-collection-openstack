@@ -11,7 +11,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 ---
-module: openstack_fact
+module: openstack_set_fact
 short_description: Records a local fact about the OpenStack configuration.
 description:
   - Uses the M(community.general.ini_file) module to store facts locally.
@@ -40,7 +40,7 @@ options:
 
 EXAMPLES = """
 - name: Record the OpenStack version
-  dubzland.openstack.openstack_fact:
+  dubzland.openstack.openstack_set_fact:
     section: repository
     option: codename
     value: antelope

@@ -1,0 +1,10 @@
+---
+openstack_barbican_packages:
+  - barbican-api
+  - barbican-keystone-listener
+  - barbican-worker
+  - python3-barbicanclient
+openstack_barbican_services:
+  - barbican-keystone-listener
+  - barbican-worker
+  - apache2

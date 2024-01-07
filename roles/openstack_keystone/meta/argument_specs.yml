@@ -32,18 +32,6 @@ argument_specs:
         type: str
         required: true
         description: Password assigned to the O(openstack_keystone_admin_user) user.
-      openstack_keystone_controller_address:
-        type: str
-        default: "{{ ansible_default_ipv4['address'] }}"
-        description: IP address used to refer to the OpenStack Keystone controller.
-      openstack_keystone_controller_http_host:
-        type: str
-        default: "http://{{ openstack_keystone_controller_address }}"
-        description: HTTP address used to reference the OpenStack Keystone service in the endpoint definitions and configuration files.
-      openstack_keystone_mysql_address:
-        type: str
-        default: "{{ openstack_keystone_controller_address }}"
-        description: IP address or hostname/fqdn used to reference the MySQL database server in configuration files. B(Note:) Creation of the initial OpenStack Keystone database will happen via local Unix socket.
       openstack_keystone_log_dir:
         type: path
         default: /var/log/keystone
@@ -58,11 +46,3 @@ argument_specs:
         type: str
         default: fernet
         description: Token provider configured for OpenStack Keystone.  If V(fernet) (the default), the repository will be initialized automatically.
-      openstack_keystone_domain_name:
-        type: str
-        default: Default
-        description: Default domain configured for the OpenStack cloud.
-      openstack_keystone_region_name:
-        type: str
-        default: RegionOne
-        description: Default region configured for the OpenStack cloud.

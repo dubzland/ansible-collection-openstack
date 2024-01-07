@@ -1,0 +1,6 @@
+---
+- name: Restart OpenStack Barbican services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ openstack_barbican_services }}"

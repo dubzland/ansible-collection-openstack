@@ -18,23 +18,49 @@
     group: root
     mode: "0755"
 
-- name: Record the OpenStack version information
-  dubzland.openstack.openstack_fact:
-    section: repository
-    option: "{{ item.key }}"
-    value: "{{ item.value }}"
-  loop:
-    - key: codename
-      value: "{{ openstack_bootstrap_repository_version_codename }}"
-    - key: version
-      value: "{{ openstack_bootstrap_repository_version }}"
-
-- name: Refresh local facts to pick up version information
-  ansible.builtin.setup:
-    gather_subset: "!all"
-
 - name: Ensure the OpenStack python client is installed
   ansible.builtin.apt:
     name: python3-openstackclient
     state: present
   when: "'controller' in group_names"
+
+- name: Record the OpenStack version information
+  dubzland.openstack.openstack_set_fact:
+    section: repository
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  loop:
+    - option: codename
+      value: "{{ openstack_bootstrap_repository_version_codename }}"
+    - option: version
+      value: "{{ openstack_bootstrap_repository_version }}"
+
+- name: Record the OpenStack controller information
+  dubzland.openstack.openstack_set_fact:
+    section: controller
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  loop:
+    - option: address
+      value: "{{ openstack_bootstrap_controller_address }}"
+    - option: http_host
+      value: "{{ openstack_bootstrap_controller_http_host }}"
+
+- name: Record the OpenStack MySQL information
+  dubzland.openstack.openstack_set_fact:
+    section: mysql
+    option: address
+    value: "{{ openstack_bootstrap_mysql_address }}"
+
+- name: Record the OpenStack cloud information
+  dubzland.openstack.openstack_set_fact:
+    section: cloud
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  loop:
+    - option: region
+      value: "{{ openstack_bootstrap_region }}"
+    - option: domain
+      value: "{{ openstack_bootstrap_domain }}"
+    - option: name
+      value: "{{ openstack_bootstrap_cloud_name }}"

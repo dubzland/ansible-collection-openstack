@@ -2,5 +2,3 @@
 openstack_keystone_packages:
   - keystone
 openstack_keystone_token_provider: fernet
-openstack_keystone_domain_name: Default
-openstack_keystone_region_name: RegionOne

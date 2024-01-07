@@ -1,0 +1,2 @@
+---
+openstack_component_mysql_socket: /run/mysqld/mysqld.sock

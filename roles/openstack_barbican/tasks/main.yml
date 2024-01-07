@@ -1,0 +1,69 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Provision the OpenStack Barbican component
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_component
+  vars:
+    openstack_component_database_user: "{{ openstack_barbican_db_user }}"
+    openstack_component_database_password: "{{ openstack_barbican_db_password }}"
+    openstack_component_databases:
+      - "{{ openstack_barbican_db_name }}"
+    openstack_component_user: "{{ openstack_barbican_service_user }}"
+    openstack_component_password: "{{ openstack_barbican_service_password }}"
+    openstack_component_services:
+      - name: barbican
+        type: key-manager
+        description: "Key Manager"
+        endpoints:
+          - interface: public
+            url: "{{ _controller_http_host }}:9311"
+          - interface: internal
+            url: "http://{{ _controller_http_host }}:9311"
+          - interface: admin
+            url: "http://{{ _controller_http_host }}:9311"
+
+- name: Ensure required OpenStack Barbican packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ openstack_barbican_packages }}"
+
+- name: Ensure the OpenStack Barbican configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: etc/barbican/barbican.conf.j2
+    dest: /etc/barbican/barbican.conf
+    owner: root
+    group: barbican
+    mode: "0640"
+  notify: Restart OpenStack Barbican services
+
+- name: Perform an OpenStack Barbican DB sync
+  ansible.builtin.command:
+    cmd: barbican-manage db upgrade
+  changed_when: false
+  become: true
+  become_user: barbican

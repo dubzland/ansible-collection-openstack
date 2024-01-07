@@ -1,0 +1,74 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Ensure OpenStack component databases are present
+  community.mysql.mysql_db:
+    name: "{{ item }}"
+    state: present
+    login_unix_socket: "{{ openstack_component_mysql_socket }}"
+  loop: "{{ openstack_component_databases }}"
+
+- name: Ensure the component database user is present
+  community.mysql.mysql_user:
+    name: "{{ openstack_component_database_user }}"
+    host: "{{ item.0 }}"
+    password: "{{ openstack_component_database_password }}"
+    priv: "{{ dict(openstack_component_databases | map('regex_replace', '$', '.*') | product(['ALL'])) }}" # noqa: yaml[line-length]
+    login_unix_socket: "{{ openstack_component_mysql_socket }}"
+  loop:
+    - localhost
+    - "%"
+
+- name: Ensure the OpenStack component user is present
+  openstack.cloud.identity_user:
+    cloud: "{{ _openstack_cloud_name }}"
+    name: "{{ openstack_component_user }}"
+    password: "{{ openstack_component_password }}"
+    domain: "{{ _openstack_domain_name }}"
+    state: present
+  no_log: true
+
+- name: Ensure the OpenStack component user has the admin role
+  openstack.cloud.role_assignment:
+    cloud: "{{ _openstack_cloud_name }}"
+    user: "{{ openstack_component_user }}"
+    role: admin
+    project: service
+
+- name: Ensure the OpenStack component services are present
+  openstack.cloud.catalog_service:
+    cloud: "{{ _openstack_cloud_name }}"
+    name: "{{ item.name }}"
+    type: "{{ item.type }}"
+    description: "{{ item.description }}"
+    state: present
+  loop: "{{ openstack_component_services }}"
+  loop_control:
+    label: "{{ item.name }} - {{ item.description }}"
+
+- name: Ensure the OpenStack component service endpoints are present
+  openstack.cloud.endpoint:
+    cloud: "{{ _openstack_cloud_name }}"
+    service: "{{ item.0.name }}"
+    endpoint_interface: "{{ item.1.interface }}"
+    url: "{{ item.1.url }}"
+    region: "{{ _openstack_region_name }}"
+    state: present
+  loop: "{{ openstack_component_services | subelements('endpoints') }}"
+  loop_control:
+    label: "[{{ item.0.name }}] {{ item.1.interface }} {{ item.1.url }}"
+  register: openstack_component_services_endpoints
