@@ -8,3 +8,4 @@ openstack_barbican_services:
   - barbican-keystone-listener
   - barbican-worker
   - apache2
+openstack_barbican_service_description: OpenStack Key Management

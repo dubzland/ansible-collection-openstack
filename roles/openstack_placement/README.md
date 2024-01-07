@@ -1,6 +1,6 @@
-# Ansible Role: OpenStack Barbican
+# Ansible Role: OpenStack Placement
 
-Install and configure the OpenStack Barbican key management component.
+Install and configure the OpenStack Placement API component.
 
 ## Requirements
 
@@ -27,16 +27,15 @@ Then apply the role using the following playbook:
     - dubzland.openstack
 
   roles:
-    - role: openstack_barbican
+    - role: openstack_placement
       vars:
-        openstack_barbican_db_password: supersekret
-        openstack_barbican_service_password: supersekret
-        openstack_barbican_crypto_key: YWYzODZhNzQ2OWI2OWYxMDE5MGNlY2UzY2Q4Njc0M2I=
+        openstack_placement_db_password: supersekret
+        openstack_placement_service_password: supersekret
 ```
 
 ## Documentation
 
-Role documentation is available at <https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_barbican_role.html>.
+Role documentation is available at <https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_placement_role.html>.
 
 ## License
 

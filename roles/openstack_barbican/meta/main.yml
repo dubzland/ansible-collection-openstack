@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  role_name: openstack_barbican
+  author: dubzland
+  description: Install and configure the OpenStack Barbican key management compoment
+  license: MIT
+  min_ansible_version: "2.13"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+  galaxy_tags:
+    - devops
+    - openstack
+    - barbican
+    - secrets
+    - cloud
+    - linux
+    - ubuntu
+
+dependencies: []

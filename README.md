@@ -29,6 +29,7 @@ Also tested against the current development version of `ansible-core`.
 | [dubzland.openstack.openstack_bootstrap][openstack_bootstrap] | Prepares hosts for installing OpenStack components |
 | [dubzland.openstack.openstack_component][openstack_component] | Common component installation tasks                |
 | [dubzland.openstack.openstack_keystone][openstack_keystone]   | Installs OpenStack Keystone authentication         |
+| [dubzland.openstack.openstack_keystone][openstack_placement]  | Installs OpenStack Placement resource tracking     |
 
 ## Licensing
 
@@ -40,6 +41,8 @@ See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-openstack/blo
 
 - [Josh Williams](https://dubzland.com)
 
-[openstack_bootstrap]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_bootstrap_role.html
-[openstack_keystone]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_keystone_role.html
 [openstack_barbican]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_barbican_role.html
+[openstack_bootstrap]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_bootstrap_role.html
+[openstack_component]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_component.html
+[openstack_keystone]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_keystone_role.html
+[openstack_placement]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_placement_role.html

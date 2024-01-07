@@ -1,0 +1,7 @@
+---
+openstack_placement_db_name: placement
+openstack_placement_db_user: placement
+# openstack_placement_db_password:
+
+openstack_placement_service_user: placement
+# openstack_placement_service_password:

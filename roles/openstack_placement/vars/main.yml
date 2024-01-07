@@ -1,0 +1,6 @@
+---
+openstack_placement_packages:
+  - placement-api
+openstack_placement_services:
+  - apache2
+openstack_placement_service_description: OpenStack Placement API

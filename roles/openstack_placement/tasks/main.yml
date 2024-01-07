@@ -24,46 +24,46 @@
       option: name
       as: _openstack_cloud_name
 
-- name: Provision the OpenStack Barbican component
+- name: Provision the OpenStack Placement component
   ansible.builtin.import_role:
     name: dubzland.openstack.openstack_component
   vars:
-    openstack_component_database_user: "{{ openstack_barbican_db_user }}"
-    openstack_component_database_password: "{{ openstack_barbican_db_password }}"
+    openstack_component_database_user: "{{ openstack_placement_db_user }}"
+    openstack_component_database_password: "{{ openstack_placement_db_password }}"
     openstack_component_databases:
-      - "{{ openstack_barbican_db_name }}"
-    openstack_component_user: "{{ openstack_barbican_service_user }}"
-    openstack_component_password: "{{ openstack_barbican_service_password }}"
+      - "{{ openstack_placement_db_name }}"
+    openstack_component_user: "{{ openstack_placement_service_user }}"
+    openstack_component_password: "{{ openstack_placement_service_password }}"
     openstack_component_services:
-      - name: barbican
-        type: key-manager
-        description: "{{ openstack_barbican_service_description }}"
+      - name: placement
+        type: placement
+        description: "{{ openstack_placement_service_description }}"
         endpoints:
           - interface: public
-            url: "{{ _controller_http_host }}:9311"
+            url: "{{ _controller_http_host }}:8778"
           - interface: internal
-            url: "http://{{ _controller_http_host }}:9311"
+            url: "{{ _controller_http_host }}:8778"
           - interface: admin
-            url: "http://{{ _controller_http_host }}:9311"
+            url: "{{ _controller_http_host }}:8778"
 
-- name: Ensure required OpenStack Barbican packages are installed
+- name: Ensure the required Placement service packages are installed
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
-  loop: "{{ openstack_barbican_packages }}"
+  loop: "{{ openstack_placement_packages }}"
 
-- name: Ensure the OpenStack Barbican configuration is present
+- name: Ensure the OpenStack Placement configuration is present
   dubzland.openstack.openstack_config_template:
-    src: etc/barbican/barbican.conf.j2
-    dest: /etc/barbican/barbican.conf
+    src: etc/placement/placement.conf.j2
+    dest: /etc/placement/placement.conf
     owner: root
-    group: barbican
+    group: placement
     mode: "0640"
-  notify: Restart OpenStack Barbican services
+  notify: Restart OpenStack Placement services
 
-- name: Perform an OpenStack Barbican DB sync
+- name: Perform an OpenStack Placement DB sync
   ansible.builtin.command:
-    cmd: barbican-manage db upgrade
+    cmd: placement-manage db sync
   changed_when: false
   become: true
-  become_user: barbican
+  become_user: placement

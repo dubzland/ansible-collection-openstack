@@ -1,0 +1,48 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Placement API.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+    options:
+      openstack_placement_db_name:
+        type: str
+        default: placement
+        description: Name of the MySQL database created.
+      openstack_placement_db_user:
+        type: str
+        default: placement
+        description: Database user created for the OpenStack Placement component.
+      openstack_placement_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_placement_db_user).
+      openstack_placement_service_user:
+        type: str
+        default: placement
+        description: User created in OpenStack Keystone for the Placement component.
+      openstack_placement_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_placement_service_user).
+      openstack_placement_packages:
+        type: list
+        elements: str
+        default:
+          - placement-api
+        description: List of packages installed on the controller for the Placement component.
+      openstack_placement_services:
+        type: list
+        elements: str
+        default:
+          - apache2
+        description: Services to be restarted during install (and/or configuration changes).
+      openstack_placement_service_description:
+        type: str
+        default: OpenStack Key Management
+        description: Human-readable description for the OpenStack Placement service within Keystone.

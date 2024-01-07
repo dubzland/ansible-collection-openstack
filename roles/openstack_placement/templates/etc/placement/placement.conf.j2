@@ -1,0 +1,16 @@
+{{ ansible_managed | comment }}
+[api]
+auth_strategy = keystone
+
+[keystone_authtoken]
+auth_url = {{ _controller_http_host }}:5000/v3
+memcached_servers = {{ _controller_address }}:11211
+auth_type = password
+project_domain_name = {{ _openstack_domain_name }}
+user_domain_name = {{ _openstack_domain_name }}
+project_name = service
+username = {{ openstack_placement_service_user }}
+password = {{ openstack_placement_service_password }}
+
+[placement_database]
+connection = mysql+pymysql://{{ openstack_placement_db_user }}:{{ openstack_placement_db_password }}@{{ _mysql_address }}:3306/{{ openstack_placement_db_name }}
