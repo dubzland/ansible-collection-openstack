@@ -1,0 +1,18 @@
+---
+- name: Ensure the OpenStack Cinder volume types are configured
+  openstack.cloud.volume_type:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    extra_specs:
+      volume_backend_name: >-
+        {{
+          item.specs['volume_backend_name'] if (item.state | default('present') == 'present')
+          else ''
+        }}
+    description: "{{ item.description | default('') }}"
+    is_public: true
+  loop: "{{ openstack_cinder_volume_types }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - "'controller' in group_names"

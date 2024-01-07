@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: openstack_barbican
+  role_name: openstack_ceph_client
   author: dubzland
-  description: Install and configure the OpenStack Barbican key management component
+  description: Configuration related tasks for OpenStack components requiring Ceph access
   license: MIT
   min_ansible_version: "2.13"
   platforms:
@@ -12,8 +12,10 @@ galaxy_info:
   galaxy_tags:
     - devops
     - openstack
-    - barbican
-    - secrets
+    - cinder
+    - storage
+    - ceph
+    - nova
     - cloud
     - linux
     - ubuntu

@@ -1,0 +1,23 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Configuration related tasks for components requiring Ceph access
+    description:
+      - Retrieves ceph configuration file and client keys from a cluster node
+    options:
+      openstack_ceph_client_bootstrap_host:
+        type: str
+        required: true
+        description: Ceph cluster host containing the required keys and configuration.
+      openstack_ceph_client_keys:
+        type: list
+        elements: str
+        required: true
+        description: List of client keyring files to retrieve from the Ceph host.
+      openstack_ceph_client_packages:
+        type: list
+        elements: str
+        default:
+          - ceph-common
+        description: List of packages to install on ceph client nodes.

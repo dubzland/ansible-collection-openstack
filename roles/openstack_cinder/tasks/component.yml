@@ -1,0 +1,22 @@
+---
+- name: Provision the OpenStack Cinder component
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_component
+  vars:
+    openstack_component_database_user: "{{ openstack_cinder_db_user }}"
+    openstack_component_database_password: "{{ openstack_cinder_db_password }}"
+    openstack_component_databases:
+      - "{{ openstack_cinder_db_name }}"
+    openstack_component_user: "{{ openstack_cinder_service_user }}"
+    openstack_component_password: "{{ openstack_cinder_service_password }}"
+    openstack_component_services:
+      - name: cinderv3
+        type: volumev3
+        description: "{{ openstack_cinder_service_description }}"
+        endpoints:
+          - interface: public
+            url: "{{ _controller_http_host }}:8776/v3/%(project_id)s"
+          - interface: internal
+            url: "{{ _controller_http_host }}:8776/v3/%(project_id)s"
+          - interface: admin
+            url: "{{ _controller_http_host }}:8776/v3/%(project_id)s"

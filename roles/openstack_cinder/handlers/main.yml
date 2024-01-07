@@ -1,0 +1,11 @@
+---
+- name: Restart OpenStack Cinder services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ _cinder_services }}"
+
+- name: Restart tgt
+  ansible.builtin.service:
+    name: tgt
+    state: restarted

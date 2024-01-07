@@ -16,5 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenStack Barbican role
 - OpenStack Placement role
 - OpenStack Glance role
+- Ceph client role
+- OpenStack Cinder role
 
 [1.0.0]: https://git.dubzland.com/dubzland/ansible-collection-openstack/-/tree/1.0.0

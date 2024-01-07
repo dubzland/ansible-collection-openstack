@@ -1,0 +1,52 @@
+---
+- name: Ensure required Ceph packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ openstack_ceph_client_packages }}"
+
+- name: Ensure the ceph configuration directory exists
+  ansible.builtin.file:
+    dest: /etc/ceph
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Retrieve the contents of the ceph.conf file from bootstrap host
+  ansible.builtin.slurp:
+    src: /etc/ceph/ceph.conf
+  register: ceph_conf_content
+  delegate_to: "{{ openstack_ceph_client_bootstrap_host }}"
+  changed_when: false
+
+- name: Ensure the ceph configuration file exists
+  ansible.builtin.copy:
+    content: "{{ ceph_conf_content.content | b64decode }}"
+    dest: /etc/ceph/ceph.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Retrieve the ceph client key
+  ansible.builtin.shell:
+    cmd: >-
+      ceph auth get client.{{ item.name }} >/dev/null &&
+      ceph auth get-or-create client.{{ item.name }}
+  loop: "{{ openstack_ceph_client_keys }}"
+  loop_control:
+    label: "{{ item.name }}"
+  delegate_to: "{{ openstack_ceph_client_bootstrap_host }}"
+  changed_when: false
+  register: ceph_retrieve_keys
+
+- name: Ensure the ceph client key exists on the target
+  ansible.builtin.template:
+    src: "etc/ceph/ceph.client.keyring.j2"
+    dest: "/etc/ceph/ceph.client.{{ item.item.name }}.keyring"
+    owner: "{{ item.item.owner }}"
+    group: "{{ item.item.group }}"
+    mode: "{{ item.item.mode }}"
+  loop: "{{ ceph_retrieve_keys.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"

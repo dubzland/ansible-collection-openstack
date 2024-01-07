@@ -1,0 +1,3 @@
+---
+openstack_ceph_client_packages:
+  - ceph-common

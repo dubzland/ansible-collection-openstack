@@ -1,0 +1,88 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Cinder block storage component.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+      - Retrieves required ceph configuration
+    options:
+      openstack_cinder_db_name:
+        type: str
+        default: cinder
+        description: Name of the MySQL database created.
+      openstack_cinder_db_user:
+        type: str
+        default: cinder
+        description: Database user created for the OpenStack Cinder component.
+      openstack_cinder_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_cinder_db_user).
+      openstack_cinder_service_user:
+        type: str
+        default: cinder
+        description: User created in OpenStack Keystone for the Cinder component.
+      openstack_cinder_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_cinder_service_user).
+      openstack_cinder_controller_packages:
+        type: list
+        elements: str
+        default:
+          - cinder-api
+          - cinder-scheduler
+        description: List of packages installed on the controller node for the Cinder component.
+      openstack_cinder_storage_packages:
+        type: list
+        elements: str
+        default:
+          - cinder-volume
+          - tgt
+          - ceph-common
+        description: List of packages installed on the storage nodes for the Cinder component.
+      openstack_cinder_controller_services:
+        type: list
+        elements: str
+        default:
+          - cinder-scheduler
+          - apache2
+        description: Services to be restarted during install (and/or configuration changes) on the controller node.
+      openstack_cinder_storage_services:
+        type: list
+        elements: str
+        default:
+          - tgt
+          - cinder-volume
+        description: Services to be restarted during install (and/or configuration changes) on the storage nodes.
+      openstack_cinder_service_description:
+        type: str
+        default: OpenStack Block Storage
+        description: Human-readable description for the OpenStack Cinder service within Keystone.
+      openstack_cinder_volume_types:
+        type: list
+        elements: dict
+        options:
+          name:
+            type: str
+            required: true
+            description: Name to assign to the volume type, both in the database and configuration file.
+          description:
+            type: str
+            description: Human-readable description stored in the database for this volume type.
+          specs:
+            type: dict
+            default: {}
+            description: Specifications stored in the configuration file for this volume type.
+          state:
+            type: str
+            choices:
+              - present
+              - absent
+            description: Desired state of this volume type, both in the database and the configuration file.
+        description: Volume types to be configured within the Cinder subsystem.

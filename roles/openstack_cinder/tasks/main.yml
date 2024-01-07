@@ -1,0 +1,111 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Set OpenStack Cinder facts
+  ansible.builtin.set_fact:
+    _cinder_packages: >-
+      {{
+        openstack_cinder_controller_packages if ('controller' in group_names)
+        else openstack_cinder_storage_packages
+      }}
+    _cinder_services: >-
+      {{
+        openstack_cinder_controller_services if ('controller' in group_names)
+        else openstack_cinder_storage_services
+      }}
+    _ceph_bootstrap_host: >-
+      {{
+        hostvars[groups['controller'][0]]['ansible_local']['ceph']['bootstrap']['host']
+      }}
+    _ceph_fsid: >-
+      {{
+        hostvars[groups['controller'][0]]['ansible_local']['ceph']['cluster']['fsid']
+      }}
+
+- name: Include component tasks
+  ansible.builtin.include_tasks: component.yml
+  when: "'controller' in group_names"
+
+- name: Ensure the OpenStack Cinder service user has the service role
+  openstack.cloud.role_assignment:
+    cloud: "{{ _openstack_cloud_name }}"
+    user: "{{ openstack_cinder_service_user }}"
+    role: service
+    project: service
+  when: "'controller' in group_names"
+
+- name: Ensure required OpenStack Cinder packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ _cinder_packages }}"
+  notify: Restart OpenStack Cinder services
+
+- name: Ensure ceph is configured
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_ceph_client
+  vars:
+    openstack_ceph_client_bootstrap_host: "{{ _ceph_bootstrap_host }}"
+    openstack_ceph_client_keys:
+      - name: cinder
+        owner: root
+        group: cinder
+        mode: "0640"
+  when: "'storage' in group_names"
+
+- name: Ensure tgt is configured
+  ansible.builtin.copy:
+    content: "include /var/lib/cinder/volumes/*\n"
+    dest: /etc/tgt/conf.d/cinder.conf
+    owner: root
+    group: root
+    mode: "0660"
+  when: "'storage' in group_names"
+  notify: Restart tgt
+
+- name: Ensure the OpenStack Cinder configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: etc/cinder/cinder.conf.j2
+    dest: /etc/cinder/cinder.conf
+    owner: root
+    group: cinder
+    mode: "0640"
+  notify: Restart OpenStack Cinder services
+
+- name: Perform a Cinder DB sync
+  ansible.builtin.command:
+    cmd: cinder-manage db sync
+  changed_when: false
+  become: true
+  become_user: cinder
+  when: "'controller' in group_names"
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Manage volume types
+  ansible.builtin.include_tasks: volume-types.yml
+  when: "'controller' in group_names"
