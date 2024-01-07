@@ -17,3 +17,39 @@ argument_specs:
         description: |
           Apt repository codename by which this version is known. Must match O(openstack_bootstrap_repository_version).
         default: antelope
+      openstack_bootstrap_controller_address:
+        type: str
+        required: true
+        description: IP address or hostname/fqdn used to refer to the OpenStack controller within the cluster.
+      openstack_bootstrap_controller_http_host:
+        type: str
+        default: "http://{{ openstack_bootstrap_controller_address }}"
+        description: HTTP address used to reference the OpenStack controller in endpoint definitions and configuration files.
+      openstack_bootstrap_mysql_address:
+        type: str
+        default: "{{ openstack_bootstrap_controller_address }}"
+        description: IP address or hostname/fqdn used to reference the MySQL database server in configuration files. B(Note:) Creation of OpenStack databases and users will happen via local Unix socket on the controller.
+      openstack_bootstrap_region:
+        type: str
+        default: RegionOne
+        description: OpenStack cluster region name.
+      openstack_bootstrap_domain:
+        type: str
+        default: Default
+        description: OpenStack Keystone to build resources.
+      openstack_bootstrap_cloud_name:
+        type: str
+        default: local
+        description: Name of this cloud in C(clouds.yaml).  File will be written by Keystone install.
+      openstack_bootstrap_repository_url:
+        type: str
+        default: http://ubuntu-cloud.archive.canonical.com/ubuntu
+        description: URL pointing to the Ubuntu cloud archive repository.
+      openstack_bootstrap_repository:
+        type: str
+        default: >-
+          deb
+          {{ openstack_bootstrap_repository_url }}
+          jammy-updates/{{ openstack_bootstrap_repository_version_codename }}
+          main
+        description: Repository configured in apt sources for package download.

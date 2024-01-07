@@ -1,4 +1,29 @@
 ---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
 - name: Ensure the Keystone database is present
   community.mysql.mysql_db:
     name: "{{ openstack_keystone_db_name }}"
@@ -41,7 +66,7 @@
   changed_when: "keystone_db_sync_check.rc not in [0, 2, 3, 4]"
 
 - name: Set the Keystone DB sync facts
-  dubzland.openstack.openstack_fact:
+  dubzland.openstack.openstack_set_fact:
     section: keystone
     option: "{{ item.name }}"
     value: "{{ item.state }}"
@@ -68,7 +93,7 @@
   register: keystone_db_sync_expand
 
 - name: Update the db sync expand fact
-  dubzland.openstack.openstack_fact:
+  dubzland.openstack.openstack_set_fact:
     section: keystone
     option: need_db_expand
     value: false
@@ -85,7 +110,7 @@
   register: keystone_db_sync_migrate
 
 - name: Update the db sync migrate fact
-  dubzland.openstack.openstack_fact:
+  dubzland.openstack.openstack_set_fact:
     section: keystone
     option: need_db_migrate
     value: false
@@ -102,7 +127,7 @@
   register: keystone_db_sync_contract
 
 - name: Update the db sync contract fact
-  dubzland.openstack.openstack_fact:
+  dubzland.openstack.openstack_set_fact:
     section: keystone
     option: need_db_contract
     value: false
@@ -125,10 +150,10 @@
       keystone-manage bootstrap
       --bootstrap-username {{ openstack_keystone_admin_user }}
       --bootstrap-password {{ openstack_keystone_admin_password }}
-      --bootstrap-admin-url {{ openstack_keystone_controller_http_host }}:5000/v3/
-      --bootstrap-internal-url {{ openstack_keystone_controller_http_host }}:5000/v3/
-      --bootstrap-public-url {{ openstack_keystone_controller_http_host }}:5000/v3/
-      --bootstrap-region-id {{ openstack_keystone_region_name }}
+      --bootstrap-admin-url {{ _controller_http_host }}:5000/v3/
+      --bootstrap-internal-url {{ _controller_http_host }}:5000/v3/
+      --bootstrap-public-url {{ _controller_http_host }}:5000/v3/
+      --bootstrap-region-id {{ _openstack_region_name }}
   no_log: true
   become: true
   become_user: keystone
@@ -142,7 +167,7 @@
   ansible.builtin.lineinfile:
     dest: /etc/apache2/apache2.conf
     regexp: "^ServerName"
-    line: "ServerName {{ ansible_fqdn }}"
+    line: "ServerName {{ _controller_address }}"
   notify: Restart Apache2
 
 - name: Ensure the admin credential rc is present
@@ -174,30 +199,14 @@
 
 - name: Ensure the service project exists in OpenStack Keystone
   openstack.cloud.project:
-    cloud: local
-    domain: default
+    cloud: "{{ _openstack_cloud_name }}"
+    domain: "{{ _openstack_domain_name }}"
     name: service
     description: Service Project
     state: present
 
 - name: Ensure the service role exists in OpenStack Keystone
   openstack.cloud.identity_role:
-    cloud: local
+    cloud: "{{ _openstack_cloud_name }}"
     state: present
     name: service
-
-- name: Record facts about the initial OpenStack Keystone installation
-  dubzland.openstack.openstack_fact:
-    section: "{{ item.section }}"
-    option: "{{ item.key }}"
-    value: "{{ item.value }}"
-  with_items:
-    - section: controller
-      key: address
-      value: "{{ openstack_keystone_controller_address }}"
-    - section: controller
-      key: http_host
-      value: "{{ openstack_keystone_controller_http_host }}"
-    - section: mysql
-      key: address
-      value: "{{ openstack_keystone_mysql_address }}"

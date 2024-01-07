@@ -1,0 +1,66 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Performs common database, service, and endpoint creation for OpenStack services.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+    options:
+      openstack_component_user:
+        type: str
+        required: true
+        description: Username to create in OpenStack Keystone for this component's services.
+      openstack_component_password:
+        type: str
+        required: true
+        description: Password to assign to the O(openstack_component_user).
+      openstack_component_database_user:
+        type: str
+        required: true
+        description: MySQL database user this component will use for communication.
+      openstack_component_database_password:
+        type: str
+        required: true
+        description: Password to assign to the O(openstack_component_database_user).
+      openstack_component_databases:
+        type: list
+        elements: str
+        required: true
+        description: Database(s) that should be provisioned for this compoment.
+      openstack_component_services:
+        type: list
+        elements: dict
+        options:
+          name:
+            type: str
+            required: true
+            description: Name to associate with the described service
+          type:
+            type: str
+            required: true
+            description: OpenStack service type I(ex. volumev3) this service represents.
+          description:
+            type: str
+            required: true
+            description: Human-readable description associated with this service
+          endpoints:
+            type: list
+            elements: dict
+            options:
+              interface:
+                type: str
+                required: true
+                choices:
+                  - public
+                  - internal
+                  - admin
+                description: Type of OpenStack endpoint being created.
+              url:
+                type: str
+                required: true
+                description: HTTP url to associate with this endpoint type.
+            description: List of endpoints to create for the specified OpenStack service.
+        required: true
+        description: List of OpenStack Keystone services to be created.

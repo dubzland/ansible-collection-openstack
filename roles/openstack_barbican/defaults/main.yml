@@ -1,0 +1,8 @@
+---
+openstack_barbican_db_name: barbican
+openstack_barbican_db_user: barbican
+# openstack_barbican_db_password:
+#
+openstack_barbican_service_user: barbican
+# openstack_barbican_service_password:
+# openstack_barbican_crypto_key:

@@ -6,8 +6,4 @@ openstack_keystone_db_user: keystone
 openstack_keystone_admin_user: admin
 # openstack_keystone_admin_password:
 
-openstack_keystone_controller_address: "{{ ansible_default_ipv4['address'] }}"
-openstack_keystone_controller_http_host: "http://{{ openstack_keystone_controller_address }}"
-openstack_keystone_mysql_address: "{{ openstack_keystone_controller_address }}"
-
 openstack_keystone_log_dir: /var/log/keystone

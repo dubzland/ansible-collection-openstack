@@ -1,13 +1,13 @@
 ---
 clouds:
-  local:
+  {{ _openstack_cloud_name }}:
     auth:
-      auth_url: {{ openstack_keystone_controller_http_host }}:5000/v3
+      auth_url: {{ _controller_http_host }}:5000/v3
       username: {{ openstack_keystone_admin_user }}
       project_name: admin
       password: {{ openstack_keystone_admin_password }}
-      user_domain_name: {{ openstack_keystone_domain_name }}
-      project_domain_name: {{ openstack_keystone_domain_name }}
-    region: {{ openstack_keystone_region_name }}
+      user_domain_name: {{ _openstack_domain_name }}
+      project_domain_name: {{ _openstack_domain_name }}
+    region: {{ _openstack_region_name }}
     interface: public
     identity_api_version: 3
