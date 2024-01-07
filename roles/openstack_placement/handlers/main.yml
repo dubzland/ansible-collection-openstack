@@ -1,0 +1,6 @@
+---
+- name: Restart OpenStack Placement services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ openstack_placement_services }}"

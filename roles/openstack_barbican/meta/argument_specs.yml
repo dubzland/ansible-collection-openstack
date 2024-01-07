@@ -54,3 +54,7 @@ argument_specs:
           - barbican-worker
           - apache2
         description: Services to be restarted during install (and/or configuration changes).
+      openstack_barbican_service_description:
+        type: str
+        default: OpenStack Key Management
+        description: Human-readable description for the OpenStack Barbican service within Keystone.

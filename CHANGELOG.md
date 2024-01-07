@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - OpenStack bootstrap role
 - Configuration template module
-- Local fact module
+- Local fact modules
 - OpenStack Keystone role
+- OpenStack Barbican role
+- OpenStack Placement role
 
 [1.0.0]: https://git.dubzland.com/dubzland/ansible-collection-openstack/-/tree/1.0.0
