@@ -1,0 +1,29 @@
+---
+openstack_cinder_db_name: cinder
+openstack_cinder_db_user: cinder
+# openstack_cinder_db_password:
+
+openstack_cinder_service_user: cinder
+# openstack_cinder_service_password:
+
+openstack_cinder_volume_types:
+  - name: lvm
+    description: iSCSI Block Device
+    specs:
+      volume_backend_name: LVM_iSCSI
+      volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+      volume_group: cinder-volumes
+      target_protocol: iscsi
+      target_helper: tgtadm
+  - name: rbd
+    description: Rados Block Device
+    specs:
+      volume_backend_name: RBD
+      volume_driver: cinder.volume.drivers.rbd.RBDDriver
+      rbd_ceph_conf: /etc/ceph/ceph.conf
+      rbd_pool: volumes
+      rbd_store_chunk_size: 8
+      rbd_user: cinder
+      report_discard_supported: true
+  - name: __DEFAULT__
+    state: absent

@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  role_name: openstack_barbican
+  role_name: openstack_cinder
   author: dubzland
-  description: Install and configure the OpenStack Barbican key management component
+  description: Install and configure the OpenStack Cinder block storage component
   license: MIT
   min_ansible_version: "2.13"
   platforms:
@@ -12,8 +12,8 @@ galaxy_info:
   galaxy_tags:
     - devops
     - openstack
-    - barbican
-    - secrets
+    - cinder
+    - storage
     - cloud
     - linux
     - ubuntu

@@ -1,0 +1,14 @@
+---
+openstack_cinder_controller_packages:
+  - cinder-api
+  - cinder-scheduler
+openstack_cinder_storage_packages:
+  - cinder-volume
+  - tgt
+openstack_cinder_controller_services:
+  - cinder-scheduler
+  - apache2
+openstack_cinder_storage_services:
+  - tgt
+  - cinder-volume
+openstack_cinder_service_description: OpenStack Block Storage

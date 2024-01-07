@@ -1,0 +1,65 @@
+{{ ansible_managed | comment }}
+[DEFAULT]
+rootwrap_config = /etc/cinder/rootwrap.conf
+api_paste_confg = /etc/cinder/api-paste.ini
+state_path = /var/lib/cinder
+auth_strategy = keystone
+transport_url = rabbit://openstack:{{ openstack_rabbitmq_password }}@{{ _controller_address }}:5672/
+enable_v3_api = True
+{% if 'storage' in group_names %}
+{%   set _cinder_backends = [] %}
+{%   for volume_type in openstack_cinder_volume_types %}
+{%     if (volume_type['state'] | default('enabled')) == 'enabled' %}
+{%       set _ = _cinder_backends.append(volume_type) %}
+{%     endif %}
+{%   endfor %}
+enabled_backends = {{ _cinder_backends | map(attribute='name') | list | join(',') }}
+{% endif %}
+my_ip = {{ ansible_default_ipv4['address'] }}
+## Nova
+nova_catalog_info = compute:nova:internalURL
+nova_catalog_admin_info = compute:nova:adminURL
+os_region_name = RegionOne
+## Glance
+glance_api_servers = {{ _controller_http_host }}:9292
+glance_api_version = 2
+default_volume_type = lvm
+
+[database]
+connection = mysql+pymysql://{{ openstack_cinder_db_user }}:{{ openstack_cinder_db_password }}@{{ _mysql_address }}:3306/{{ openstack_cinder_db_name }}
+
+[keystone_authtoken]
+www_authenticate_uri = {{ _controller_http_host }}:5000/
+auth_url = {{ _controller_http_host }}:5000/
+memcached_servers = {{ _controller_address }}:11211
+auth_type = password
+project_domain_name = {{ _openstack_domain_name }}
+user_domain_name = {{ _openstack_domain_name }}
+project_name = service
+username = {{ openstack_cinder_service_user }}
+password = {{ openstack_cinder_service_password }}
+service_token_roles = service
+service_token_roles_required = true
+
+{% if 'storage' in group_names %}
+{%   for backend in _cinder_backends %}
+[{{ backend['name'] }}]
+{%     for key, value in backend['specs'].items() %}
+{{ key }} = {{ value }}
+{%     endfor %}
+{%   endfor %}
+{% endif %}
+
+[service_user]
+send_service_user_token = true
+auth_url = {{ _controller_http_host }}:5000/
+auth_strategy = keystone
+auth_type = password
+project_domain_name = {{ _openstack_domain_name }}
+project_name = service
+user_domain_name = {{ _openstack_domain_name }}
+username = {{ openstack_cinder_service_user }}
+password = {{ openstack_cinder_service_password }}
+
+[oslo_concurrency]
+lock_path = $state_path/tmp
