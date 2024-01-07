@@ -1,0 +1,6 @@
+---
+openstack_glance_packages:
+  - glance
+openstack_glance_services:
+  - glance-api
+openstack_glance_service_description: OpenStack Image

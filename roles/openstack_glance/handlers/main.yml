@@ -1,0 +1,6 @@
+---
+- name: Restart OpenStack Glance services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ openstack_glance_services }}"
