@@ -1,0 +1,82 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Provision the OpenStack Glance component
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_component
+  vars:
+    openstack_component_database_user: "{{ openstack_glance_db_user }}"
+    openstack_component_database_password: "{{ openstack_glance_db_password }}"
+    openstack_component_databases:
+      - "{{ openstack_glance_db_name }}"
+    openstack_component_user: "{{ openstack_glance_service_user }}"
+    openstack_component_password: "{{ openstack_glance_service_password }}"
+    openstack_component_services:
+      - name: glance
+        type: image
+        description: "OpenStack Image"
+        endpoints:
+          - interface: public
+            url: "{{ _controller_http_host }}:9292"
+          - interface: internal
+            url: "{{ _controller_http_host }}:9292"
+          - interface: admin
+            url: "{{ _controller_http_host }}:9292"
+
+- name: Ensure the OpenStack Glance service user has the reader role
+  openstack.cloud.role_assignment:
+    cloud: "{{ _openstack_cloud_name }}"
+    user: "{{ openstack_glance_service_user }}"
+    role: reader
+    system: all
+
+- name: Extract the OpenStack Glance public endpoint
+  ansible.builtin.set_fact:
+    _glance_public_endpoint: "{{ endpoints | selectattr('interface', '==', 'public') | first }}"
+  vars:
+    endpoints: "{{ openstack_component_services_endpoints.results | map(attribute='endpoint') }}"
+
+- name: Ensure required OpenStack Glance packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ openstack_glance_packages }}"
+
+- name: Ensure the Openstack Glance configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: etc/glance/glance-api.conf.j2
+    dest: /etc/glance/glance-api.conf
+    owner: root
+    group: glance
+    mode: "0640"
+  notify: Restart OpenStack Glance services
+
+- name: Perform a Glance DB sync
+  ansible.builtin.command:
+    cmd: glance-manage db_sync
+  changed_when: false
+  become: true
+  become_user: glance

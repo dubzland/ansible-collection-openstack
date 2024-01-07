@@ -25,11 +25,20 @@ Also tested against the current development version of `ansible-core`.
 
 | Name                                                          | Description                                        |
 | ------------------------------------------------------------- | -------------------------------------------------- |
-| [dubzland.openstack.openstack_keystone][openstack_barbican]   | Installs OpenStack Barbican key management         |
+| [dubzland.openstack.openstack_barbican][openstack_barbican]   | Installs OpenStack Barbican key management         |
 | [dubzland.openstack.openstack_bootstrap][openstack_bootstrap] | Prepares hosts for installing OpenStack components |
 | [dubzland.openstack.openstack_component][openstack_component] | Common component installation tasks                |
+| [dubzland.openstack.openstack_glance][openstack_glance]       | Installs OpenStack Glance image services           |
 | [dubzland.openstack.openstack_keystone][openstack_keystone]   | Installs OpenStack Keystone authentication         |
-| [dubzland.openstack.openstack_keystone][openstack_placement]  | Installs OpenStack Placement resource tracking     |
+| [dubzland.openstack.openstack_placement][openstack_placement] | Installs OpenStack Placement API                   |
+
+### Modules
+
+| Name                                                               | Description                                    |
+| ------------------------------------------------------------------ | ---------------------------------------------- |
+| [dubzland.openstack.openstack_get_fact][openstack_get_fact]        | Retrieves facts stored as ansible custom facts |
+| [dubzland.openstack.openstack_get_fact][openstack_set_fact]        | Stores facts in ansible custom facts           |
+| [dubzland.openstack.openstack_get_fact][openstack_config_template] | Templates configuration files with backup      |
 
 ## Licensing
 
@@ -44,5 +53,9 @@ See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-openstack/blo
 [openstack_barbican]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_barbican_role.html
 [openstack_bootstrap]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_bootstrap_role.html
 [openstack_component]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_component.html
+[openstack_glance]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_glance_role.html
 [openstack_keystone]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_keystone_role.html
 [openstack_placement]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_placement_role.html
+[openstack_get_fact]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_get_fact_module.html
+[openstack_set_fact]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_set_fact_module.html
+[openstack_config_template]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_config_template_module.html

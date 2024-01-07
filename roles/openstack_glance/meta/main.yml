@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  role_name: openstack_glance
+  author: dubzland
+  description: Install and configure the OpenStack Glance image management services
+  license: MIT
+  min_ansible_version: "2.13"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+  galaxy_tags:
+    - devops
+    - openstack
+    - glance
+    - images
+    - cloud
+    - linux
+    - ubuntu
+
+dependencies: []

@@ -1,0 +1,48 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Glance image management services.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+    options:
+      openstack_glance_db_name:
+        type: str
+        default: glance
+        description: Name of the MySQL database created.
+      openstack_glance_db_user:
+        type: str
+        default: glance
+        description: Database user created for the OpenStack Glance component.
+      openstack_glance_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_glance_db_user).
+      openstack_glance_service_user:
+        type: str
+        default: glance
+        description: User created in OpenStack Keystone for the Glance component.
+      openstack_glance_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_glance_service_user).
+      openstack_glance_packages:
+        type: list
+        elements: str
+        default:
+          - glance
+        description: List of packages installed on the controller for the Glance component.
+      openstack_glance_services:
+        type: list
+        elements: str
+        default:
+          - glance-api
+        description: Services to be restarted during install (and/or configuration changes).
+      openstack_glance_service_description:
+        type: str
+        default: OpenStack Image
+        description: Human-readable description for the OpenStack Glance service within Keystone.

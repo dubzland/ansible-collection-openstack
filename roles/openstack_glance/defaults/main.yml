@@ -1,0 +1,7 @@
+---
+openstack_glance_db_name: glance
+openstack_glance_db_user: glance
+# openstack_glance_db_password:
+#
+openstack_glance_service_user: glance
+# openstack_glance_service_password:
