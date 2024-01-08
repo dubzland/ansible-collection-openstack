@@ -1,0 +1,11 @@
+---
+openstack_heat_packages:
+  - heat-api
+  - heat-api-cfn
+  - heat-engine
+  - python3-heat-dashboard
+openstack_heat_services:
+  - heat-api
+  - heat-api-cfn
+  - heat-engine
+openstack_heat_service_description: OpenStack Orchestration

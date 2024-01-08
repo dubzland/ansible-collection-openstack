@@ -20,5 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenStack Cinder role
 - OpenStack Neutron role
 - OpenStack Nova role
+- OpenStack Heat role
 
 [1.0.0]: https://git.dubzland.com/dubzland/ansible-collection-openstack/-/tree/1.0.0

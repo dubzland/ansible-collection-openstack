@@ -1,0 +1,61 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Heat orchestration component.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+    options:
+      openstack_heat_db_name:
+        type: str
+        default: heat
+        description: Name of the MySQL database created.
+      openstack_heat_db_user:
+        type: str
+        default: heat
+        description: Database user created for the OpenStack Heat component.
+      openstack_heat_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_heat_db_user).
+      openstack_heat_service_user:
+        type: str
+        default: heat
+        description: User created in OpenStack Keystone for the Heat component.
+      openstack_heat_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_heat_service_user).
+      openstack_heat_domain_admin_user:
+        type: str
+        default: heat_domain_admin
+        description: User created in OpenStack Keystone for Heat domain administration.
+      openstack_heat_domain_admin_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_heat_domain_admin_user).
+      openstack_heat_packages:
+        type: list
+        elements: str
+        default:
+          - heat-api
+          - heat-api-cfn
+          - heat-engine
+          - python3-heat-dashboard
+        description: List of packages installed on the controller node for the Heat component.
+      openstack_heat_services:
+        type: list
+        elements: str
+        default:
+          - heat-api
+          - heat-api-cfn
+          - heat-engine
+        description: Services to be restarted during install (and/or configuration changes) on the controller node.
+      openstack_heat_service_description:
+        type: str
+        default: OpenStack Orchestration
+        description: Human-readable description for the OpenStack Heat service within Keystone.
