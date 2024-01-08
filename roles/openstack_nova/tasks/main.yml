@@ -1,0 +1,188 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Set OpenStack Nova facts
+  ansible.builtin.set_fact:
+    _nova_packages: >-
+      {{
+        openstack_nova_controller_packages if ('controller' in group_names)
+        else openstack_nova_compute_packages
+      }}
+    _nova_services: >-
+      {{
+        openstack_nova_controller_services if ('controller' in group_names)
+        else openstack_nova_compute_services
+      }}
+    _ceph_bootstrap_host: >-
+      {{ hostvars[groups['controller'][0]]['ansible_local']['ceph']['bootstrap']['host'] }}
+    _ceph_fsid: >-
+      {{ hostvars[groups['controller'][0]]['ansible_local']['ceph']['cluster']['fsid'] }}
+
+- name: Include component tasks
+  ansible.builtin.include_tasks: component.yml
+  when: "'controller' in group_names"
+
+- name: Ensure the OpenStack Nova service user has the service role
+  openstack.cloud.role_assignment:
+    cloud: "{{ _openstack_cloud_name }}"
+    user: "{{ openstack_nova_service_user }}"
+    role: service
+    project: service
+  when: "'controller' in group_names"
+
+- name: Ensure required OpenStack Nova packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ _nova_packages }}"
+
+- name: Ensure the iscsid service is enabled
+  ansible.builtin.service:
+    name: iscsid
+    state: started
+    enabled: true
+  when: "'compute' in group_names"
+
+- name: Ensure ceph is configured
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_ceph_client
+  vars:
+    openstack_ceph_client_bootstrap_host: "{{ _ceph_bootstrap_host }}"
+    openstack_ceph_client_keys:
+      - name: cinder
+        owner: root
+        group: nova
+        mode: "0640"
+  when: "'compute' in group_names"
+
+- name: Ensure the cinder secret exists in libvirt
+  ansible.builtin.include_tasks: ceph_nova_auth.yml
+  when: "'compute' in group_names"
+
+- name: Ensure the OpenStack Nova configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: etc/nova/nova.conf.j2
+    dest: /etc/nova/nova.conf
+    owner: root
+    group: nova
+    mode: "0640"
+  notify: Restart OpenStack Nova services
+
+- name: Perform a Nova DB sync
+  ansible.builtin.command:
+    cmd: nova-manage api_db sync
+  changed_when: false
+  become: true
+  become_user: nova
+  when: "'controller' in group_names"
+
+- name: Perform a Nova Cell0 mapping
+  ansible.builtin.command:
+    cmd: nova-manage cell_v2 map_cell0
+  changed_when: false
+  become: true
+  become_user: nova
+  when: "'controller' in group_names"
+
+- name: Check for the existence of the cell1 cell
+  ansible.builtin.shell:
+    cmd: "set -o pipefail && nova-manage cell_v2 list_cells | grep ' cell1 '"
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  become: true
+  become_user: nova
+  register: _nova_cell1_check
+  when: "'controller' in group_names"
+
+- name: Create the cell1 cell
+  ansible.builtin.command:
+    cmd: nova-manage cell_v2 create_cell --name=cell1 --verbose
+  become: true
+  become_user: nova
+  register: _nova_cell1_create
+  failed_when: "_nova_cell1_create.rc not in [0, 2]"
+  changed_when: "_nova_cell1_create.rc == 0"
+  when:
+    - "'controller' in group_names"
+    - "_nova_cell1_check.rc == 1"
+
+- name: Populate the nova database
+  ansible.builtin.command:
+    cmd: nova-manage db sync
+  changed_when: false
+  become: true
+  become_user: nova
+  when: "'controller' in group_names"
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure OpenStack compute nodes are discovered
+  block:
+    - name: Wait for the nova-compute services to initialize
+      openstack.cloud.compute_service_info:
+        cloud: "{{ _openstack_cloud_name }}"
+        binary: "nova-compute"
+        host: "{{ ansible_facts['nodename'] }}"
+      changed_when: false
+      register: _compute_host_list
+      retries: 10
+      delay: 5
+      until: "_compute_host_list.compute_services"
+      when: "'compute' in group_names"
+      delegate_to: "{{ groups['controller'][0] }}"
+
+  rescue:
+    - name: Restart nova-compute service
+      ansible.builtin.service:
+        name: nova-compute
+        state: restarted
+
+    - name: Wait for the nova-compute services to initialize
+      openstack.cloud.compute_service_info:
+        cloud: "{{ _openstack_cloud_name }}"
+        binary: "nova-compute"
+        host: "{{ ansible_facts['nodename'] }}"
+      changed_when: false
+      register: _compute_host_list
+      retries: 10
+      delay: 5
+      until: "_compute_host_list.compute_services"
+      when: "'compute' in group_names"
+      delegate_to: "{{ groups['controller'][0] }}"
+
+- name: Discover new Nova compute hosts
+  ansible.builtin.command:
+    cmd: nova-manage cell_v2 discover_hosts
+  changed_when: false
+  become: true
+  become_user: nova
+  when: "'controller' in group_names"
+
+- name: Include network creation tasks
+  ansible.builtin.include_tasks: create-networks.yml
+  when: "'controller' in group_names"

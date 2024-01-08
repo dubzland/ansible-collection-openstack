@@ -41,6 +41,8 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   loop:
+    - option: ip
+      value: "{{ openstack_bootstrap_controller_ip }}"
     - option: address
       value: "{{ openstack_bootstrap_controller_address }}"
     - option: http_host

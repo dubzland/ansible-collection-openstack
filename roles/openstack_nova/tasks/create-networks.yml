@@ -1,0 +1,24 @@
+---
+- name: Ensure the OpenStack provider networks are present
+  openstack.cloud.network:
+    cloud: "{{ _openstack_cloud_name }}"
+    name: "{{ item.name }}"
+    external: true
+    shared: true
+    admin_state_up: true
+    provider_network_type: flat
+    provider_physical_network: "{{ item.physical_network | default(item.name) }}"
+    state: present
+  loop: "{{ openstack_nova_provider_networks }}"
+
+- name: Ensure the OpenStack provider subnets are present
+  openstack.cloud.subnet:
+    cloud: "{{ _openstack_cloud_name }}"
+    network_name: "{{ item.name }}"
+    name: "{{ item.subnet_name | default('%s-subnet' | format(item.name)) }}"
+    cidr: "{{ item.cidr }}"
+    gateway_ip: "{{ item.gateway_ip | default(None) }}"
+    dns_nameservers: "{{ item.dns_nameservers | default([]) }}"
+    allocation_pool_start: "{{ item.allocation_pool.start }}"
+    allocation_pool_end: "{{ item.allocation_pool.end }}"
+  loop: "{{ openstack_nova_provider_networks }}"

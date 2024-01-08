@@ -1,0 +1,24 @@
+---
+- name: Provision the OpenStack Nova component
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_component
+  vars:
+    openstack_component_database_user: "{{ openstack_nova_db_user }}"
+    openstack_component_database_password: "{{ openstack_nova_db_password }}"
+    openstack_component_databases:
+      - "{{ openstack_nova_db_name }}"
+      - "{{ openstack_nova_api_db_name }}"
+      - "{{ openstack_nova_cell0_db_name }}"
+    openstack_component_user: "{{ openstack_nova_service_user }}"
+    openstack_component_password: "{{ openstack_nova_service_password }}"
+    openstack_component_services:
+      - name: nova
+        type: compute
+        description: "{{ openstack_nova_service_description }}"
+        endpoints:
+          - interface: public
+            url: "{{ _controller_http_host }}:8774/v2.1"
+          - interface: internal
+            url: "{{ _controller_http_host }}:8774/v2.1"
+          - interface: admin
+            url: "{{ _controller_http_host }}:8774/v2.1"

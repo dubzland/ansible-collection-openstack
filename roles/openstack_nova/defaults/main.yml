@@ -1,0 +1,27 @@
+---
+openstack_nova_db_name: nova
+openstack_nova_cell0_db_name: nova_cell0
+openstack_nova_api_db_name: nova_api
+openstack_nova_db_user: nova
+# openstack_nova_db_password:
+
+openstack_nova_service_user: nova
+# openstack_nova_service_password:
+
+openstack_nova_placement_service_user: placement
+# openstack_nova_placement_service_password:
+
+openstack_nova_neutron_service_user: neutron
+# openstack_nova_neutron_service_password:
+# openstack_nova_neutron_metadata_secret:
+
+# openstack_nova_provider_networks:
+#   - name: provider
+#     physical_network: provider
+#     cidr: 172.18.134.0/24
+#     gateway_ip: 172.18.134.1
+#     dns_nameservers:
+#       - 172.18.160.53
+#     allocation_pool:
+#       start: 172.18.134.2
+#       end: 172.18.134.254

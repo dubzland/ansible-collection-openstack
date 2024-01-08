@@ -17,6 +17,10 @@ argument_specs:
         description: |
           Apt repository codename by which this version is known. Must match O(openstack_bootstrap_repository_version).
         default: antelope
+      openstack_bootstrap_controller_ip:
+        type: str
+        required: true
+        description: IP address on the management network for the controller node.
       openstack_bootstrap_controller_address:
         type: str
         required: true
