@@ -1,0 +1,42 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Ensure required OpenStack Horizon packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ openstack_horizon_packages }}"
+
+- name: Ensure Horizon is configured
+  dubzland.openstack.openstack_config_template:
+    src: "etc/{{ item }}.j2"
+    dest: "/etc/{{ item }}"
+    owner: root
+    group: horizon
+    mode: "0640"
+  loop:
+    - openstack-dashboard/local_settings.py
+  notify: Reload Apache
