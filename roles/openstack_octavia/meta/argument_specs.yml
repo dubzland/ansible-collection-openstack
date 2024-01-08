@@ -1,0 +1,103 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Octavia LBaaS component.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+      - Creates required provider networks in Neutron
+    options:
+      openstack_octavia_db_name:
+        type: str
+        default: octavia
+        description: Name of the MySQL database created.
+      openstack_octavia_db_user:
+        type: str
+        default: octavia
+        description: Database user created for the OpenStack Octavia component.
+      openstack_octavia_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_octavia_db_user).
+      openstack_octavia_service_user:
+        type: str
+        default: octavia
+        description: User created in OpenStack Keystone for the Octavia component.
+      openstack_octavia_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_octavia_service_user).
+      openstack_octavia_amphora_public_key:
+        type: str
+        required: true
+        description: Public key to be installed into amphora for ssh access.
+      openstack_octavia_heartbeat_key:
+        type: str
+        required: true
+        description: Key used for symmetric encryption of UDP heartbeat packets.
+      openstack_octavia_packages:
+        type: list
+        elements: str
+        default:
+          - debootstrap
+          - git
+          - kpartx
+          - octavia-api
+          - octavia-health-manager
+          - octavia-housekeeping
+          - octavia-worker
+          - python3-octavia
+          - python3-octavia-dashboard
+          - python3-octaviaclient
+          - qemu-utils
+        description: List of packages installed on the controller node for the Octavia component.
+      openstack_octavia_services:
+        type: list
+        elements: str
+        default:
+          - octavia-api
+          - octavia-health-manager
+          - octavia-housekeeping
+          - octavia-worker
+        description: Services to be restarted during install (and/or configuration changes) on the controller node.
+      openstack_octavia_service_description:
+        type: str
+        default: OpenStack LBaaS
+        description: Human-readable description for the OpenStack Octavia service within Keystone.
+      openstack_octavia_provider_network_name:
+        type: str
+        required: true
+        description: Name of the created Neutron provider network for LBaaS traffic.
+      openstack_octavia_provider_subnet_name:
+        type: str
+        default: "{{ openstack_octavia_provider_network_name }}-subnet"
+        description: Name of the created Neutron provider subnet for LBaaS traffic.
+      openstack_octavia_provider_physical_network:
+        type: str
+        required: true
+        description: Underlying OVN network to use for LBaaS traffic.
+      openstack_octavia_provider_network_ip:
+        type: str
+        required: true
+        description: IP address of the controller node on the LBaaS network.
+      openstack_octavia_provider_network_cidr:
+        type: str
+        required: true
+        description: Network CIDR for the LBaaS provider network.
+      openstack_octavia_provider_network_allocation_pool:
+        type: dict
+        options:
+          start:
+            type: str
+            required: true
+            description: First IP address available in the LBaaS pool.
+          end:
+            type: str
+            required: true
+            description: Last IP address available in the LBaaS pool.
+        required: true
+        description: IP address pool to use for Octavia amphora instances.

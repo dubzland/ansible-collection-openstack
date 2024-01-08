@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  role_name: openstack_octavia
+  author: dubzland
+  description: Install and configure the OpenStack Octavia LBaaS component.
+  license: MIT
+  min_ansible_version: "2.13"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+  galaxy_tags:
+    - devops
+    - openstack
+    - octavia
+    - loadbalancer
+    - cloud
+    - linux
+    - ubuntu
+
+dependencies: []

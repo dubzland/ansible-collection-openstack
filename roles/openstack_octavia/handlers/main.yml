@@ -1,0 +1,6 @@
+---
+- name: Restart OpenStack Octavia services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ openstack_octavia_services }}"

@@ -1,0 +1,19 @@
+---
+openstack_octavia_db_name: octavia
+openstack_octavia_db_user: octavia
+# openstack_octavia_db_password:
+
+openstack_octavia_service_user: octavia
+# openstack_octavia_service_password:
+# openstack_octavia_server_certs_key_passphrase:
+# openstack_octavia_ca_private_key_passphrase:
+# openstack_octavia_amphora_public_key:
+# openstack_octavia_heartbeat_key:
+
+# openstack_octavia_provider_network_name: lbaas-mgmt
+# openstack_octavia_provider_physical_network: lbaas
+# openstack_octavia_provider_network_ip: 172.18.98.23
+# openstack_octavia_provider_network_cidr: 172.18.98.0/24
+# openstack_octavia_provider_network_allocation_pool:
+#   start: 172.18.98.2
+#   end: 172.18.98.254
