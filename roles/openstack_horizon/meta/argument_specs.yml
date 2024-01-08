@@ -1,0 +1,15 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Horizon dashboard.
+    description:
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+    options:
+      openstack_horizon_packages:
+        type: list
+        elements: str
+        default:
+          - openstack-dashboard
+        description: Packages to install on the controller node.
