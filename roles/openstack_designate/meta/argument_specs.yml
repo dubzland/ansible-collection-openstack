@@ -1,0 +1,169 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Designate DNSaaS component.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+    options:
+      openstack_designate_db_name:
+        type: str
+        default: designate
+        description: Name of the MySQL database created.
+      openstack_designate_db_user:
+        type: str
+        default: designate
+        description: Database user created for the OpenStack Designate component.
+      openstack_designate_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_designate_db_user).
+      openstack_designate_service_user:
+        type: str
+        default: designate
+        description: User created in OpenStack Keystone for the Designate component.
+      openstack_designate_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_designate_service_user).
+      openstack_designate_rndc_key:
+        type: dict
+        options:
+          name:
+            type: str
+            required: true
+            description: Name to associate with this rndc key.
+          algorithm:
+            type: str
+            required: true
+            description: TSIG algorithm used to generate the rndc key.
+          secret:
+            type: str
+            required: true
+            description: Actual rndc key value.
+        required: true
+        description: RNDC key used to communicate with the backend Bind9 servers.
+      openstack_designate_pools:
+        type: list
+        elements: dict
+        options:
+          description:
+            type: str
+            required: true
+            description: Human-readable description for this pool.
+          name:
+            type: str
+            required: true
+            description: Name for this pool within the OpenStack cloud.
+          nameservers:
+            type: list
+            elements: dict
+            options:
+              host:
+                type: str
+                required: true
+                description: IP address of the server running the Bind9 DNS service.
+              port:
+                type: int
+                default: 53
+                description: Port the Bind9 server is listening on.
+            required: true
+            description: List of nameservers to be checked when zone updates are applied.
+          ns_records:
+            type: list
+            elements: dict
+            options:
+              hostname:
+                type: str
+                required: true
+                description: Hostname to assign to the NS record.
+              priority:
+                type: int
+                default: 1
+                description: Priority to assign to the NS record.
+            description: NS record to create in Designate managed zones.
+          targets:
+            type: list
+            elements: dict
+            options:
+              description:
+                type: str
+                required: true
+                description: Human readable description for this Bind9 target.
+              type:
+                type: str
+                required: true
+                choices:
+                  - bind9
+                description: Type of DNS backend being configured. Currently only C(bind9) is supported.
+              masters:
+                type: list
+                elements: dict
+                options:
+                  host:
+                    type: str
+                    required: true
+                    description: Address (IP/Hostname) of the actual C(designate-mdns) server.
+                  port:
+                    type: int
+                    default: 5354
+                    description: Port the (designate-mdns) server is listening on for zone transfers.
+                description: List of designate-mdns servers that Bind9 masters should request updates from.
+              options:
+                type: dict
+                options:
+                  host:
+                    type: str
+                    required: true
+                    description: Hostname/IP address of the actual Bind9 master server.
+                  port:
+                    type: int
+                    required: true
+                    description: Port the master server is listing on for queries.
+                  rndc_host:
+                    type: str
+                    required: true
+                    description: Hostname/IP address the Bind9 server is bound to for rndc updates.
+                  rndc_port:
+                    type: int
+                    required: true
+                    description: Port the Bind9 server is listening on for rndc updates.
+                  rndc_key_file:
+                    type: str
+                    required: true
+                    description: File containing the rndc key used to secure communications with the Bind9 server.
+                description: Options to apply to servers within this target pool.
+            description: C(designate-mdns) to Bind9 pairings for this pool.
+        required: true
+        description: List of backend Bind9 server pools to handle actual DNS services.
+      openstack_designate_packages:
+        type: list
+        elements: str
+        default:
+          - bind9utils
+          - bind9-doc
+          - designate
+          - python3-designate-dashboard
+          - designate-mdns
+          - designate-producer
+          - designate-worker
+        description: List of packages installed on the controller node for the Designate component.
+      openstack_designate_services:
+        type: list
+        elements: str
+        default:
+          - designate-central
+          - designate-api
+          - designate-worker
+          - designate-producer
+          - designate-mdns
+          - apache2
+        description: Services to be restarted during install (and/or configuration changes) on the controller node.
+      openstack_designate_service_description:
+        type: str
+        default: OpenStack DNS
+        description: Human-readable description for the OpenStack Designate service within Keystone.

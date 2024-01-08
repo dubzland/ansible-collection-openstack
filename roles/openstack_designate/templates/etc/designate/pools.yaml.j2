@@ -1,0 +1,30 @@
+{{ ansible_managed | comment }}
+{% for pool in openstack_designate_pools %}
+- name: {{ pool.name }}
+  description: {{ pool.description }}
+  attributes: {}
+  nameservers:
+{%   for nameserver in pool.nameservers %}
+    - host: {{ nameserver.host }}
+      port: {{ nameserver.port | default(53) }}
+{%   endfor %}
+  ns_records:
+{%   for record in pool.ns_records %}
+    - hostname: {{ record.hostname }}
+      priority: {{ record.priority | default(1) }}
+{%   endfor %}
+  targets:
+{%   for target in pool.targets %}
+  - description: {{ target.description }}
+    type: {{ target.type }}
+    masters:
+{%     for master in target.masters %}
+      - host: {{ master.host }}
+        port: {{ master.port | default(5354) }}
+{%      endfor %}
+    options:
+{%     for key, value in target.options.items() %}
+      {{ key }}: {{ value }}
+{%     endfor %}
+{%   endfor %}
+{% endfor %}

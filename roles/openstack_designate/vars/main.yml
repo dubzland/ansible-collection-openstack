@@ -1,0 +1,17 @@
+---
+openstack_designate_packages:
+  - bind9utils
+  - bind9-doc
+  - designate
+  - python3-designate-dashboard
+  - designate-mdns
+  - designate-producer
+  - designate-worker
+openstack_designate_services:
+  - designate-central
+  - designate-api
+  - designate-worker
+  - designate-producer
+  - designate-mdns
+  - apache2
+openstack_designate_service_description: OpenStack DNS
