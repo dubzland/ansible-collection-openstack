@@ -1,0 +1,103 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Provision the OpenStack Designate service
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_component
+  vars:
+    openstack_component_database_user: "{{ openstack_designate_db_user }}"
+    openstack_component_database_password: "{{ openstack_designate_db_password }}"
+    openstack_component_databases:
+      - "{{ openstack_designate_db_name }}"
+    openstack_component_user: "{{ openstack_designate_service_user }}"
+    openstack_component_password: "{{ openstack_designate_service_password }}"
+    openstack_component_services:
+      - name: designate
+        type: dns
+        description: "{{ openstack_designate_service_description }}"
+        endpoints:
+          - interface: public
+            url: "{{ _controller_http_host }}:9001"
+
+- name: Ensure required Designate packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ openstack_designate_packages }}"
+
+- name: Ensure the Designate bind9 key is present
+  ansible.builtin.template:
+    src: etc/designate/rndc.key.j2
+    dest: /etc/designate/rndc.key
+    owner: root
+    group: designate
+    mode: "0640"
+  notify: Restart OpenStack Designate services
+
+- name: Ensure the OpenStack Designate configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: etc/designate/designate.conf.j2
+    dest: /etc/designate/designate.conf
+    owner: root
+    group: designate
+    mode: "0640"
+  notify: Restart OpenStack Designate services
+  register: _designate_configuration
+
+- name: Ensure the OpenStack Designate services are enabled
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: true
+  loop: "{{ openstack_designate_services }}"
+
+- name: Perform a Designate DB sync
+  ansible.builtin.command:
+    cmd: designate-manage database sync
+  changed_when: false
+  become: true
+  become_user: designate
+
+- name: Ensure the designate-central service has the new configuration # noqa: no-handler
+  ansible.builtin.service:
+    name: designate-central
+    state: restarted
+  when: _designate_configuration is changed
+
+- name: Ensure Designate pools are configured
+  ansible.builtin.template:
+    src: etc/designate/pools.yaml.j2
+    dest: /etc/designate/pools.yaml
+    owner: root
+    group: designate
+    mode: "0640"
+  notify: Restart OpenStack Designate services
+
+- name: Populate the database with pool data
+  ansible.builtin.command:
+    cmd: designate-manage pool update
+  changed_when: false
+  become: true
+  become_user: designate

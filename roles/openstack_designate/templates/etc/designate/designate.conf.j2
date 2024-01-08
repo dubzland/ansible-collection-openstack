@@ -1,0 +1,25 @@
+{{ ansible_managed | comment }}
+[DEFAULT]
+transport_url = rabbit://openstack:{{ openstack_rabbitmq_password }}@{{ _controller_address }}:5672/
+
+[keystone_authtoken]
+www_authenticate_uri = {{ _controller_http_host }}:5000/
+auth_url = {{ _controller_http_host }}:5000/
+memcached_servers = {{ _controller_address }}:11211
+auth_type = password
+project_domain_name = {{ _openstack_domain_name }}
+user_domain_name = {{ _openstack_domain_name }}
+project_name = service
+username = {{ openstack_designate_service_user }}
+password = {{ openstack_designate_service_password }}
+
+[service:api]
+listen = 0.0.0.0:9001
+auth_strategy = keystone
+enable_api_v2 = True
+enable_api_admin = True
+enable_host_header = True
+enabled_extensions_admin = quotas,reports
+
+[storage:sqlalchemy]
+connection = mysql+pymysql://{{ openstack_designate_db_user }}:{{ openstack_designate_db_password }}@{{ _mysql_address }}:3306/{{ openstack_designate_db_name }}

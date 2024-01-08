@@ -1,0 +1,26 @@
+---
+openstack_designate_db_name: designate
+openstack_designate_db_user: designate
+# openstack_designate_db_password:
+
+openstack_designate_service_user: designate
+# openstack_designate_service_password:
+
+# openstack_designate_rndc_key:
+
+# openstack_designate_pools:
+#   - description: Default BIND9 Pool
+#     name: default
+#     nameservers:
+#       - host: 172.18.9.53
+#     ns_records:
+#       - hostname: os-dns.example.com
+#     targets:
+#       - description: Default Bind9 Pool
+#         type: bind9
+#         masters:
+#           - host: {{ ansible_default_ipv4['address'] }}
+#         options:
+#           host: 172.18.9.53
+#           rndc_host: 172.18.9.53
+#           rndc_key_file: /etc/designate/rndc.key

@@ -30,6 +30,7 @@ Also tested against the current development version of `ansible-core`.
 | [dubzland.openstack.openstack_ceph_client][openstack_ceph_client] | Configuration related tasks for components requiring Ceph access |
 | [dubzland.openstack.openstack_cinder][openstack_cinder]           | Installs OpenStack Cinder block storage                          |
 | [dubzland.openstack.openstack_component][openstack_component]     | Common component installation tasks                              |
+| [dubzland.openstack.openstack_designate][openstack_designate]     | Installs OpenStack Designate DNSaaS                              |
 | [dubzland.openstack.openstack_glance][openstack_glance]           | Installs OpenStack Glance image services                         |
 | [dubzland.openstack.openstack_heat][openstack_heat]               | Installs OpenStack Heat orchestration services                   |
 | [dubzland.openstack.openstack_keystone][openstack_keystone]       | Installs OpenStack Keystone authentication                       |
@@ -60,6 +61,7 @@ See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-openstack/blo
 [openstack_ceph_client]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_ceph_client_role.html
 [openstack_cinder]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_cinder_role.html
 [openstack_component]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_component_role.html
+[openstack_designate]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_designate_role.html
 [openstack_glance]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_glance_role.html
 [openstack_heat]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_heat_role.html
 [openstack_keystone]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_keystone_role.html
