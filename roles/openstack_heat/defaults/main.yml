@@ -1,0 +1,10 @@
+---
+openstack_heat_db_name: heat
+openstack_heat_db_user: heat
+# openstack_heat_db_password:
+
+openstack_heat_service_user: heat
+# openstack_heat_service_password:
+
+openstack_heat_domain_admin_user: heat_domain_admin
+# openstack_heat_domain_admin_password:

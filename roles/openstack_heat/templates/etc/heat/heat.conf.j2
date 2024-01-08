@@ -1,0 +1,32 @@
+{{ ansible_managed | comment }}
+[DEFAULT]
+transport_url = rabbit://openstack:{{ openstack_rabbitmq_password }}@{{ _controller_address }}:5672/
+heat_metadata_server_url = {{ _controller_http_host }}:8000
+heat_waitcondition_server_url = {{ _controller_http_host }}:8000/v1/waitcondition
+stack_domain_admin = {{ openstack_heat_domain_admin_user }}
+stack_domain_admin_password = {{ openstack_heat_domain_admin_password }}
+stack_user_domain_name = heat
+
+[clients_keystone]
+auth_uri = {{ _controller_http_host }}:5000/
+
+[database]
+connection = mysql+pymysql://{{ openstack_heat_db_user }}:{{ openstack_heat_db_password }}@{{ _mysql_address }}:3306/{{ openstack_heat_db_name }}
+
+[keystone_authtoken]
+www_authenticate_uri = {{ _controller_http_host }}:5000/
+auth_url = {{ _controller_http_host }}:5000/
+memcached_servers = {{ _controller_address }}:11211
+auth_type = password
+project_domain_name = {{ _openstack_domain_name }}
+user_domain_name = {{ _openstack_domain_name }}
+project_name = service
+username = {{ openstack_heat_service_user }}
+password = {{ openstack_heat_service_password }}
+
+[trustee]
+auth_type = password
+auth_url = {{ _controller_http_host }}:5000/
+username = {{ openstack_heat_service_user }}
+password = {{ openstack_heat_service_password }}
+user_domain_name = default

@@ -31,6 +31,7 @@ Also tested against the current development version of `ansible-core`.
 | [dubzland.openstack.openstack_cinder][openstack_cinder]           | Installs OpenStack Cinder block storage                          |
 | [dubzland.openstack.openstack_component][openstack_component]     | Common component installation tasks                              |
 | [dubzland.openstack.openstack_glance][openstack_glance]           | Installs OpenStack Glance image services                         |
+| [dubzland.openstack.openstack_heat][openstack_heat]               | Installs OpenStack Heat orchestration services                   |
 | [dubzland.openstack.openstack_keystone][openstack_keystone]       | Installs OpenStack Keystone authentication                       |
 | [dubzland.openstack.openstack_neutron][openstack_neutron]         | Installs OpenStack Neutron networking services                   |
 | [dubzland.openstack.openstack_nova][openstack_nova]               | Installs OpenStack Nova compute services                         |
@@ -60,6 +61,7 @@ See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-openstack/blo
 [openstack_cinder]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_cinder_role.html
 [openstack_component]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_component_role.html
 [openstack_glance]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_glance_role.html
+[openstack_heat]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_heat_role.html
 [openstack_keystone]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_keystone_role.html
 [openstack_neutron]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_neutron_role.html
 [openstack_nova]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_nova_role.html
