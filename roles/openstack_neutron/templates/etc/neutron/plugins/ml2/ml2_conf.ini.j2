@@ -1,7 +1,5 @@
 #jinja2: trim_blocks:True,lstrip_blocks:True
 {{ ansible_managed | comment }}
-[DEFAULT]
-
 [ml2]
 type_drivers = flat,geneve
 tenant_network_types = geneve
@@ -19,15 +17,11 @@ vni_ranges = 1:1000
 max_header_size = 38
 
 [ovn]
-ovn_nb_connection = tcp:{{ _controller_address }}:6641
-ovn_sb_connection = tcp:{{ _controller_address }}:6642
+ovn_nb_connection = tcp:{{ _controller_ip }}:6641
+ovn_sb_connection = tcp:{{ _controller_ip }}:6642
 ovn_l3_scheduler = leastloaded
 ovn_metadata_enabled = True
-
-[ovs_driver]
 
 [securitygroup]
 enable_security_group = True
 firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
-
-[sriov_driver]

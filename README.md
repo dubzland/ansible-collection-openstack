@@ -33,6 +33,7 @@ Also tested against the current development version of `ansible-core`.
 | [dubzland.openstack.openstack_glance][openstack_glance]           | Installs OpenStack Glance image services                         |
 | [dubzland.openstack.openstack_keystone][openstack_keystone]       | Installs OpenStack Keystone authentication                       |
 | [dubzland.openstack.openstack_neutron][openstack_neutron]         | Installs OpenStack Neutron networking services                   |
+| [dubzland.openstack.openstack_nova][openstack_nova]               | Installs OpenStack Nova compute services                         |
 | [dubzland.openstack.openstack_placement][openstack_placement]     | Installs OpenStack Placement API                                 |
 
 ### Modules
@@ -55,11 +56,13 @@ See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-openstack/blo
 
 [openstack_barbican]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_barbican_role.html
 [openstack_bootstrap]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_bootstrap_role.html
+[openstack_ceph_client]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_ceph_client_role.html
 [openstack_cinder]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_cinder_role.html
 [openstack_component]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_component_role.html
 [openstack_glance]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_glance_role.html
 [openstack_keystone]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_keystone_role.html
 [openstack_neutron]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_neutron_role.html
+[openstack_nova]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_nova_role.html
 [openstack_placement]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_placement_role.html
 [openstack_get_fact]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_get_fact_module.html
 [openstack_set_fact]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_set_fact_module.html

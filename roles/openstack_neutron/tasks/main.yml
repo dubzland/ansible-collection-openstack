@@ -9,6 +9,9 @@
       option: address
       as: _controller_address
     - section: controller
+      option: ip
+      as: _controller_ip
+    - section: controller
       option: http_host
       as: _controller_http_host
     - section: mysql

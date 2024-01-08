@@ -1,0 +1,6 @@
+---
+- name: Restart OpenStack Nova services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ _nova_services }}"

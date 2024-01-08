@@ -1,0 +1,65 @@
+---
+- name: Ensure libvirt is running
+  ansible.builtin.service:
+    name: libvirtd
+    state: started
+
+- name: Check for ceph secret in libvirt
+  ansible.builtin.shell:
+    cmd: set -o pipefail && virsh secret-list | grep {{ _ceph_fsid }}
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: _libvirt_ceph_defined
+
+- name: Retrieve cinder secret from ceph cluster
+  ansible.builtin.command:
+    cmd: ceph auth get-key client.cinder
+  changed_when: false
+  delegate_to: "{{ _ceph_bootstrap_host }}"
+  register: _ceph_cinder_secret
+
+- name: Create a temporary secret file for ceph
+  ansible.builtin.template:
+    src: tmp/libvirt-secret.xml.j2
+    dest: /tmp/nova-secret.xml
+    mode: "0600"
+  loop:
+    - secret_uuid: "{{ _ceph_fsid }}"
+      client_name: cinder
+  loop_control:
+    label: "{{ item.client_name }}"
+  when:
+    - _libvirt_ceph_defined.rc is defined
+    - _libvirt_ceph_defined.rc != 0
+
+- name: Define libvirt nova secret
+  ansible.builtin.command:
+    cmd: virsh secret-define --file /tmp/nova-secret.xml # noqa: no-changed-when
+  when:
+    - _libvirt_ceph_defined.rc is defined
+    - _libvirt_ceph_defined.rc != 0
+
+- name: Ensure ceph nova secret is defined in libvirt
+  ansible.builtin.command:
+    cmd: virsh secret-get-value {{ _ceph_fsid }}
+  changed_when: false
+  failed_when: false
+  register: _libvirt_nova_set
+
+- name: Ensure nova secret value is set in libvirt
+  ansible.builtin.command:
+    cmd: virsh secret-set-value --secret {{ _ceph_fsid }} --base64 {{ _ceph_cinder_secret.stdout }}
+  changed_when: false
+  when:
+    - _libvirt_nova_set.rc is defined
+    - _libvirt_nova_set.rc != 0 or
+      (_libvirt_nova_set.rc == 0 and
+      _libvirt_nova_set.stdout != _ceph_cinder_secret.stdout)
+  notify: Restart OpenStack Nova services
+
+- name: Remove temporary libvirt nova secret file
+  ansible.builtin.file:
+    path: "/tmp/nova-secret.xml"
+    state: "absent"
+  when: _libvirt_nova_set

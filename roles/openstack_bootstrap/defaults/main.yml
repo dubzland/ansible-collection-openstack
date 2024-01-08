@@ -2,6 +2,7 @@
 openstack_bootstrap_repository_version: stable/2023.1
 openstack_bootstrap_repository_version_codename: antelope
 
+# openstack_bootstrap_controller_ip:
 # openstack_bootstrap_controller_address:
 openstack_bootstrap_controller_http_host: "http://{{ openstack_bootstrap_controller_address }}"
 openstack_bootstrap_mysql_address: "{{ openstack_bootstrap_controller_address }}"

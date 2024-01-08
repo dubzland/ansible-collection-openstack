@@ -1,0 +1,133 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Nova compute component.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+      - Creates provider networks in Neutron
+    options:
+      openstack_nova_db_name:
+        type: str
+        default: nova
+        description: Name of the MySQL database created.
+      openstack_nova_cell0_db_name:
+        type: str
+        default: nova_cell0
+        description: Name of the MySQL database created for cell0.
+      openstack_nova_api_db_name:
+        type: str
+        default: nova_api
+        description: Name of the MySQL database created for the api.
+      openstack_nova_db_user:
+        type: str
+        default: nova
+        description: Database user created for the OpenStack Nova component.
+      openstack_nova_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_nova_db_user).
+      openstack_nova_service_user:
+        type: str
+        default: nova
+        description: User created in OpenStack Keystone for the Nova component.
+      openstack_nova_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_nova_service_user).
+      openstack_nova_controller_packages:
+        type: list
+        elements: str
+        default:
+          - nova-api
+          - nova-conductor
+          - nova-novncproxy
+          - nova-scheduler
+        description: List of packages installed on the controller node for the Nova component.
+      openstack_nova_compute_packages:
+        type: list
+        elements: str
+        default:
+          - nova-common
+          - nova-compute
+        description: List of packages installed on the compute nodes for the Nova component.
+      openstack_nova_controller_services:
+        type: list
+        elements: str
+        default:
+          - nova-api
+          - nova-scheduler
+          - nova-conductor
+          - nova-novncproxy
+        description: Services to be restarted during install (and/or configuration changes) on the controller node.
+      openstack_nova_compute_services:
+        type: list
+        elements: str
+        default:
+          - nova-compute
+        description: Services to be restarted during install (and/or configuration changes) on the compute nodes.
+      openstack_nova_service_description:
+        type: str
+        default: OpenStack Compute
+        description: Human-readable description for the OpenStack Nova service within Keystone.
+      openstack_nova_neutron_service_user:
+        type: str
+        default: nova
+        description: Service user for the Neutron networking service.
+      openstack_nova_neutron_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_nova_neutron_service_user).
+      openstack_nova_neutron_metadata_secret:
+        type: str
+        required: true
+        description: Secret shared between Nova and Neutron for communication.
+      openstack_nova_placement_service_user:
+        type: str
+        default: placement
+        description: Service user for the Placement service.
+      openstack_nova_placement_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_nova_placement_service_user).
+      openstack_nova_provider_networks:
+        type: list
+        elements: dict
+        options:
+          name:
+            type: str
+            required: true
+            description: Name within OVN for the specified provider network.
+          physical_network:
+            type: str
+            required: true
+            description: OVS provider network associated with this Neutron network.
+          cidr:
+            type: str
+            required: true
+            description: CIDR for this provider network.
+          gateway_ip:
+            type: str
+            required: true
+            description: IP address of the gateway for this provider network.
+          dns_nameservers:
+            type: list
+            elements: str
+            description: List of DNS nameservers to provide name resolution for hosts on this network.
+          allocation_pool:
+            type: dict
+            options:
+              start:
+                type: str
+                required: true
+                description: First address available in the address pool for this provider network.
+              end:
+                type: str
+                required: true
+                description: Last address available in the address pool for this provider network.
+            description: Range of addresses to assign to the DHCP pool for this network.
+        description: List of provider networks to configure in Open-vSwitch/OVN.
