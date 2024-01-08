@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  role_name: openstack_neutron
+  author: dubzland
+  description: Install and configure the OpenStack Neutron networking component
+  license: MIT
+  min_ansible_version: "2.13"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+  galaxy_tags:
+    - devops
+    - openstack
+    - neutron
+    - network
+    - cloud
+    - linux
+    - ubuntu
+
+dependencies: []

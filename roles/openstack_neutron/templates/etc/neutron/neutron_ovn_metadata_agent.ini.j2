@@ -1,0 +1,15 @@
+#jinja2: trim_blocks:True,lstrip_blocks:True
+{{ ansible_managed | comment }}
+[DEFAULT]
+nova_metadata_host = {{ _controller_address }}
+nova_metadata_protocol = http
+metadata_proxy_shared_secret = {{ openstack_neutron_metadata_secret }}
+
+[agent]
+root_helper = sudo neutron-rootwrap /etc/neutron/rootwrap.conf
+
+[ovn]
+ovn_sb_connection = tcp:{{ _controller_address }}:6642
+
+[ovs]
+ovsdb_connection = tcp:127.0.0.1:6640

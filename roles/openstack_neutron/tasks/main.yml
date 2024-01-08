@@ -1,0 +1,104 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Set OpenStack Neutron facts
+  ansible.builtin.set_fact:
+    _neutron_packages: >-
+      {{
+        openstack_neutron_controller_packages if ('controller' in group_names)
+        else openstack_neutron_compute_packages
+      }}
+    _neutron_services: >-
+      {{
+        openstack_neutron_controller_services if ('controller' in group_names)
+        else openstack_neutron_compute_services
+      }}
+
+- name: Include component tasks
+  ansible.builtin.include_tasks: component.yml
+  when: "'controller' in group_names"
+
+- name: Ensure required OpenStack Neutron packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ _neutron_packages }}"
+  register: _neutron_package_install
+
+- name: Initialise the Neutron db upgrade facts
+  community.general.ini_file:
+    dest: "/etc/ansible/facts.d/openstack.fact"
+    section: neutron
+    option: "{{ item.name }}"
+    value: "{{ item.state }}"
+    mode: "0644"
+  with_items:
+    - name: "need_db_expand"
+      state: "True"
+    - name: "need_db_contract"
+      state: "True"
+  when: ('controller' in group_names) and
+    ((_neutron_package_install is changed) or
+    (ansible_local is not defined) or
+    ('openstack' not in ansible_local) or
+    ('neutron' not in ansible_local['openstack']) or
+    ('need_db_expand' not in ansible_local['openstack']['neutron']) or
+    ('need_db_contract' not in ansible_local['openstack']['neutron']))
+
+- name: Refresh local facts
+  ansible.builtin.setup:
+    filter: ansible_local
+    gather_subset: "!all"
+  when: "'controller' in group_names"
+
+- name: Ensure the OpenStack Neutron configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: "etc/neutron/{{ item }}.j2"
+    dest: "/etc/neutron/{{ item }}"
+    owner: root
+    group: neutron
+    mode: "0640"
+  loop:
+    - neutron.conf
+    - plugins/ml2/ml2_conf.ini
+  notify: Restart OpenStack Neutron services
+
+- name: Ensure the OVN metadata agent is configured
+  dubzland.openstack.openstack_config_template:
+    src: etc/neutron/neutron_ovn_metadata_agent.ini.j2
+    dest: /etc/neutron/neutron_ovn_metadata_agent.ini
+    owner: root
+    group: neutron
+    mode: "0640"
+  notify: Restart OpenStack Neutron services
+  when: "'compute' in group_names"
+
+- name: Include ovs/ovn setup tasks
+  ansible.builtin.include_tasks: ovn-setup.yml
+
+- name: Include database preparation tasks
+  ansible.builtin.include_tasks: db-prepare.yml
+  when: "'controller' in group_names"

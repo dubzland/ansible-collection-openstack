@@ -1,0 +1,100 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Neutron networking component.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+      - Creates necessary network bridges
+      - Configures OVN/Open-vSwitch
+    options:
+      openstack_neutron_db_name:
+        type: str
+        default: neutron
+        description: Name of the MySQL database created.
+      openstack_neutron_db_user:
+        type: str
+        default: neutron
+        description: Database user created for the OpenStack Neutron component.
+      openstack_neutron_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_neutron_db_user).
+      openstack_neutron_service_user:
+        type: str
+        default: neutron
+        description: User created in OpenStack Keystone for the Neutron component.
+      openstack_neutron_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_neutron_service_user).
+      openstack_neutron_controller_packages:
+        type: list
+        elements: str
+        default:
+          - neutron-server
+          - openvswitch-switch
+          - ovn-central
+        description: List of packages installed on the controller node for the Neutron component.
+      openstack_neutron_compute_packages:
+        type: list
+        elements: str
+        default:
+          - neutron-common
+          - neutron-plugin-ml2
+          - neutron-ovn-metadata-agent
+          - ovn-host
+        description: List of packages installed on the compute nodes for the Neutron component.
+      openstack_neutron_controller_services:
+        type: list
+        elements: str
+        default:
+          - neutron-server
+        description: Services to be restarted during install (and/or configuration changes) on the controller node.
+      openstack_neutron_compute_services:
+        type: list
+        elements: str
+        default:
+          - neutron-ovn-metadata-agent
+        description: Services to be restarted during install (and/or configuration changes) on the compute nodes.
+      openstack_neutron_service_description:
+        type: str
+        default: OpenStack Networking
+        description: Human-readable description for the OpenStack Neutron service within Keystone.
+      openstack_neutron_nova_service_user:
+        type: str
+        default: nova
+        description: Service user for the Nova compute service.
+      openstack_neutron_nova_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_neutron_nova_service_user).
+      openstack_neutron_metadata_secret:
+        type: str
+        required: true
+        description: Secret shared between Nova and Neutron for communication.
+      openstack_neutron_ovn_tunnel_address:
+        type: str
+        required: true
+        description: IP Address on the tunnel network for the compute node.
+      openstack_neutron_provider_networks:
+        type: list
+        elements: dict
+        options:
+          name:
+            type: str
+            required: true
+            description: Name within OVN for the specified provider network.
+          bridge:
+            type: str
+            required: true
+            description: Open-vSwitch bridge to be created for this provider network.
+          interface:
+            type: str
+            required: true
+            description: Network interface to be attached to the bridge for network communication.
+        description: List of provider networks to configure in Open-vSwitch/OVN.

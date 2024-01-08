@@ -19,6 +19,7 @@ dependencies:
   community.general: "*"
   community.mysql: "*"
   openstack.cloud: "*"
+  openvswitch.openvswitch: "*"
 
 repository: https://git.dubzland.com/dubzland/ansible-collection-openstack
 
