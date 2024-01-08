@@ -1,0 +1,19 @@
+---
+openstack_octavia_packages:
+  - debootstrap
+  - git
+  - kpartx
+  - octavia-api
+  - octavia-health-manager
+  - octavia-housekeeping
+  - octavia-worker
+  - python3-octavia
+  - python3-octavia-dashboard
+  - python3-octaviaclient
+  - qemu-utils
+openstack_octavia_services:
+  - octavia-api
+  - octavia-health-manager
+  - octavia-housekeeping
+  - octavia-worker
+openstack_octavia_service_description: OpenStack LBaaS

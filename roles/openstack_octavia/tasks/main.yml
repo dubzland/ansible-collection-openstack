@@ -1,0 +1,284 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Provision the OpenStack Octavia component
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_component
+  vars:
+    openstack_component_database_user: "{{ openstack_octavia_db_user }}"
+    openstack_component_database_password: "{{ openstack_octavia_db_password }}"
+    openstack_component_databases:
+      - "{{ openstack_octavia_db_name }}"
+    openstack_component_user: "{{ openstack_octavia_service_user }}"
+    openstack_component_password: "{{ openstack_octavia_service_password }}"
+    openstack_component_services:
+      - name: octavia
+        type: load-balancer
+        description: "{{ openstack_octavia_service_description }}"
+        endpoints:
+          - interface: public
+            url: "{{ _controller_http_host }}:9876"
+          - interface: internal
+            url: "{{ _controller_http_host }}:9876"
+          - interface: admin
+            url: "{{ _controller_http_host }}:9876"
+
+- name: Ensure required Octavia packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ openstack_octavia_packages }}"
+
+- name: Ensure the Octavia certificate directories exist
+  ansible.builtin.file:
+    dest: "/etc/octavia/{{ item }}"
+    state: directory
+    owner: root
+    group: octavia
+    mode: 0750
+  loop:
+    - certs
+    - certs/private
+
+- name: Ensure the octavia repository is present
+  ansible.builtin.git:
+    repo: https://opendev.org/openstack/octavia.git
+    dest: /usr/local/src/octavia
+    version: "{{ ansible_local['openstack']['repository']['version'] }}"
+
+- name: Ensure python requirements are installed for image build
+  ansible.builtin.pip:
+    requirements: /usr/local/src/octavia/diskimage-create/requirements.txt
+    virtualenv: /usr/local/src/octavia/.venv
+    virtualenv_command: python3 -m venv
+
+- name: Ensure the disk image file exists
+  ansible.builtin.shell:
+    cmd: >-
+      source /usr/local/src/octavia/.venv/bin/activate &&
+      /usr/local/src/octavia/diskimage-create/diskimage-create.sh -l /tmp/octavia-image.log
+    chdir: /usr/local/src/octavia/diskimage-create
+    executable: /bin/bash
+    creates: /usr/local/src/octavia/diskimage-create/amphora-x64-haproxy.qcow2
+
+- name: Ensure the disk image exists in OpenStack
+  openstack.cloud.image:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_octavia_service_user }}"
+      password: "{{ openstack_octavia_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    name: amphora-x64-haproxy
+    disk_format: qcow2
+    container_format: bare
+    visibility: private
+    owner: service
+    state: present
+    tags:
+      - amphora
+    filename: /usr/local/src/octavia/diskimage-create/amphora-x64-haproxy.qcow2
+
+- name: Ensure the Octavia amphora flavor exists
+  openstack.cloud.compute_flavor:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_octavia_service_user }}"
+      password: "{{ openstack_octavia_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    name: amphora
+    id: 200
+    vcpus: 1
+    ram: 1024
+    disk: 2
+    is_public: false
+    description: Octavia LB Amphora
+    state: present
+  register: _octavia_lb_flavor
+
+- name: Ensure the Octavia security group is present
+  openstack.cloud.security_group:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_octavia_service_user }}"
+      password: "{{ openstack_octavia_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    name: lb-mgmt-sec-grp
+    project: service
+    state: present
+    description: Octavia LB Security Group
+  register: _octavia_security_group
+
+- name: Ensure the Octavia Health Check security group is present
+  openstack.cloud.security_group:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_octavia_service_user }}"
+      password: "{{ openstack_octavia_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    name: lb-health-mgr-sec-grp
+    project: service
+    description: Amphora Health Check Security Group
+    state: present
+
+- name: Ensure the Octavia security group rules are present
+  openstack.cloud.security_group_rule:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_octavia_service_user }}"
+      password: "{{ openstack_octavia_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    security_group: "{{ item.security_group }}"
+    protocol: "{{ item.protocol }}"
+    port_range_min: "{{ item.port | default(-1) }}"
+    port_range_max: "{{ item.port | default(-1) }}"
+    project: service
+    description: "{{ item.description }}"
+    state: present
+  loop:
+    - security_group: lb-mgmt-sec-grp
+      protocol: icmp
+      description: Pings
+    - security_group: lb-mgmt-sec-grp
+      protocol: tcp
+      port: 22
+      description: SSH access
+    - security_group: lb-mgmt-sec-grp
+      protocol: tcp
+      port: 9443
+      description: Amphora Control
+    - security_group: lb-health-mgr-sec-grp
+      protocol: udp
+      port: 5555
+      description: Health Checks
+
+- name: Ensure the Octavia amphora public key is present
+  openstack.cloud.keypair:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_octavia_service_user }}"
+      password: "{{ openstack_octavia_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    name: octavia-amphora
+    public_key: "{{ openstack_octavia_amphora_public_key }}"
+    state: present
+
+- name: Ensure the Octavia LB network is present
+  openstack.cloud.network:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_octavia_service_user }}"
+      password: "{{ openstack_octavia_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    name: "{{ openstack_octavia_provider_network_name }}"
+    provider_physical_network: >-
+      {{
+        openstack_octavia_provider_physical_network
+        | default(openstack_octavia_provider_network_name)
+      }}
+    external: true
+    provider_network_type: flat
+    state: present
+  register: _octavia_lb_network
+
+- name: Ensure the Octavia LB subnet is present
+  openstack.cloud.subnet:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_octavia_service_user }}"
+      password: "{{ openstack_octavia_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    network: "{{ _octavia_lb_network.id }}"
+    name: >-
+      {{
+        openstack_octavia_provider_network_subnet_name
+        | default('%s-subnet' | format(openstack_octavia_provider_network_name))
+      }}
+    cidr: "{{ openstack_octavia_provider_network_cidr }}"
+    allocation_pool_start: "{{ openstack_octavia_provider_network_allocation_pool['start'] }}"
+    allocation_pool_end: "{{ openstack_octavia_provider_network_allocation_pool['end'] }}"
+
+- name: Ensure the Octavia certificates are generated
+  ansible.builtin.command:
+    cmd: /usr/local/src/octavia/bin/create_dual_intermediate_CA.sh
+    chdir: /usr/local/src/octavia/bin/
+    creates: /usr/local/src/octavia/bin/dual_ca/etc/octavia/certs/server_ca.cert.pem
+
+- name: Ensure the Octavia certificates are installed
+  ansible.builtin.copy:
+    src: "/usr/local/src/octavia/bin/dual_ca/etc/octavia/certs/{{ item.src }}"
+    dest: "/etc/octavia/certs/{{ item.dest }}"
+    remote_src: true
+    owner: octavia
+    group: octavia
+    mode: "0640"
+  loop:
+    - src: server_ca.cert.pem
+      dest: server_ca.cert.pem
+    - src: server_ca-chain.cert.pem
+      dest: server_ca-chain.cert.pem
+    - src: server_ca.key.pem
+      dest: private/server_ca.key.pem
+    - src: client_ca.cert.pem
+      dest: client_ca.cert.pem
+    - src: client.cert-and-key.pem
+      dest: private/client.cert-and-key.pem
+
+- name: Retrieve the id of the service project
+  openstack.cloud.project:
+    cloud: local
+    domain: default
+    name: service
+  register: _openstack_service_project
+
+- name: Ensure the OpenStack Octavia configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: etc/octavia/octavia.conf.j2
+    dest: /etc/octavia/octavia.conf
+    owner: root
+    group: octavia
+    mode: "0640"
+  notify: Restart OpenStack Octavia services
+
+- name: Populate the Octavia database
+  ansible.builtin.command:
+    cmd: octavia-db-manage --config-file /etc/octavia/octavia.conf upgrade head
+  changed_when: false
