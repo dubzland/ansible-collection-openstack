@@ -1,0 +1,24 @@
+---
+- name: Populate the Neutron database
+  ansible.builtin.command:
+    cmd: >-
+      neutron-db-manage --config-file /etc/neutron/neutron.conf
+      --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head
+  changed_when: false
+  become: true
+  become_user: neutron
+  when:
+    - "ansible_local['openstack']['neutron']['need_db_expand'] | bool"
+
+- name: Disable the db expand fact
+  community.general.ini_file:
+    dest: "/etc/ansible/facts.d/openstack.fact"
+    section: neutron
+    option: "need_db_expand"
+    value: "False"
+    mode: "0644"
+
+- name: Refresh local facts
+  ansible.builtin.setup:
+    filter: ansible_local
+    gather_subset: "!all"

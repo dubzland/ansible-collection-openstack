@@ -1,0 +1,33 @@
+#jinja2: trim_blocks:True,lstrip_blocks:True
+{{ ansible_managed | comment }}
+[DEFAULT]
+
+[ml2]
+type_drivers = flat,geneve
+tenant_network_types = geneve
+mechanism_drivers = ovn
+extension_drivers = port_security,subnet_dns_publish_fixed_ip
+overlay_ip_version = 4
+
+{% if 'compute' in group_names %}
+[ml2_type_flat]
+flat_networks = {{ openstack_neutron_provider_networks | map(attribute='name') | join(',') }}
+{% endif %}
+
+[ml2_type_geneve]
+vni_ranges = 1:1000
+max_header_size = 38
+
+[ovn]
+ovn_nb_connection = tcp:{{ _controller_address }}:6641
+ovn_sb_connection = tcp:{{ _controller_address }}:6642
+ovn_l3_scheduler = leastloaded
+ovn_metadata_enabled = True
+
+[ovs_driver]
+
+[securitygroup]
+enable_security_group = True
+firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+
+[sriov_driver]

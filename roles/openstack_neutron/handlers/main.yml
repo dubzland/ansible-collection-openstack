@@ -1,0 +1,11 @@
+---
+- name: Restart OpenStack Neutron services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ neutron_services }}"
+
+- name: Restart Open-vSwitch
+  ansible.builtin.service:
+    name: openvswitch-switch
+    state: restarted

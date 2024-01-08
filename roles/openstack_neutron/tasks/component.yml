@@ -1,0 +1,22 @@
+---
+- name: Provision the OpenStack Neutron service
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_component
+  vars:
+    openstack_component_databases:
+      - "{{ openstack_neutron_db_name }}"
+    openstack_component_database_user: "{{ openstack_neutron_db_user }}"
+    openstack_component_database_password: "{{ openstack_neutron_db_password }}"
+    openstack_component_user: "{{ openstack_neutron_service_user }}"
+    openstack_component_password: "{{ openstack_neutron_service_password }}"
+    openstack_component_services:
+      - name: neutron
+        type: network
+        description: "{{ openstack_neutron_service_description }}"
+        endpoints:
+          - interface: public
+            url: "{{ _controller_http_host }}:9696"
+          - interface: internal
+            url: "{{ _controller_http_host }}:9696"
+          - interface: admin
+            url: "{{ _controller_http_host }}:9696"

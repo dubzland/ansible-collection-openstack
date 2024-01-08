@@ -1,0 +1,19 @@
+---
+openstack_neutron_db_name: neutron
+openstack_neutron_db_user: neutron
+# openstack_neutron_db_password:
+
+openstack_neutron_service_user: neutron
+# openstack_neutron_service_password:
+
+openstack_neutron_nova_service_user: nova
+# openstack_neutron_nova_service_password:
+
+# openstack_neutron_metadata_secret:
+
+# openstack_neutron_ovn_tunnel_address:
+
+# openstack_neutron_provider_networks:
+#   - name: external
+#     bridge: br-external
+#     interface: enp6s19.134

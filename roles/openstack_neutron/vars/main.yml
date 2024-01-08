@@ -1,0 +1,15 @@
+---
+openstack_neutron_controller_packages:
+  - neutron-server
+  - openvswitch-switch
+  - ovn-central
+openstack_neutron_compute_packages:
+  - neutron-common
+  - neutron-plugin-ml2
+  - neutron-ovn-metadata-agent
+  - ovn-host
+openstack_neutron_controller_services:
+  - neutron-server
+openstack_neutron_compute_services:
+  - neutron-ovn-metadata-agent
+openstack_neutron_service_description: OpenStack Networking
