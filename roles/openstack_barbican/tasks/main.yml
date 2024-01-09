@@ -42,9 +42,9 @@
           - interface: public
             url: "{{ _controller_http_host }}:9311"
           - interface: internal
-            url: "http://{{ _controller_http_host }}:9311"
+            url: "{{ _controller_http_host }}:9311"
           - interface: admin
-            url: "http://{{ _controller_http_host }}:9311"
+            url: "{{ _controller_http_host }}:9311"
 
 - name: Ensure required OpenStack Barbican packages are installed
   ansible.builtin.package:

@@ -1,0 +1,85 @@
+{{ ansible_managed | comment }}
+[DEFAULT]
+pybasedir = /usr/lib/python3/dist-packages/magnum
+bindir = /usr/bin
+state_path = /var/lib/magnum
+transport_url = rabbit://openstack:{{ openstack_rabbitmq_password }}@{{ _controller_address }}:5672/
+
+[api]
+host = {{ _controller_ip }}
+
+[barbican_client]
+region_name = {{ _openstack_region_name }}
+endpoint_type = internalURL
+
+[certificates]
+cert_manager_type = barbican
+
+[cinder_client]
+region_name = {{ _openstack_region_name }}
+endpoint_type = internalURL
+
+[database]
+connection = mysql+pymysql://{{ openstack_magnum_db_user }}:{{ openstack_magnum_db_password }}@{{ _controller_address }}:3306/{{ openstack_magnum_db_name }}
+
+[glance_client]
+region_name = {{ _openstack_region_name }}
+endpoint_type = internalURL
+
+[heat_client]
+region_name = {{ _openstack_region_name }}
+endpoint_type = internalURL
+
+[keystone_auth]
+auth_section = keystone_authtoken
+
+[keystone_authtoken]
+region_name = {{ _openstack_region_name }}
+www_authenticate_uri = {{ _controller_http_host }}:5000/
+auth_version = v3
+auth_url = {{ _controller_http_host }}:5000/
+memcached_servers = {{ _controller_address }}:11211
+auth_type = password
+project_domain_name = {{ _openstack_domain_name }}
+user_domain_name = {{ _openstack_domain_name }}
+project_name = service
+username = {{ openstack_magnum_service_user }}
+password = {{ openstack_magnum_service_password }}
+admin_user = {{ openstack_magnum_service_user }}
+admin_password = {{ openstack_magnum_service_password }}
+admin_tenant_name = service
+service_token_roles_required = True
+service_token_roles = service
+service_type = container-infra
+
+[magnum_client]
+region_name = {{ _openstack_region_name }}
+endpoint_type = internalURL
+
+[neutron_client]
+region_name = {{ _openstack_region_name }}
+endpoint_type = internalURL
+
+[nova_client]
+region_name = {{ _openstack_region_name }}
+endpoint_type = internalURL
+
+[octavia_client]
+region_name = {{ _openstack_region_name }}
+endpoint_type = internalURL
+
+[oslo_concurrency]
+lock_path = /var/lock/magnum
+
+[oslo_messaging_notifications]
+driver = messaging
+
+[trust]
+cluster_user_trust = True
+trustee_domain_name = magnum
+trustee_domain_admin_name = {{ openstack_magnum_domain_admin_user }}
+trustee_domain_admin_password = {{ openstack_magnum_domain_admin_password }}
+trustee_keystone_interface = public
+trustee_keystone_region_name = {{ _openstack_region_name }}
+
+[x509]

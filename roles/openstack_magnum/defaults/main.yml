@@ -1,0 +1,10 @@
+---
+openstack_magnum_db_name: magnum
+openstack_magnum_db_user: magnum
+# openstack_magnum_db_password:
+
+openstack_magnum_service_user: magnum
+# openstack_magnum_service_password:
+
+openstack_magnum_domain_admin_user: magnum_domain_admin
+# openstack_magnum_domain_admin_password:

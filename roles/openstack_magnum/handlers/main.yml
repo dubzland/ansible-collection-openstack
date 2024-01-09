@@ -1,0 +1,6 @@
+---
+- name: Restart OpenStack Magnum services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ openstack_magnum_services }}"

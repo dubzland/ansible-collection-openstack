@@ -9,7 +9,7 @@ metadata_proxy_shared_secret = {{ openstack_neutron_metadata_secret }}
 root_helper = sudo neutron-rootwrap /etc/neutron/rootwrap.conf
 
 [ovn]
-ovn_sb_connection = tcp:{{ _controller_address }}:6642
+ovn_sb_connection = tcp:{{ _controller_ip }}:6642
 
 [ovs]
 ovsdb_connection = tcp:127.0.0.1:6640

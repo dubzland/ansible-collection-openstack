@@ -1,0 +1,60 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Magnum container orchestration engine component.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+    options:
+      openstack_magnum_db_name:
+        type: str
+        default: magnum
+        description: Name of the MySQL database created.
+      openstack_magnum_db_user:
+        type: str
+        default: magnum
+        description: Database user created for the OpenStack Magnum component.
+      openstack_magnum_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_magnum_db_user).
+      openstack_magnum_service_user:
+        type: str
+        default: magnum
+        description: User created in OpenStack Keystone for the Magnum component.
+      openstack_magnum_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_magnum_service_user).
+      openstack_magnum_domain_admin_user:
+        type: str
+        default: magnum_domain_admin
+        description: Magnum heat domain administrator user name.
+      openstack_magnum_domain_admin_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_magnum_domain_admin_user).
+      openstack_magnum_packages:
+        type: list
+        elements: str
+        default:
+          - magnum-api
+          - magnum-conductor
+          - python3-magnumclient
+          - python3-magnum-ui
+        description: List of packages installed on the controller node for the Magnum component.
+      openstack_magnum_services:
+        type: list
+        elements: str
+        default:
+          - magnum-api
+          - magnum-conductor
+        description: Services to be restarted during install (and/or configuration changes) on the controller node.
+      openstack_magnum_service_description:
+        type: str
+        default: OpenStack Container Infrastructure Management
+        description: Human-readable description for the OpenStack Magnum service within Keystone.
