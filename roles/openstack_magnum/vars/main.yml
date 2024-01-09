@@ -1,0 +1,10 @@
+---
+openstack_magnum_packages:
+  - magnum-api
+  - magnum-conductor
+  - python3-magnumclient
+  - python3-magnum-ui
+openstack_magnum_services:
+  - magnum-api
+  - magnum-conductor
+openstack_magnum_service_description: OpenStack Container Infrastructure Management

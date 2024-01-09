@@ -1,0 +1,10 @@
+--- k8s_template_def.original.py        2024-01-09 11:12:55.303150472 +0000
++++ k8s_template_def.py 2024-01-08 22:34:33.037429420 +0000
+@@ -247,6 +247,7 @@
+                       'prometheus_monitoring',
+                       'grafana_admin_passwd',
+                       'kube_dashboard_enabled',
++                      'kube_dashboard_version',
+                       'etcd_volume_size',
+                       'cert_manager_api',
+                       'ingress_controller_role',

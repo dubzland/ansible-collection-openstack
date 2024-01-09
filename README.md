@@ -23,22 +23,23 @@ Also tested against the current development version of `ansible-core`.
 
 ### Roles
 
-| Name                                                              | Description                                                      |
-| ----------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [dubzland.openstack.openstack_barbican][openstack_barbican]       | Installs OpenStack Barbican key management                       |
-| [dubzland.openstack.openstack_bootstrap][openstack_bootstrap]     | Prepares hosts for installing OpenStack components               |
-| [dubzland.openstack.openstack_ceph_client][openstack_ceph_client] | Configuration related tasks for components requiring Ceph access |
-| [dubzland.openstack.openstack_cinder][openstack_cinder]           | Installs OpenStack Cinder block storage                          |
-| [dubzland.openstack.openstack_component][openstack_component]     | Common component installation tasks                              |
-| [dubzland.openstack.openstack_designate][openstack_designate]     | Installs OpenStack Designate DNSaaS                              |
-| [dubzland.openstack.openstack_glance][openstack_glance]           | Installs OpenStack Glance image services                         |
-| [dubzland.openstack.openstack_heat][openstack_heat]               | Installs OpenStack Heat orchestration services                   |
-| [dubzland.openstack.openstack_horizon][openstack_horizon]         | Installs OpenStack Horizon dashboard                             |
-| [dubzland.openstack.openstack_keystone][openstack_keystone]       | Installs OpenStack Keystone authentication                       |
-| [dubzland.openstack.openstack_neutron][openstack_neutron]         | Installs OpenStack Neutron networking services                   |
-| [dubzland.openstack.openstack_nova][openstack_nova]               | Installs OpenStack Nova compute services                         |
-| [dubzland.openstack.openstack_octavia][openstack_octavia]         | Installs OpenStack Octavia LBaaS services                        |
-| [dubzland.openstack.openstack_placement][openstack_placement]     | Installs OpenStack Placement API                                 |
+| Name                                                              | Description                                                       |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [dubzland.openstack.openstack_barbican][openstack_barbican]       | Installs OpenStack Barbican key management                        |
+| [dubzland.openstack.openstack_bootstrap][openstack_bootstrap]     | Prepares hosts for installing OpenStack components                |
+| [dubzland.openstack.openstack_ceph_client][openstack_ceph_client] | Configuration related tasks for components requiring Ceph access  |
+| [dubzland.openstack.openstack_cinder][openstack_cinder]           | Installs OpenStack Cinder block storage                           |
+| [dubzland.openstack.openstack_component][openstack_component]     | Common component installation tasks                               |
+| [dubzland.openstack.openstack_designate][openstack_designate]     | Installs OpenStack Designate DNSaaS                               |
+| [dubzland.openstack.openstack_glance][openstack_glance]           | Installs OpenStack Glance image services                          |
+| [dubzland.openstack.openstack_heat][openstack_heat]               | Installs OpenStack Heat orchestration services                    |
+| [dubzland.openstack.openstack_horizon][openstack_horizon]         | Installs OpenStack Horizon dashboard                              |
+| [dubzland.openstack.openstack_keystone][openstack_keystone]       | Installs OpenStack Keystone authentication                        |
+| [dubzland.openstack.openstack_magnum][openstack_magnum]           | Installs OpenStack Magnum container orchestration engine services |
+| [dubzland.openstack.openstack_neutron][openstack_neutron]         | Installs OpenStack Neutron networking services                    |
+| [dubzland.openstack.openstack_nova][openstack_nova]               | Installs OpenStack Nova compute services                          |
+| [dubzland.openstack.openstack_octavia][openstack_octavia]         | Installs OpenStack Octavia LBaaS services                         |
+| [dubzland.openstack.openstack_placement][openstack_placement]     | Installs OpenStack Placement API                                  |
 
 ### Modules
 
@@ -68,6 +69,7 @@ See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-openstack/blo
 [openstack_heat]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_heat_role.html
 [openstack_horizon]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_horizon_role.html
 [openstack_keystone]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_keystone_role.html
+[openstack_magnum]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_magnum_role.html
 [openstack_neutron]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_neutron_role.html
 [openstack_nova]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_nova_role.html
 [openstack_octavia]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_octavia_role.html

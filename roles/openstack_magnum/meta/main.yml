@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: openstack_magnum
+  author: dubzland
+  description: Install and configure the OpenStack Magnum container orchestration engine component.
+  license: MIT
+  min_ansible_version: "2.13"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+  galaxy_tags:
+    - devops
+    - openstack
+    - magnum
+    - kubernetes
+    - orchestration
+    - heat
+    - cloud
+    - linux
+    - ubuntu
+
+dependencies: []

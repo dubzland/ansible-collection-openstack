@@ -420,3 +420,35 @@ ALLOWED_HOSTS = ['*']
 
 # Compress all assets offline as part of packaging installation
 COMPRESS_OFFLINE = True
+
+MAGNUM_INGRESS_CONTROLLERS = [
+    {
+        "name": "Octavia",
+        "labels": {
+            "ingress_controller": "octavia"
+        }
+    }
+]
+
+MAGNUM_AVAILABLE_ADDONS = [
+    {
+        "name": "Kubernetes Dashboard",
+        "selected": True,
+        "labels": {
+            "kube_dashboard_enabled": True
+        },
+        "labels_unselected": {
+            "kube_dashboard_enabled": False
+        }
+    },
+    {
+        "name": "Influx Grafana Dashboard",
+        "selected": False,
+        "labels": {
+            "influx_grafana_dashboard_enabled": True
+        },
+        "labels_unselected": {
+            "influx_grafana_dashboard_enabled": False
+        }
+    }
+]

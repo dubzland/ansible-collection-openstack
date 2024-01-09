@@ -1,0 +1,122 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: repository
+      option: codename
+      as: _openstack_codename
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: ip
+      as: _controller_ip
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Provision the OpenStack Magnum component
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_component
+  vars:
+    openstack_component_databases:
+      - "{{ openstack_magnum_db_name }}"
+    openstack_component_database_user: "{{ openstack_magnum_db_user }}"
+    openstack_component_database_password: "{{ openstack_magnum_db_password }}"
+    openstack_component_user: "{{ openstack_magnum_service_user }}"
+    openstack_component_password: "{{ openstack_magnum_service_password }}"
+    openstack_component_services:
+      - name: magnum
+        type: container-infra
+        description: "{{ openstack_magnum_service_description }}"
+        endpoints:
+          - interface: public
+            url: "{{ _controller_http_host }}:9511/v1"
+          - interface: internal
+            url: "{{ _controller_http_host }}:9511/v1"
+          - interface: admin
+            url: "{{ _controller_http_host }}:9511/v1"
+
+- name: Ensure the OpenStack Magnum domain exists
+  openstack.cloud.identity_domain:
+    cloud: "{{ _openstack_cloud_name }}"
+    name: magnum
+    description: Owns users and projects created by magnum
+    state: present
+
+- name: Ensure the OpenStack Magnum domain admin exists
+  openstack.cloud.identity_user:
+    cloud: "{{ _openstack_cloud_name }}"
+    name: "{{ openstack_magnum_domain_admin_user }}"
+    password: "{{ openstack_magnum_domain_admin_password }}"
+    domain: magnum
+    state: present
+  no_log: true
+
+- name: Ensure the OpenStack Magnum domain admin has the admin role
+  openstack.cloud.role_assignment:
+    cloud: "{{ _openstack_cloud_name }}"
+    domain: magnum
+    user: "{{ openstack_magnum_domain_admin_user }}"
+    role: admin
+    state: present
+
+- name: Ensure required OpenStack Magnum packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  register: _magnum_package_install
+  loop: "{{ openstack_magnum_packages }}"
+
+# See: https://review.opendev.org/c/openstack/magnum/+/799505
+- name: Apply the kube_dashboard_version patch
+  ansible.posix.patch:
+    src: "k8s_template_def.py.{{ _openstack_codename }}.patch"
+    dest: /usr/lib/python3/dist-packages/magnum/drivers/heat/k8s_template_def.py
+  notify: Restart OpenStack Magnum services
+
+# See: https://review.opendev.org/c/openstack/magnum-ui/+/898007
+- name: Apply the Horizon dashboard patch
+  ansible.posix.patch:
+    src: dashboard.patch
+    basedir: /usr/lib/python3/dist-packages/magnum_ui/
+    strip: 2
+
+- name: Ensure the Horizon assets are compressed # noqa: no-handler
+  ansible.builtin.command:
+    cmd: python3 manage.py compress
+    chdir: /usr/share/openstack-dashboard
+  changed_when: false
+  when: _magnum_package_install is changed
+  notify: Restart OpenStack Magnum services
+
+- name: Ensure the OpenStack Magnum configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: etc/magnum/magnum.conf.j2
+    dest: /etc/magnum/magnum.conf
+    owner: root
+    group: magnum
+    mode: "0640"
+  notify: Restart OpenStack Magnum services
+
+- name: Perform an OpenStack Magnum DB sync
+  ansible.builtin.command:
+    cmd: magnum-db-manage upgrade
+  changed_when: false
+  become: true
+  become_user: magnum
