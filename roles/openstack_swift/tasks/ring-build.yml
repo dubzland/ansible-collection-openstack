@@ -1,0 +1,29 @@
+---
+- name: Ensure the ring file exists
+  ansible.builtin.command:
+    cmd: swift-ring-builder {{ _ring_type }}.builder create 10 3 1
+    chdir: /etc/swift
+    creates: /etc/swift/{{ _ring_type }}.builder
+  notify: Restart OpenStack Swift services
+  when: "'storage' in group_names"
+
+- name: Ensure the storage devices are present in the ring
+  ansible.builtin.command:
+    cmd: >-
+      swift-ring-builder {{ _ring_type }}.builder add --region 1 --zone 1
+      --ip {{ openstack_swift_listen_address }} --port {{ _ring_port }}
+      --device {{ item }} --weight 100
+    chdir: /etc/swift
+  register: _ring_storage
+  changed_when: _ring_storage.rc == 0
+  failed_when: _ring_storage.rc not in [0, 2]
+  loop: "{{ openstack_swift_storage_devices }}"
+  when: "'storage' in group_names"
+  notify: Restart OpenStack Swift services
+
+- name: Ensure the ring is balanced
+  ansible.builtin.command:
+    cmd: swift-ring-builder {{ _ring_type }}.builder rebalance
+    chdir: /etc/swift
+  changed_when: false
+  when: "('storage' in group_names) and (_ring_storage is changed)"

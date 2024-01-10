@@ -1,0 +1,7 @@
+[swift1]
+user = service:{{ openstack_glance_service_user }}
+key = {{ openstack_glance_service_password }}
+user_domain_name = {{ _openstack_domain_name }}
+project_domain_name = {{ _openstack_domain_name }}
+auth_version = 3
+auth_address = {{ _controller_http_host }}:5000/v3

@@ -1,0 +1,6 @@
+---
+- name: Restart OpenStack Swift services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ _swift_services }}"

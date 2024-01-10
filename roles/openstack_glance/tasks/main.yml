@@ -65,6 +65,15 @@
     state: present
   loop: "{{ openstack_glance_packages }}"
 
+- name: Ensure the OpenStack Glance backends are configured
+  ansible.builtin.template:
+    src: etc/glance/glance-swift-store.conf.j2
+    dest: /etc/glance/glance-swift-store.conf
+    owner: root
+    group: glance
+    mode: "0640"
+  notify: Restart OpenStack Glance services
+
 - name: Ensure the Openstack Glance configuration is present
   dubzland.openstack.openstack_config_template:
     src: etc/glance/glance-api.conf.j2

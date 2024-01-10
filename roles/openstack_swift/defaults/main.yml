@@ -1,0 +1,8 @@
+---
+openstack_swift_service_user: swift
+# openstack_swift_service_password:
+
+openstack_swift_storage_root: /srv/node
+# openstack_swift_hash_path_prefix:
+# openstack_swift_hash_path_suffix:
+# openstack_swift_listen_address:

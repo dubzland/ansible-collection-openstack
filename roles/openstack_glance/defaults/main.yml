@@ -5,3 +5,5 @@ openstack_glance_db_user: glance
 #
 openstack_glance_service_user: glance
 # openstack_glance_service_password:
+
+openstack_glance_swift_container: glance_images
