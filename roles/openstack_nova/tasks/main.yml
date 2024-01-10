@@ -182,7 +182,3 @@
   become: true
   become_user: nova
   when: "'controller' in group_names"
-
-- name: Include network creation tasks
-  ansible.builtin.include_tasks: create-networks.yml
-  when: "'controller' in group_names"
