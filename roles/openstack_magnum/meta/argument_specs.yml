@@ -53,6 +53,7 @@ argument_specs:
         default:
           - magnum-api
           - magnum-conductor
+          - apache2
         description: Services to be restarted during install (and/or configuration changes) on the controller node.
       openstack_magnum_service_description:
         type: str
