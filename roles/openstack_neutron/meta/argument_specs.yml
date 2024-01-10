@@ -98,3 +98,7 @@ argument_specs:
             required: true
             description: Network interface to be attached to the bridge for network communication.
         description: List of provider networks to configure in Open-vSwitch/OVN.
+      openstack_neutron_api_worker_count:
+        type: int
+        default: 2
+        description: Number of OpenStack Neutron api workers to run.

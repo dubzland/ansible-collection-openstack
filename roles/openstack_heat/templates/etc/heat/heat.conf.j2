@@ -6,12 +6,19 @@ heat_waitcondition_server_url = {{ _controller_http_host }}:8000/v1/waitconditio
 stack_domain_admin = {{ openstack_heat_domain_admin_user }}
 stack_domain_admin_password = {{ openstack_heat_domain_admin_password }}
 stack_user_domain_name = heat
+num_engine_workers = {{ openstack_heat_engine_worker_count }}
 
 [clients_keystone]
 auth_uri = {{ _controller_http_host }}:5000/
 
 [database]
 connection = mysql+pymysql://{{ openstack_heat_db_user }}:{{ openstack_heat_db_password }}@{{ _mysql_address }}:3306/{{ openstack_heat_db_name }}
+
+[heat_api]
+workers = {{ openstack_heat_api_worker_count }}
+
+[heat_api_cfn]
+workers = {{ openstack_heat_api_cfn_worker_count }}
 
 [keystone_authtoken]
 www_authenticate_uri = {{ _controller_http_host }}:5000/

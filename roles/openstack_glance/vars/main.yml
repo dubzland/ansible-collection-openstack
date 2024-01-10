@@ -4,3 +4,4 @@ openstack_glance_packages:
 openstack_glance_services:
   - glance-api
 openstack_glance_service_description: OpenStack Image
+openstack_glance_worker_count: 2

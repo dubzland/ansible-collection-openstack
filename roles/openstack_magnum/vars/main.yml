@@ -8,3 +8,5 @@ openstack_magnum_services:
   - magnum-api
   - magnum-conductor
 openstack_magnum_service_description: OpenStack Container Infrastructure Management
+openstack_magnum_api_worker_count: 2
+openstack_magnum_conductor_worker_count: 2

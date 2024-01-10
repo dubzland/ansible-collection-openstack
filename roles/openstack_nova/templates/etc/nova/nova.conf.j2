@@ -5,6 +5,8 @@ lock_path = /var/lock/nova
 state_path = /var/lib/nova
 transport_url = rabbit://openstack:{{ openstack_rabbitmq_password }}@{{ _controller_address }}:5672/
 my_ip = {{ ansible_default_ipv4['address'] }}
+osapi_compute_workers = {{ openstack_nova_api_worker_count }}
+metadata_workers = {{ openstack_nova_metadata_worker_count }}
 
 [api]
 auth_strategy = keystone
@@ -19,6 +21,9 @@ connection = mysql+pymysql://{{ openstack_nova_db_user }}:{{ openstack_nova_db_p
 
 [cinder]
 os_region_name = {{ _openstack_region_name }}
+
+[conductor]
+workers = {{ openstack_nova_conductor_worker_count }}
 
 [glance]
 api_servers = {{ _controller_http_host }}:9292
@@ -66,6 +71,9 @@ user_domain_name = {{ _openstack_domain_name }}
 auth_url = {{ _controller_http_host }}:5000/v3
 username = {{ openstack_nova_placement_service_user }}
 password = {{ openstack_nova_placement_service_password }}
+
+[scheduler]
+workers = {{ openstack_nova_scheduler_worker_count }}
 
 [service_user]
 send_service_user_token = true
