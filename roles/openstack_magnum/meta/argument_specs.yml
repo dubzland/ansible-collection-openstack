@@ -58,3 +58,11 @@ argument_specs:
         type: str
         default: OpenStack Container Infrastructure Management
         description: Human-readable description for the OpenStack Magnum service within Keystone.
+      openstack_magnum_api_worker_count:
+        type: int
+        default: 2
+        description: Number of OpenStack Magnum API workers to run.
+      openstack_magnum_conductor_worker_count:
+        type: int
+        default: 2
+        description: Number of OpenStack Magnum conductor workers to run.

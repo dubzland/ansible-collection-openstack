@@ -59,3 +59,15 @@ argument_specs:
         type: str
         default: OpenStack Orchestration
         description: Human-readable description for the OpenStack Heat service within Keystone.
+      openstack_heat_api_worker_count:
+        type: int
+        default: 2
+        description: Number of OpenStack Heat api workers to run.
+      openstack_heat_engine_worker_count:
+        type: int
+        default: 2
+        description: Number of OpenStack Heat engine workers to run.
+      openstack_heat_api_cfn_worker_count:
+        type: int
+        default: 2
+        description: Number of OpenStack Heat Cloudformation engine workers to run.

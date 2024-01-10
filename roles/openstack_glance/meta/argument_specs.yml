@@ -46,3 +46,7 @@ argument_specs:
         type: str
         default: OpenStack Image
         description: Human-readable description for the OpenStack Glance service within Keystone.
+      openstack_glance_worker_count:
+        type: int
+        default: 2
+        description: Number of api workers to run.

@@ -131,3 +131,19 @@ argument_specs:
                 description: Last address available in the address pool for this provider network.
             description: Range of addresses to assign to the DHCP pool for this network.
         description: List of provider networks to configure in Open-vSwitch/OVN.
+      openstack_nova_api_worker_count:
+        type: int
+        default: 2
+        description: Number of OpenStack Nova API workers to run.
+      openstack_nova_metadata_worker_count:
+        type: int
+        default: 2
+        description: Number of OpenStack Nova metadata workers to run.
+      openstack_nova_conductor_worker_count:
+        type: int
+        default: 2
+        description: Number of OpenStack Nova conductor workers to run.
+      openstack_nova_scheduler_worker_count:
+        type: int
+        default: 2
+        description: Number of OpenStack Nova scheduler workers to run.

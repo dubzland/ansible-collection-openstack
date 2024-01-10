@@ -9,3 +9,6 @@ openstack_heat_services:
   - heat-api-cfn
   - heat-engine
 openstack_heat_service_description: OpenStack Orchestration
+openstack_heat_api_worker_count: 2
+openstack_heat_engine_worker_count: 2
+openstack_heat_api_cfn_worker_count: 2
