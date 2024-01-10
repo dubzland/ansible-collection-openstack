@@ -9,7 +9,6 @@ argument_specs:
       - Creates OpenStack endpoints within OpenStack Keystone
       - Installs required operating system packages
       - Applies desired configuration using templates
-      - Creates provider networks in Neutron
     options:
       openstack_nova_db_name:
         type: str
@@ -94,43 +93,6 @@ argument_specs:
         type: str
         required: true
         description: Service password assigned to the O(openstack_nova_placement_service_user).
-      openstack_nova_provider_networks:
-        type: list
-        elements: dict
-        options:
-          name:
-            type: str
-            required: true
-            description: Name within OVN for the specified provider network.
-          physical_network:
-            type: str
-            required: true
-            description: OVS provider network associated with this Neutron network.
-          cidr:
-            type: str
-            required: true
-            description: CIDR for this provider network.
-          gateway_ip:
-            type: str
-            required: true
-            description: IP address of the gateway for this provider network.
-          dns_nameservers:
-            type: list
-            elements: str
-            description: List of DNS nameservers to provide name resolution for hosts on this network.
-          allocation_pool:
-            type: dict
-            options:
-              start:
-                type: str
-                required: true
-                description: First address available in the address pool for this provider network.
-              end:
-                type: str
-                required: true
-                description: Last address available in the address pool for this provider network.
-            description: Range of addresses to assign to the DHCP pool for this network.
-        description: List of provider networks to configure in Open-vSwitch/OVN.
       openstack_nova_api_worker_count:
         type: int
         default: 2
