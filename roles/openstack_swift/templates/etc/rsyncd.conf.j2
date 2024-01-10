@@ -3,8 +3,7 @@ uid = swift
 gid = swift
 log file = /var/log/rsyncd.log
 pid file = /var/run/rsyncd.pid
-# address = {{ openstack_storage_address | ansible.utils.ipaddr('address') }}
-address = {{ ansible_default_ipv4['address'] }}
+address = {{ openstack_swift_listen_address }}
 
 [account]
 max connections = 2
