@@ -23,3 +23,6 @@ user_domain_name = {{ _openstack_domain_name }}
 project_name = service
 username = {{ openstack_barbican_service_user }}
 password = {{ openstack_barbican_service_password }}
+service_token_roles = service
+service_token_roles_required = True
+service_type = key-manager
