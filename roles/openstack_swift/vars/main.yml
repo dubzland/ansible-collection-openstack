@@ -1,0 +1,32 @@
+---
+openstack_swift_controller_packages:
+  - swift
+  - swift-proxy
+  - python3-swiftclient
+  - python3-keystoneclient
+  - python3-keystonemiddleware
+openstack_swift_storage_packages:
+  - rsync
+  - swift
+  - swift-account
+  - swift-container
+  - swift-object
+openstack_swift_controller_services:
+  - swift-proxy
+openstack_swift_storage_services:
+  - rsync
+  - swift-account-auditor
+  - swift-account-replicator
+  - swift-account
+  - swift-container-auditor
+  - swift-container-replicator
+  - swift-container-updater
+  - swift-container
+  - swift-object-auditor
+  - swift-object-replicator
+  - swift-object-updater
+  - swift-object
+openstack_swift_service_description: OpenStack Object Storage
+openstack_swift_account_server_port: 6202
+openstack_swift_container_server_port: 6201
+openstack_swift_object_server_port: 6200

@@ -1,12 +1,12 @@
 {{ ansible_managed | comment }}
+[DEFAULT]
+enabled_backends = swift:swift
 [database]
 connection = mysql+pymysql://{{ openstack_glance_db_user }}:{{ openstack_glance_db_password }}@{{ _controller_address }}:3306/{{ openstack_glance_db_name }}
 backend = sqlalchemy
 
 [glance_store]
-stores = file,http
-default_store = file
-filesystem_store_datadir = /var/lib/glance/images/
+default_backend = swift
 
 [image_format]
 disk_formats = ami,ari,aki,vhd,vhdx,vmdk,raw,qcow2,vdi,iso,ploop.root-tar
@@ -21,11 +21,14 @@ user_domain_name = {{ _openstack_domain_name }}
 project_name = service
 username = {{ openstack_glance_service_user }}
 password = {{ openstack_glance_service_password }}
+service_token_roles = service
+service_token_roles_required = true
+service_type = image
 
 [oslo_limit]
 auth_url = {{ _controller_http_host }}:5000
 auth_type = password
-user_domain_id = {{ _openstack_domain_name }}
+user_domain_name = {{ _openstack_domain_name }}
 username = {{ openstack_glance_service_user }}
 system_scope = all
 password = {{ openstack_glance_service_password }}
@@ -34,3 +37,14 @@ region_name = {{ _openstack_region_name }}
 
 [paste_deploy]
 flavor = keystone
+
+[swift]
+swift_store_config_file = /etc/glance/glance-swift-store.conf
+default_swift_reference = swift1
+swift_store_region = {{ _openstack_region_name }}
+swift_store_container = {{ openstack_glance_swift_container }}
+swift_store_create_container_on_put = True
+swift_store_large_object_size = 5120
+swift_store_large_object_chunk_size = 200
+swift_store_retry_get_count = 5
+swift_store_endpoint_type = internalURL

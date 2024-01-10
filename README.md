@@ -40,6 +40,7 @@ Also tested against the current development version of `ansible-core`.
 | [dubzland.openstack.openstack_nova][openstack_nova]               | Installs OpenStack Nova compute services                          |
 | [dubzland.openstack.openstack_octavia][openstack_octavia]         | Installs OpenStack Octavia LBaaS services                         |
 | [dubzland.openstack.openstack_placement][openstack_placement]     | Installs OpenStack Placement API                                  |
+| [dubzland.openstack.openstack_swift][openstack_swift]             | Installs OpenStack Swift object store                             |
 
 ### Modules
 
@@ -74,6 +75,7 @@ See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-openstack/blo
 [openstack_nova]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_nova_role.html
 [openstack_octavia]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_octavia_role.html
 [openstack_placement]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_placement_role.html
+[openstack_swift]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_swift_role.html
 [openstack_get_fact]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_get_fact_module.html
 [openstack_set_fact]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_set_fact_module.html
 [openstack_config_template]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_config_template_module.html

@@ -1,0 +1,82 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Swift object storage component.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+      - Creates rings and storage objects
+    options:
+      openstack_swift_service_user:
+        type: str
+        default: swift
+        description: User created in OpenStack Keystone for the Swift component.
+      openstack_swift_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_swift_service_user).
+      openstack_swift_storage_root:
+        type: str
+        default: /srv/node
+        description: Filesystem path at the root of storage device mounts.
+      openstack_swift_hash_path_prefix:
+        type: str
+        required: true
+        description: Random string to prepend to paths when generating hashes.
+      openstack_swift_hash_path_suffix:
+        type: str
+        required: true
+        description: Random string to append to paths when generating hashes.
+      openstack_swift_listen_address:
+        type: str
+        required: true
+        description: IP address swift storage services on the storage node should bind to.
+      openstack_swift_controller_packages:
+        type: list
+        elements: str
+        default:
+          - swift-api
+          - swift-scheduler
+        description: List of packages installed on the controller node for the Swift component.
+      openstack_swift_storage_packages:
+        type: list
+        elements: str
+        default:
+          - swift-volume
+          - tgt
+          - ceph-common
+        description: List of packages installed on the storage nodes for the Swift component.
+      openstack_swift_controller_services:
+        type: list
+        elements: str
+        default:
+          - swift-scheduler
+          - apache2
+        description: Services to be restarted during install (and/or configuration changes) on the controller node.
+      openstack_swift_storage_services:
+        type: list
+        elements: str
+        default:
+          - tgt
+          - swift-volume
+        description: Services to be restarted during install (and/or configuration changes) on the storage nodes.
+      openstack_swift_service_description:
+        type: str
+        default: OpenStack Block Storage
+        description: Human-readable description for the OpenStack Swift service within Keystone.
+      openstack_swift_account_server_port:
+        type: int
+        default: 6202
+        description: Port number storage node account services should listen on.
+      openstack_swift_container_server_port:
+        type: int
+        default: 6201
+        description: Port number storage node container services should listen on.
+      openstack_swift_object_server_port:
+        type: int
+        default: 6200
+        description: Port number storage node object services should listen on.

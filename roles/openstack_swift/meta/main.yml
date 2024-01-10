@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: openstack_swift
+  author: dubzland
+  description: Install and configure the OpenStack Swift object storage component
+  license: MIT
+  min_ansible_version: "2.13"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+  galaxy_tags:
+    - devops
+    - openstack
+    - swift
+    - s3
+    - storage
+    - cloud
+    - linux
+    - ubuntu
+
+dependencies: []

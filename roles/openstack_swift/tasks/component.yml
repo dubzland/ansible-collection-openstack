@@ -1,0 +1,58 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Ensure the OpenStack Swift service user is present
+  openstack.cloud.identity_user:
+    cloud: "{{ _openstack_cloud_name }}"
+    name: "{{ openstack_swift_service_user }}"
+    password: "{{ openstack_swift_service_password }}"
+    domain: "{{ _openstack_domain_name }}"
+    state: present
+  no_log: true
+
+- name: Ensure the OpenStack Swift service user has the admin role
+  openstack.cloud.role_assignment:
+    cloud: "{{ _openstack_cloud_name }}"
+    user: "{{ openstack_swift_service_user }}"
+    role: admin
+    project: service
+
+- name: Ensure the OpenStack Swift services are present
+  openstack.cloud.catalog_service:
+    cloud: "{{ _openstack_cloud_name }}"
+    name: swift
+    type: object-store
+    description: "{{ openstack_swift_service_description }}"
+    state: present
+
+- name: Ensure the OpenStack Swift service endpoints are present
+  openstack.cloud.endpoint:
+    cloud: "{{ _openstack_cloud_name }}"
+    service: swift
+    endpoint_interface: "{{ item.interface }}"
+    url: "{{ item.url }}"
+    region: "{{ _openstack_region_name }}"
+    state: present
+  loop:
+    - interface: public
+      url: "{{ _controller_http_host }}:8080/v1/AUTH_%(project_id)s"
+    - interface: internal
+      url: "{{ _controller_http_host }}:8080/v1/AUTH_%(project_id)s"
+    - interface: admin
+      url: "{{ _controller_http_host }}:8080/v1"
+  loop_control:
+    label: "[{{ item.interface }} {{ item.url }}"

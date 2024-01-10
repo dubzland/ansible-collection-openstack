@@ -1,0 +1,154 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: repository
+      option: codename
+      as: _openstack_codename
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: ip
+      as: _controller_ip
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Set OpenStack Swift facts
+  ansible.builtin.set_fact:
+    _swift_packages: >-
+      {{
+        openstack_swift_controller_packages if ('controller' in group_names)
+        else openstack_swift_storage_packages
+      }}
+    _swift_services: >-
+      {{
+        openstack_swift_controller_services if ('controller' in group_names)
+        else openstack_swift_storage_services
+      }}
+
+- name: Include component tasks
+  ansible.builtin.include_tasks: component.yml
+  when: "'controller' in group_names"
+
+- name: Ensure required OpenStack Swift packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ _swift_packages }}"
+
+- name: Ensure the OpenStack Swift configuration is generated on the controller
+  ansible.builtin.template:
+    src: "etc/swift/{{ item }}.j2"
+    dest: "/etc/swift/{{ item }}"
+    owner: root
+    group: swift
+    mode: "0640"
+  loop:
+    - proxy-server.conf
+    - swift.conf
+  notify: Restart OpenStack Swift services
+  when: "'controller' in group_names"
+
+- name: Ensure the OpenStack Swift configuration is generated on the storage nodes
+  ansible.builtin.template:
+    src: "etc/{{ item }}.j2"
+    dest: "/etc/{{ item }}"
+    owner: root
+    group: swift
+    mode: "0640"
+  loop:
+    - swift/swift.conf
+    - rsyncd.conf
+  notify: Restart OpenStack Swift services
+  when: "'storage' in group_names"
+
+- name: Ensure the OpenStack Swift configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: "etc/swift/{{ item }}.j2"
+    dest: "/etc/swift/{{ item }}"
+    owner: root
+    group: swift
+    mode: "0640"
+  loop:
+    - account-server.conf
+    - container-server.conf
+    - object-server.conf
+  notify: Restart OpenStack Swift services
+  when: "'storage' in group_names"
+
+- name: Ensure the rsyncd service is enabled
+  ansible.builtin.systemd:
+    name: rsync
+    enabled: true
+  when: "'storage' in group_names"
+
+- name: Build the account rings
+  ansible.builtin.include_tasks: ring-build.yml
+  vars:
+    _ring_type: account
+    _ring_port: "{{ openstack_swift_account_server_port }}"
+  when: "'storage' in group_names"
+
+- name: Build the container rings
+  ansible.builtin.include_tasks: ring-build.yml
+  vars:
+    _ring_type: container
+    _ring_port: "{{ openstack_swift_container_server_port }}"
+  when: "'storage' in group_names"
+
+- name: Build the object rings
+  ansible.builtin.include_tasks: ring-build.yml
+  vars:
+    _ring_type: object
+    _ring_port: "{{ openstack_swift_object_server_port }}"
+  when: "'storage' in group_names"
+
+- name: Retrieve the rings
+  ansible.posix.synchronize:
+    src: "/etc/swift/{{ item }}.ring.gz"
+    dest: "/tmp/{{ item }}.ring.gz"
+    mode: pull
+  register: _ring_files
+  loop:
+    - account
+    - container
+    - object
+  when: "'storage' in group_names"
+
+- name: Push ring files to controller
+  ansible.builtin.copy:
+    src: "/tmp/{{ item }}.ring.gz"
+    dest: "/etc/swift/{{ item }}.ring.gz"
+    owner: root
+    group: swift
+    mode: "0640"
+  loop:
+    - account
+    - container
+    - object
+  when: "'controller' in group_names"
+
+- name: Ensure proper ownership of the storage directories
+  ansible.builtin.file:
+    path: "{{ openstack_swift_storage_root }}"
+    owner: swift
+    group: swift
+    recurse: true
+  when: "'storage' in group_names"

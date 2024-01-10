@@ -1,0 +1,30 @@
+{{ ansible_managed | comment }}
+[DEFAULT]
+bind_ip = {{ openstack_swift_listen_address }}
+bind_port = {{ openstack_swift_container_server_port }}
+user = swift
+swift_dir = /etc/swift
+devices = {{ openstack_swift_storage_root }}
+mount_check = True
+workers = 2
+
+[pipeline:main]
+pipeline = healthcheck recon container-server
+
+[app:container-server]
+use = egg:swift#container
+
+[filter:healthcheck]
+use = egg:swift#healthcheck
+
+[container-replicator]
+
+[container-updater]
+
+[container-auditor]
+
+[container-sync]
+
+[filter:recon]
+use = egg:swift#recon
+recon_cache_path = /var/cache/swift
