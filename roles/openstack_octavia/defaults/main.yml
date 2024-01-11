@@ -11,7 +11,9 @@ openstack_octavia_service_user: octavia
 # openstack_octavia_heartbeat_key:
 
 # openstack_octavia_provider_network_name: lbaas-mgmt
-# openstack_octavia_provider_physical_network: lbaas
+# openstack_octavia_provider_network_type: vlan
+# openstack_octavia_provider_physical_network: provider
+# openstack_octavia_provider_network_segmentation_id: 98
 # openstack_octavia_provider_network_ip: 172.18.98.23
 # openstack_octavia_provider_network_cidr: 172.18.98.0/24
 # openstack_octavia_provider_network_allocation_pool:

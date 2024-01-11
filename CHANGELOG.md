@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add the ability to configure vlan type provider networks in Neutron
+
+## [1.0.0] - 2024-01-11
+
+### Added
+
 - OpenStack bootstrap role
 - Configuration template module
 - Local fact modules

@@ -32,6 +32,54 @@ argument_specs:
         type: str
         required: true
         description: Service password assigned to the O(openstack_neutron_service_user).
+      openstack_neutron_nova_service_user:
+        type: str
+        default: nova
+        description: Service user for the Nova compute service.
+      openstack_neutron_nova_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_neutron_nova_service_user).
+      openstack_neutron_metadata_secret:
+        type: str
+        required: true
+        description: Secret shared between Nova and Neutron for communication.
+      openstack_neutron_ovn_tunnel_address:
+        type: str
+        description: >-
+          IP Address on the tunnel network for this node. Must be specified for
+          all compute nodes.
+      openstack_neutron_api_worker_count:
+        type: int
+        description: >-
+          Number of API worker instances to start.  Defaults to the number of
+          CPU cores present on the controller.
+      openstack_neutron_provider_networks:
+        type: list
+        elements: dict
+        options:
+          name:
+            type: str
+            required: true
+            description: Name within OVN for the specified provider network.
+          bridge:
+            type: str
+            required: true
+            description: Open-vSwitch bridge to be created for this provider network.
+          interface:
+            type: str
+            required: true
+            description: >-
+              Physical network interface to be attached to the bridge for
+              network communication.
+          type:
+            type: str
+            required: true
+            choices:
+              - vlan
+              - flat
+            description: Type of underlying provider network being managed.
+        description: List of provider networks to configure in Open-vSwitch/OVN.
       openstack_neutron_controller_packages:
         type: list
         elements: str
@@ -65,40 +113,3 @@ argument_specs:
         type: str
         default: OpenStack Networking
         description: Human-readable description for the OpenStack Neutron service within Keystone.
-      openstack_neutron_nova_service_user:
-        type: str
-        default: nova
-        description: Service user for the Nova compute service.
-      openstack_neutron_nova_service_password:
-        type: str
-        required: true
-        description: Service password assigned to the O(openstack_neutron_nova_service_user).
-      openstack_neutron_metadata_secret:
-        type: str
-        required: true
-        description: Secret shared between Nova and Neutron for communication.
-      openstack_neutron_ovn_tunnel_address:
-        type: str
-        required: true
-        description: IP Address on the tunnel network for the compute node.
-      openstack_neutron_provider_networks:
-        type: list
-        elements: dict
-        options:
-          name:
-            type: str
-            required: true
-            description: Name within OVN for the specified provider network.
-          bridge:
-            type: str
-            required: true
-            description: Open-vSwitch bridge to be created for this provider network.
-          interface:
-            type: str
-            required: true
-            description: Network interface to be attached to the bridge for network communication.
-        description: List of provider networks to configure in Open-vSwitch/OVN.
-      openstack_neutron_api_worker_count:
-        type: int
-        default: 2
-        description: Number of OpenStack Neutron api workers to run.

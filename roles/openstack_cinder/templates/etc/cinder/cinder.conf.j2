@@ -19,7 +19,7 @@ my_ip = {{ ansible_default_ipv4['address'] }}
 ## Nova
 nova_catalog_info = compute:nova:internalURL
 nova_catalog_admin_info = compute:nova:adminURL
-os_region_name = RegionOne
+os_region_name = {{ _openstack_domain_name }}
 ## Glance
 glance_api_servers = {{ _controller_http_host }}:9292
 glance_api_version = 2

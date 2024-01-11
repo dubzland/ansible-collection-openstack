@@ -72,14 +72,30 @@ argument_specs:
         type: str
         required: true
         description: Name of the created Neutron provider network for LBaaS traffic.
+      openstack_octavia_provider_network_type:
+        type: str
+        required: true
+        choices:
+          - vlan
+          - flat
+        description: Type of the underlying OVN provider network being configured.
+      openstack_octavia_provider_physical_network:
+        type: str
+        required: true
+        description: >-
+          Underlying OVN network to use for LBaaS traffic. This network must
+          be created separately in Neutron, and any necessary bridges must
+          already exist. This is done automatically by the
+          C(dubzland.openstack.openstack_neutron) role.
+      openstack_octavia_provider_network_segmentation_id:
+        type: int
+        description: >-
+          VLAN tag to associate with this Neutron network.  Required if
+          O(openstack_octavia_provider_network_type) is V(vlan).
       openstack_octavia_provider_subnet_name:
         type: str
         default: "{{ openstack_octavia_provider_network_name }}-subnet"
         description: Name of the created Neutron provider subnet for LBaaS traffic.
-      openstack_octavia_provider_physical_network:
-        type: str
-        required: true
-        description: Underlying OVN network to use for LBaaS traffic.
       openstack_octavia_provider_network_ip:
         type: str
         required: true

@@ -13,7 +13,10 @@ openstack_neutron_nova_service_user: nova
 
 # openstack_neutron_ovn_tunnel_address:
 
+# openstack_neutron_api_worker_count:
+
 # openstack_neutron_provider_networks:
-#   - name: external
-#     bridge: br-external
-#     interface: enp6s19.134
+#   - name: provider
+#     bridge: br-provider
+#     interface: bond0
+#     type: vlan
