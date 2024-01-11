@@ -30,6 +30,10 @@ lint:
   before_script:
     - echo -e "[global]\ncache-dir = $PIP_CACHE_DIR" > /etc/pip.conf
     - python -m pip install -r requirements-dev.txt
+    - ansible-galaxy install -r requirements.yml
+    - ansible --version
+    - ansible-lint --version
+    - ansible-galaxy collection list
   script:
     - ansible-lint
 
