@@ -16,6 +16,7 @@ tags:
   - devops
 
 dependencies:
+  ansible.posix: "*"
   community.general: "*"
   community.mysql: "*"
   openstack.cloud: "*"
