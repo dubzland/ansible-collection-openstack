@@ -1,21 +1,29 @@
 #jinja2: trim_blocks:True,lstrip_blocks:True
 {{ ansible_managed | comment }}
+{% set _type_drivers = ((openstack_neutron_provider_networks | map(attribute='type')) + openstack_neutron_tenant_network_types) | unique  %}
 [ml2]
-type_drivers = flat,geneve
-tenant_network_types = geneve
+type_drivers = {{ _type_drivers | join(',') }}
+tenant_network_types = {{ openstack_neutron_tenant_network_types | join(',') }}
 mechanism_drivers = ovn
 extension_drivers = port_security,subnet_dns_publish_fixed_ip
 overlay_ip_version = 4
 
-{% if 'compute' in group_names %}
+{% if 'flat' in _type_drivers %}
 [ml2_type_flat]
-flat_networks = {{ openstack_neutron_provider_networks | map(attribute='name') | join(',') }}
-{% endif %}
+network_vlan_ranges = {{ openstack_neutron_provider_networks | selectattr('type', 'equalto', 'flat') | map(attribute='name') | join(',') }}
 
+{% endif %}
+{% if 'vlan' in _type_drivers %}
+[ml2_type_vlan]
+network_vlan_ranges = {{ openstack_neutron_provider_networks | selectattr('type', 'equalto', 'vlan') | map(attribute='name') | join(',') }}
+
+{% endif %}
+{% if 'geneve' in _type_drivers %}
 [ml2_type_geneve]
 vni_ranges = 1:1000
 max_header_size = 38
 
+{% endif %}
 [ovn]
 ovn_nb_connection = tcp:{{ _controller_ip }}:6641
 ovn_sb_connection = tcp:{{ _controller_ip }}:6642

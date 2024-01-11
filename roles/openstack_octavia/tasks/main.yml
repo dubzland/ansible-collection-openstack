@@ -207,13 +207,17 @@
       user_domain_name: "{{ _openstack_domain_name }}"
       project_domain_name: "{{ _openstack_domain_name }}"
     name: "{{ openstack_octavia_provider_network_name }}"
+    provider_network_type: "{{ openstack_octavia_provider_network_type }}"
     provider_physical_network: >-
       {{
         openstack_octavia_provider_physical_network
         | default(openstack_octavia_provider_network_name)
       }}
+    provider_segmentation_id: >-
+      {{
+        openstack_octavia_provider_network_segmentation_id | default(omit)
+      }}
     external: true
-    provider_network_type: flat
     state: present
   register: _octavia_lb_network
 

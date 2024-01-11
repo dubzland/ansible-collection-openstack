@@ -77,16 +77,23 @@
     gather_subset: "!all"
   when: "'controller' in group_names"
 
-- name: Ensure the OpenStack Neutron configuration is present
+- name: Ensure the core OpenStack Neutron configuration is present
   dubzland.openstack.openstack_config_template:
-    src: "etc/neutron/{{ item }}.j2"
-    dest: "/etc/neutron/{{ item }}"
+    src: etc/neutron/neutron.conf.j2
+    dest: /etc/neutron/neutron.conf
     owner: root
     group: neutron
     mode: "0640"
-  loop:
-    - neutron.conf
-    - plugins/ml2/ml2_conf.ini
+  notify: Restart OpenStack Neutron services
+
+- name: Ensure the OpenStack Neutron ML-2 configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: etc/neutron/plugins/ml2/ml2_conf.ini.j2
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+    owner: root
+    group: neutron
+    mode: "0640"
+  when: "'controller' in group_names"
   notify: Restart OpenStack Neutron services
 
 - name: Ensure the OVN metadata agent is configured
