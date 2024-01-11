@@ -29,7 +29,7 @@ lint:
   extends: .ansible
   before_script:
     - echo -e "[global]\ncache-dir = $PIP_CACHE_DIR" > /etc/pip.conf
-    - python -m pip install https://github.com/ansible/ansible/archive/stable-2.16.tar.gz
+    - python -m pip install -r requirements-dev.txt
   script:
     - ansible-lint
 
