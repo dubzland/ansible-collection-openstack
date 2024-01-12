@@ -95,17 +95,13 @@ argument_specs:
         description: Service password assigned to the O(openstack_nova_placement_service_user).
       openstack_nova_api_worker_count:
         type: int
-        default: 2
-        description: Number of OpenStack Nova API workers to run.
+        description: Limit the number of OpenStack Nova API workers.
       openstack_nova_metadata_worker_count:
         type: int
-        default: 2
-        description: Number of OpenStack Nova metadata workers to run.
+        description: Limit the number of OpenStack Nova metadata workers.
       openstack_nova_conductor_worker_count:
         type: int
-        default: 2
-        description: Number of OpenStack Nova conductor workers to run.
+        description: Limit the number of OpenStack Nova conductor workers to run.
       openstack_nova_scheduler_worker_count:
         type: int
-        default: 2
-        description: Number of OpenStack Nova scheduler workers to run.
+        description: Limit the umber of OpenStack Nova scheduler workers to run.

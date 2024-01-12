@@ -48,5 +48,5 @@ argument_specs:
         description: Human-readable description for the OpenStack Glance service within Keystone.
       openstack_glance_worker_count:
         type: int
-        default: 2
-        description: Number of api workers to run.
+        required: false
+        description: Limit the number of workers spawned.

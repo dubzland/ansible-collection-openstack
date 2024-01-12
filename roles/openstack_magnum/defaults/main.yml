@@ -8,3 +8,5 @@ openstack_magnum_service_user: magnum
 
 openstack_magnum_domain_admin_user: magnum_domain_admin
 # openstack_magnum_domain_admin_password:
+# openstack_magnum_api_worker_count:
+# openstack_magnum_conductor_worker_count:

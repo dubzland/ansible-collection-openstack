@@ -1,7 +1,9 @@
 {{ ansible_managed | comment }}
 [DEFAULT]
 enabled_backends = swift:swift
+{% if openstack_glance_worker_count is defined %}
 workers = {{ openstack_glance_worker_count }}
+{% endif %}
 
 [database]
 connection = mysql+pymysql://{{ openstack_glance_db_user }}:{{ openstack_glance_db_password }}@{{ _controller_address }}:3306/{{ openstack_glance_db_name }}
