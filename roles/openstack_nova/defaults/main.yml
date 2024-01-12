@@ -14,3 +14,7 @@ openstack_nova_placement_service_user: placement
 openstack_nova_neutron_service_user: neutron
 # openstack_nova_neutron_service_password:
 # openstack_nova_neutron_metadata_secret:
+# openstack_nova_api_worker_count:
+# openstack_nova_metadata_worker_count:
+# openstack_nova_conductor_worker_count:
+# openstack_nova_scheduler_worker_count:

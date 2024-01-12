@@ -7,7 +7,9 @@ transport_url = rabbit://openstack:{{ openstack_rabbitmq_password }}@{{ _control
 
 [api]
 host = {{ _controller_ip }}
+{% if openstack_magnum_api_worker_count is defined %}
 workers = {{ openstack_magnum_api_worker_count }}
+{% endif %}
 
 [barbican_client]
 region_name = {{ _openstack_region_name }}
@@ -19,9 +21,11 @@ cert_manager_type = barbican
 [cinder_client]
 region_name = {{ _openstack_region_name }}
 endpoint_type = internalURL
+{% if openstack_magnum_conductor_worker_count is defined %}
 
 [conductor]
 workers = {{ openstack_magnum_conductor_worker_count }}
+{% endif %}
 
 [database]
 connection = mysql+pymysql://{{ openstack_magnum_db_user }}:{{ openstack_magnum_db_password }}@{{ _controller_address }}:3306/{{ openstack_magnum_db_name }}

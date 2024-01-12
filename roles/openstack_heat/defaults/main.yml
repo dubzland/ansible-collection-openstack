@@ -8,3 +8,7 @@ openstack_heat_service_user: heat
 
 openstack_heat_domain_admin_user: heat_domain_admin
 # openstack_heat_domain_admin_password:
+
+# openstack_heat_api_worker_count:
+# openstack_heat_engine_worker_count:
+# openstack_heat_api_cfn_worker_count:
