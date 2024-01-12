@@ -6,7 +6,10 @@ openstack_designate_db_user: designate
 openstack_designate_service_user: designate
 # openstack_designate_service_password:
 
-# openstack_designate_rndc_key:
+# openstack_designate_rndc_keys:
+#   - name: designate
+#     algorithm: hmac-sha512
+#     secret: <tsig secret>
 
 # openstack_designate_pools:
 #   - description: Default BIND9 Pool

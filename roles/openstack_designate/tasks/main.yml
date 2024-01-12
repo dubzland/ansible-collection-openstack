@@ -48,13 +48,20 @@
     state: present
   loop: "{{ openstack_designate_packages }}"
 
-- name: Ensure the Designate bind9 key is present
+- name: Ensure the Designate bind9 keys are present
   ansible.builtin.template:
     src: etc/designate/rndc.key.j2
-    dest: /etc/designate/rndc.key
+    dest: /etc/designate/rndc.{{ item.name }}.key
     owner: root
     group: designate
     mode: "0640"
+  vars:
+    _key_name: "{{ item.name }}"
+    _key_algorithm: "{{ item.algorithm }}"
+    _key_secret: "{{ item.secret }}"
+  loop: "{{ openstack_designate_rndc_keys }}"
+  loop_control:
+    label: "{{ item.name }}"
   notify: Restart OpenStack Designate services
 
 - name: Ensure the OpenStack Designate configuration is present
