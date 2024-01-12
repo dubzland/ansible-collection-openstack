@@ -2,7 +2,14 @@
 {% for pool in openstack_designate_pools %}
 - name: {{ pool.name }}
   description: {{ pool.description }}
+{%   if 'attributes' in pool %}
+  attributes:
+{%     for key, value in pool.attributes.items() %}
+    {{ key }}: "{{ value }}"
+{%     endfor %}
+{%   else %}
   attributes: {}
+{%   endif %}
   nameservers:
 {%   for nameserver in pool.nameservers %}
     - host: {{ nameserver.host }}
@@ -15,16 +22,16 @@
 {%   endfor %}
   targets:
 {%   for target in pool.targets %}
-  - description: {{ target.description }}
-    type: {{ target.type }}
-    masters:
+    - description: {{ target.description }}
+      type: {{ target.type }}
+      masters:
 {%     for master in target.masters %}
-      - host: {{ master.host }}
-        port: {{ master.port | default(5354) }}
+        - host: {{ master.host }}
+          port: {{ master.port | default(5354) }}
 {%      endfor %}
-    options:
+      options:
 {%     for key, value in target.options.items() %}
-      {{ key }}: {{ value }}
+        {{ key }}: {{ value }}
 {%     endfor %}
 {%   endfor %}
 {% endfor %}

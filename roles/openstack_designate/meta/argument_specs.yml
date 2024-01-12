@@ -30,8 +30,9 @@ argument_specs:
         type: str
         required: true
         description: Service password assigned to the O(openstack_designate_service_user).
-      openstack_designate_rndc_key:
-        type: dict
+      openstack_designate_rndc_keys:
+        type: list
+        elements: dict
         options:
           name:
             type: str
@@ -46,7 +47,7 @@ argument_specs:
             required: true
             description: Actual rndc key value.
         required: true
-        description: RNDC key used to communicate with the backend Bind9 servers.
+        description: RNDC keys used to communicate with the backend Bind9 servers.
       openstack_designate_pools:
         type: list
         elements: dict
@@ -59,6 +60,12 @@ argument_specs:
             type: str
             required: true
             description: Name for this pool within the OpenStack cloud.
+          attributes:
+            type: dict
+            default: {}
+            description: >-
+              Free-form attributes to associate with this pool.  Can be specified
+              when creating a zone to control which pool to serve a given zone.
           nameservers:
             type: list
             elements: dict

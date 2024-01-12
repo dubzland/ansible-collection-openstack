@@ -32,10 +32,10 @@ Then apply the role using the following playbook:
       vars:
         openstack_designate_db_password: supersekret
         openstack_designate_service_password: supersekret
-        openstack_designate_rndc_key:
-          name: designate
-          algorithm: hmac-sha512
-          secret: <rndc key secret>
+        openstack_designate_rndc_keys:
+          - name: designate
+            algorithm: hmac-sha512
+            secret: <rndc key secret>
         openstack_designate_pools:
           - description: Default BIND9 Pool
             name: default

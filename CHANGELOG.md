@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add the ability to configure vlan type provider networks in Neutron
 
+### Changed
+
+- Multiple rndc keys can now be provided, allowing for different backends.
+- Attributes can now be specified for pools, allowing for public/private pools.
+
 ## [1.0.0] - 2024-01-11
 
 ### Added
