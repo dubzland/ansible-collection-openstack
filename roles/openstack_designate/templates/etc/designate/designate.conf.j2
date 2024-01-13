@@ -22,7 +22,7 @@ enable_host_header = True
 enabled_extensions_admin = quotas,reports
 
 [service:central]
-scheduler_filters = attribute, random
+scheduler_filters = attribute, in_doubt_default_pool, random
 
 [storage:sqlalchemy]
 connection = mysql+pymysql://{{ openstack_designate_db_user }}:{{ openstack_designate_db_password }}@{{ _mysql_address }}:3306/{{ openstack_designate_db_name }}
