@@ -54,6 +54,22 @@ argument_specs:
         description: >-
           Number of API worker instances to start.  Defaults to the number of
           CPU cores present on the controller.
+      openstack_neutron_designate_enabled:
+        type: bool
+        default: false
+        description: >-
+          Controls whether Neutron is integrated with Designate for automatic
+          DNS record management.
+      openstack_neutron_dns_domain:
+        type: str
+        default: openstacklocal
+        description: >-
+          Default DNS domain name to use for building hostnames on networks
+          that do not have a domain name assigned.
+      openstack_neutron_ptr_zone_email:
+        type: str
+        default: "admin@{{ openstack_neutron_dns_domain }}"
+        description: The email address to be used when creating PTR zones.
       openstack_neutron_provider_networks:
         type: list
         elements: dict
@@ -62,6 +78,26 @@ argument_specs:
             type: str
             required: true
             description: Name within OVN for the specified provider network.
+          type:
+            type: str
+            required: true
+            choices:
+              - vlan
+              - flat
+            description: Type of underlying provider network being managed.
+        description: >-
+          List of provider networks to configure in Open-vSwitch/OVN.  Must be
+          specified for the controller.
+      openstack_neutron_provider_network_mappings:
+        type: list
+        elements: dict
+        options:
+          name:
+            type: str
+            required: true
+            description: >-
+              Name of the provider network.  Must match the value in
+              O(openstack_neutron_provider_networks).
           bridge:
             type: str
             required: true
@@ -72,14 +108,9 @@ argument_specs:
             description: >-
               Physical network interface to be attached to the bridge for
               network communication.
-          type:
-            type: str
-            required: true
-            choices:
-              - vlan
-              - flat
-            description: Type of underlying provider network being managed.
-        description: List of provider networks to configure in Open-vSwitch/OVN.
+        description: >-
+          List of mappings from OVN networks to physical networks.  Required
+          for compute nodes.
       openstack_neutron_controller_packages:
         type: list
         elements: str

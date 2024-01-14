@@ -2,16 +2,17 @@
 {{ ansible_managed | comment }}
 [DEFAULT]
 transport_url = rabbit://openstack:{{ openstack_rabbitmq_password }}@{{ _controller_address }}:5672/
-auth_strategy = keystone
-state_path = /var/lib/neutron
 {% if 'controller' in group_names %}
 core_plugin = ml2
 service_plugins = ovn-router
-notify_nova_on_port_status_changes = True
-notify_nova_on_port_data_changes = True
-external_dns_driver = designate
 {%   if openstack_neutron_api_worker_count is defined %}
 api_workers = {{ openstack_neutron_api_worker_count }}
+{%   endif %}
+{% endif %}
+{% if (openstack_neutron_designate_enabled | bool) %}
+external_dns_driver = designate
+{%   if openstack_neutron_dns_domain is defined %}
+dns_domain = {{ openstack_neutron_dns_domain }}
 {%   endif %}
 {% endif %}
 
@@ -22,6 +23,7 @@ root_helper = "sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf"
 [database]
 connection = mysql+pymysql://{{ openstack_neutron_db_user }}:{{ openstack_neutron_db_password }}@{{ _mysql_address }}:3306/{{ openstack_neutron_db_name }}
 
+{%   if (openstack_neutron_designate_enabled | bool) %}
 [designate]
 url = {{ _controller_http_host }}:9001/v2
 region_name = {{ _openstack_region_name }}
@@ -32,10 +34,12 @@ project_name = service
 user_domain_name = {{ _openstack_domain_name }}
 project_domain_name = {{ _openstack_domain_name }}
 auth_url = {{ _controller_http_host }}:5000/v3
-allow_reverse_dns_lookup = True
-ipv4_ptr_zone_prefix_size = 24
-ipv6_ptr_zone_prefix_size = 116
-{% endif %}
+{%     if openstack_neutron_ptr_zone_email is defined %}
+ptr_zone_email = {{ openstack_neutron_ptr_zone_email }}
+{%     endif %}
+{%   endif %}
+
+{% endif -%}
 
 [keystone_authtoken]
 www_authenticate_uri = {{ _controller_http_host }}:5000/
@@ -47,6 +51,8 @@ user_domain_name = {{ _openstack_domain_name }}
 project_name = service
 username = {{ openstack_neutron_service_user }}
 password = {{ openstack_neutron_service_password }}
+service_token_roles_required = True
+service_type = network
 
 {% if 'controller' in group_names %}
 [nova]
@@ -56,12 +62,10 @@ project_domain_name = {{ _openstack_domain_name }}
 user_domain_name = {{ _openstack_domain_name }}
 region_name = {{ _openstack_region_name }}
 project_name = service
-username = {{ openstack_neutron_nova_service_user }}
-password = {{ openstack_neutron_nova_service_password }}
-{% endif %}
+username = {{ openstack_neutron_service_user }}
+password = {{ openstack_neutron_service_password }}
+
+{% endif -%}
 
 [oslo_concurrency]
 lock_path = $state_path/lock
-
-[oslo_policy]
-enforce_new_defaults = true

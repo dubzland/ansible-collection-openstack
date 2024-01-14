@@ -1,0 +1,18 @@
+---
+- name: Ensure the ovn-northd service is started and enabled
+  ansible.builtin.systemd:
+    name: ovn-northd
+    state: started
+    enabled: true
+
+- name: Ensure connection settings are configured for ovn northbound/southbound
+  ansible.builtin.command:
+    cmd: "{{ item }}"
+  loop:
+    - ovn-nbctl set-connection ptcp:6641:0.0.0.0 -- set connection . inactivity_probe=60000
+    - ovn-sbctl set-connection ptcp:6642:0.0.0.0 -- set connection . inactivity_probe=60000
+  changed_when: false
+  register: _ovn_connection_settings
+  until: _ovn_connection_settings is success
+  retries: 5
+  delay: 2
