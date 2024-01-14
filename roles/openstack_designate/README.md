@@ -22,18 +22,18 @@ Full documentation for the role is available in the [collection
 documentation][1]. A minimum configuration needs to include the
 following variables:
 
-| Variable                             | Comments                                                                   |
-| ------------------------------------ | -------------------------------------------------------------------------- |
-| openstack_designate_db_password      | MySQL password to assign to the Designate database user.                   |
-| openstack_designate_service_password | Password to assign in Keystone for the Designate service.                  |
-| openstack_designate_rndc_keys        | List of TSIG keys to be installed on the controller.                       |
-| openstack_designate_pools            | List of upstream DNS servers to configure. See the example playbook below. |
+| Variable                               | Comments                                                                   |
+| -------------------------------------- | -------------------------------------------------------------------------- |
+| `openstack_designate_db_password`      | MySQL password to assign to the Designate database user.                   |
+| `openstack_designate_service_password` | Password to assign in Keystone for the Designate service.                  |
+| `openstack_designate_rndc_keys`        | List of TSIG keys to be installed on the controller.                       |
+| `openstack_designate_pools`            | List of upstream DNS servers to configure. See the example playbook below. |
 
 ## Usage
 
 Install the collection locally, either via `requirements.yml`, or manually:
 
-```shell
+```console
 ansible-galaxy collection install dubzland.openstack
 ```
 
