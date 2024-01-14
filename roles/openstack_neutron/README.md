@@ -19,7 +19,7 @@ concert with the other roles in this collection. Specifically:
 ## Role Variables
 
 Full documentation for the role is available in the [collection
-documentation][openstack_neutron]. A minimum configuration needs to include the
+documentation][1]. A minimum configuration needs to include the
 following variables:
 
 | Variable                                    | Comments                                                                                             |
@@ -36,7 +36,7 @@ following variables:
 
 Install the collection locally, either via `requirements.yml`, or manually:
 
-```bash
+```shell
 ansible-galaxy collection install dubzland.openstack
 ```
 
@@ -75,9 +75,10 @@ Then apply the role using the following playbook:
 
 ## License
 
-See <LICENSE.md>.
+See [LICENSE](LICENSE.md).
 
 ## Author
 
 - [Josh Williams](https://dubzland.com)
-  [openstack_neutron]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_neutron_role.html
+
+[1]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_neutron_role.html
