@@ -8,15 +8,13 @@
   become: true
   become_user: neutron
   when:
-    - "ansible_local['openstack']['neutron']['need_db_expand'] | bool"
+    - ansible_local['openstack']['neutron']['need_db_upgrade'] | bool
 
-- name: Disable the db expand fact
-  community.general.ini_file:
-    dest: "/etc/ansible/facts.d/openstack.fact"
+- name: Disable the db upgrade fact
+  dubzland.openstack.openstack_set_fact:
     section: neutron
-    option: "need_db_expand"
+    option: need_db_upgrade
     value: "False"
-    mode: "0644"
 
 - name: Refresh local facts
   ansible.builtin.setup:

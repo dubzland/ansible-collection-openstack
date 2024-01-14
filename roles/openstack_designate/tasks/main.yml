@@ -50,7 +50,7 @@
 
 - name: Ensure the Designate bind9 keys are present
   ansible.builtin.template:
-    src: etc/designate/rndc.key.j2
+    src: rndc.key.j2
     dest: /etc/designate/rndc.{{ item.name }}.key
     owner: root
     group: designate
@@ -66,7 +66,7 @@
 
 - name: Ensure the OpenStack Designate configuration is present
   dubzland.openstack.openstack_config_template:
-    src: etc/designate/designate.conf.j2
+    src: designate.conf.j2
     dest: /etc/designate/designate.conf
     owner: root
     group: designate
@@ -95,7 +95,7 @@
 
 - name: Ensure Designate pools are configured
   ansible.builtin.template:
-    src: etc/designate/pools.yaml.j2
+    src: pools.yaml.j2
     dest: /etc/designate/pools.yaml
     owner: root
     group: designate

@@ -46,30 +46,22 @@
 
 - name: Ensure required OpenStack Neutron packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ _neutron_packages }}"
     state: present
-  loop: "{{ _neutron_packages }}"
   register: _neutron_package_install
 
-- name: Initialise the Neutron db upgrade facts
-  community.general.ini_file:
-    dest: "/etc/ansible/facts.d/openstack.fact"
+- name: Initialise the Neutron db upgrade fact
+  dubzland.openstack.openstack_set_fact:
     section: neutron
-    option: "{{ item.name }}"
-    value: "{{ item.state }}"
-    mode: "0644"
-  with_items:
-    - name: "need_db_expand"
-      state: "True"
-    - name: "need_db_contract"
-      state: "True"
-  when: ('controller' in group_names) and
-    ((_neutron_package_install is changed) or
-    (ansible_local is not defined) or
-    ('openstack' not in ansible_local) or
-    ('neutron' not in ansible_local['openstack']) or
-    ('need_db_expand' not in ansible_local['openstack']['neutron']) or
-    ('need_db_contract' not in ansible_local['openstack']['neutron']))
+    option: need_db_upgrade
+    value: "True"
+  when:
+    - "'controller' in group_names"
+    - ((_neutron_package_install is changed) or
+      (ansible_local is not defined) or
+      ('openstack' not in ansible_local) or
+      ('neutron' not in ansible_local['openstack']) or
+      ('need_db_upgrade' not in ansible_local['openstack']['neutron']))
 
 - name: Refresh local facts
   ansible.builtin.setup:
@@ -79,32 +71,51 @@
 
 - name: Ensure the core OpenStack Neutron configuration is present
   dubzland.openstack.openstack_config_template:
-    src: etc/neutron/neutron.conf.j2
+    src: neutron.conf.j2
     dest: /etc/neutron/neutron.conf
     owner: root
     group: neutron
     mode: "0640"
+  register: _neutron_configuration
   notify: Restart OpenStack Neutron services
 
 - name: Ensure the OpenStack Neutron ML-2 configuration is present
   dubzland.openstack.openstack_config_template:
-    src: etc/neutron/plugins/ml2/ml2_conf.ini.j2
+    src: plugins/ml2/ml2_conf.ini.j2
     dest: /etc/neutron/plugins/ml2/ml2_conf.ini
     owner: root
     group: neutron
     mode: "0640"
   when: "'controller' in group_names"
+  register: _ml2_plugin_configuration
   notify: Restart OpenStack Neutron services
 
-- name: Ensure the OVN metadata agent is configured
+- name: Update the Neutron db upgrade fact
+  dubzland.openstack.openstack_set_fact:
+    section: neutron
+    option: need_db_upgrade
+    value: "True"
+  when:
+    - "'controller' in group_names"
+    - (_neutron_configuration is changed) or (_ml2_plugin_configuration is changed)
+
+- name: Refresh local facts
+  ansible.builtin.setup:
+    filter: ansible_local
+    gather_subset: "!all"
+  when:
+    - "'controller' in group_names"
+    - _ml2_plugin_configuration is changed
+
+- name: Ensure the OVN metadata agent configuration is present
   dubzland.openstack.openstack_config_template:
-    src: etc/neutron/neutron_ovn_metadata_agent.ini.j2
+    src: neutron_ovn_metadata_agent.ini.j2
     dest: /etc/neutron/neutron_ovn_metadata_agent.ini
     owner: root
     group: neutron
     mode: "0640"
-  notify: Restart OpenStack Neutron services
   when: "'compute' in group_names"
+  notify: Restart OpenStack Neutron services
 
 - name: Include ovs/ovn setup tasks
   ansible.builtin.include_tasks: ovn-setup.yml

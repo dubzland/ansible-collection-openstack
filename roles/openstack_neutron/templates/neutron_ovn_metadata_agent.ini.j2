@@ -2,7 +2,6 @@
 {{ ansible_managed | comment }}
 [DEFAULT]
 nova_metadata_host = {{ _controller_address }}
-nova_metadata_protocol = http
 metadata_proxy_shared_secret = {{ openstack_neutron_metadata_secret }}
 
 [agent]
