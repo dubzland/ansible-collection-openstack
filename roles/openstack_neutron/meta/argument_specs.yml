@@ -32,14 +32,6 @@ argument_specs:
         type: str
         required: true
         description: Service password assigned to the O(openstack_neutron_service_user).
-      openstack_neutron_nova_service_user:
-        type: str
-        default: nova
-        description: Service user for the Nova compute service.
-      openstack_neutron_nova_service_password:
-        type: str
-        required: true
-        description: Service password assigned to the O(openstack_neutron_nova_service_user).
       openstack_neutron_metadata_secret:
         type: str
         required: true

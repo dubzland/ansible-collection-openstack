@@ -19,24 +19,23 @@ concert with the other roles in this collection. Specifically:
 ## Role Variables
 
 Full documentation for the role is available in the [collection
-documentation][openstack_neutron]. A minimum configuration needs to include the
+documentation][1]. A minimum configuration needs to include the
 following variables:
 
-| Variable                                    | Comments                                                                                             |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| openstack_neutron_db_password               | MySQL password to assign to the Neutron database user.                                               |
-| openstack_neutron_service_password          | Password to assign in Keystone for the Neutron service.                                              |
-| openstack_neutron_nova_service_password     | Password configured for the Nova service in Keystone.                                                |
-| openstack_neutron_nova_metadata_secret      | Random secret value shared between Neutron and Nova.                                                 |
-| openstack_neutron_ovn_tunnel_address        | IP address on the tenant overlay network for compute nodes.                                          |
-| openstack_neutron_provider_networks         | List of provider networks to be configured on the host (and in OVN). See the example playbook below. |
-| openstack_neutron_provider_network_mappings | List of mappings from OVN networks to physical bridges/interfaces. See the example playbook below.   |
+| Variable                                      | Comments                                                                                             |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `openstack_neutron_db_password`               | MySQL password to assign to the Neutron database user.                                               |
+| `openstack_neutron_service_password`          | Password to assign in Keystone for the Neutron service.                                              |
+| `openstack_neutron_metadata_secret`           | Random secret value shared between Neutron and Nova.                                                 |
+| `openstack_neutron_ovn_tunnel_address`        | IP address on the tenant overlay network for compute nodes.                                          |
+| `openstack_neutron_provider_networks`         | List of provider networks to be configured on the host (and in OVN). See the example playbook below. |
+| `openstack_neutron_provider_network_mappings` | List of mappings from OVN networks to physical bridges/interfaces. See the example playbook below.   |
 
 ## Usage
 
 Install the collection locally, either via `requirements.yml`, or manually:
 
-```bash
+```console
 ansible-galaxy collection install dubzland.openstack
 ```
 
@@ -69,15 +68,15 @@ Then apply the role using the following playbook:
       vars:
         openstack_neutron_db_password: supersekret
         openstack_neutron_service_password: supersekret
-        openstack_neutron_nova_service_password: supersekret
-        openstack_neutron_nova_metadata_secret: supersekret
+        openstack_neutron_metadata_secret: supersekret
 ```
 
 ## License
 
-See <LICENSE.md>.
+See [LICENSE](LICENSE).
 
 ## Author
 
 - [Josh Williams](https://dubzland.com)
-  [openstack_neutron]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_neutron_role.html
+
+[1]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_neutron_role.html
