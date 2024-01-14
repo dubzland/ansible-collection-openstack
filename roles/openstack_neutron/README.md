@@ -75,7 +75,7 @@ Then apply the role using the following playbook:
 
 ## License
 
-See [LICENSE](LICENSE.md).
+See [LICENSE](LICENSE).
 
 ## Author
 
