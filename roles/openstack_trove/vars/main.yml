@@ -1,0 +1,19 @@
+---
+openstack_trove_packages:
+  - python3-trove
+  - trove-common
+  - trove-api
+  - trove-taskmanager
+  - trove-conductor
+  - python3-troveclient
+  - python3-trove-dashboard
+openstack_trove_services:
+  - trove-api
+  - trove-taskmanager
+  - trove-conductor
+openstack_trove_service_description: OpenStack DBaaS
+openstack_trove_image_tags:
+  - trove
+  - mariadb
+  - mysql
+  - postgresql

@@ -1,0 +1,20 @@
+#jinja2: trim_blocks:True,lstrip_blocks:True
+{{ ansible_managed | comment }}
+[DEFAULT]
+log_file = trove-guestagent.log
+log_dir = /var/log/trove/
+ignore_users = os_admin
+control_exchange = trove
+transport_url = rabbit://openstack:{{ openstack_rabbitmq_password }}@{{ _controller_address }}:5672/
+command_process_timeout = 60
+use_syslog = False
+debug = True
+
+[service_credentials]
+auth_url = {{ _controller_http_host }}:5000/
+region_name = {{ _openstack_region_name }}
+project_domain_name = {{ _openstack_domain_name }}
+user_domain_name = {{ _openstack_domain_name }}
+project_name = service
+username = {{ openstack_trove_service_user }}
+password = {{ openstack_trove_service_password }}

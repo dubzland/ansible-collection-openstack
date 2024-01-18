@@ -1,0 +1,17 @@
+---
+openstack_trove_db_name: trove
+openstack_trove_db_user: trove
+# openstack_trove_db_password:
+
+openstack_trove_service_user: trove
+# openstack_trove_service_password:
+
+# openstack_trove_provider_network_name: dbaas-mgmt
+# openstack_trove_provider_network_type: vlan
+# openstack_trove_provider_physical_network: provider
+# openstack_trove_provider_network_segmentation_id: 16
+# openstack_trove_provider_network_ip: 172.18.16.23
+# openstack_trove_provider_network_cidr: 172.18.16.0/24
+# openstack_trove_provider_network_allocation_pool:
+#   start: 172.18.16.100
+#   end: 172.18.16.254

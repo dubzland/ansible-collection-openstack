@@ -1,0 +1,202 @@
+---
+- name: Retrieve the OpenStack cluster facts
+  dubzland.openstack.openstack_get_fact:
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    as: "{{ item.as }}"
+  loop:
+    - section: controller
+      option: address
+      as: _controller_address
+    - section: controller
+      option: http_host
+      as: _controller_http_host
+    - section: mysql
+      option: address
+      as: _mysql_address
+    - section: cloud
+      option: region
+      as: _openstack_region_name
+    - section: cloud
+      option: domain
+      as: _openstack_domain_name
+    - section: cloud
+      option: name
+      as: _openstack_cloud_name
+
+- name: Provision the OpenStack Trove service
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_component
+  vars:
+    openstack_component_database_user: "{{ openstack_trove_db_user }}"
+    openstack_component_database_password: "{{ openstack_trove_db_password }}"
+    openstack_component_databases:
+      - "{{ openstack_trove_db_name }}"
+    openstack_component_user: "{{ openstack_trove_service_user }}"
+    openstack_component_password: "{{ openstack_trove_service_password }}"
+    openstack_component_services:
+      - name: trove
+        type: database
+        description: "{{ openstack_trove_service_description }}"
+        endpoints:
+          - interface: public
+            url: "{{ _controller_http_host }}:8779/v1.0/%(tenant_id)s"
+          - interface: internal
+            url: "{{ _controller_http_host }}:8779/v1.0/%(tenant_id)s"
+          - interface: admin
+            url: "{{ _controller_http_host }}:8779/v1.0/%(tenant_id)s"
+
+- name: Ensure required trove packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ openstack_trove_packages }}"
+
+- name: Ensure the trove repository is present
+  ansible.builtin.git:
+    repo: https://opendev.org/openstack/trove.git
+    dest: /usr/local/src/trove
+    version: "{{ ansible_local['openstack']['repository']['version'] }}"
+
+- name: Ensure the disk image file exists
+  ansible.builtin.shell:
+    cmd: >-
+      /usr/local/src/trove/integration/scripts/trovestack build-image ubuntu focal false ubuntu
+      /usr/local/src/trove/image/trove-guest-ubuntu-focal.qcow2
+      > /tmp/trove-image.log 2>&1
+    chdir: /usr/local/src/trove/integration/scripts
+    executable: /bin/bash
+    creates: /usr/local/src/trove/image/trove-guest-ubuntu-focal.qcow2
+  become: false # trovestack will not run as root
+
+- name: Ensure the disk image exists in OpenStack
+  openstack.cloud.image:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_trove_service_user }}"
+      password: "{{ openstack_trove_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    name: trove-guest-ubuntu-focal
+    disk_format: qcow2
+    container_format: bare
+    visibility: private
+    owner: service
+    state: present
+    tags: "{{ openstack_trove_image_tags }}"
+    filename: /usr/local/src/trove/image/trove-guest-ubuntu-focal.qcow2
+
+- name: Ensure the Trove management network is present
+  openstack.cloud.network:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_trove_service_user }}"
+      password: "{{ openstack_trove_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    name: "{{ openstack_trove_provider_network_name }}"
+    provider_network_type: "{{ openstack_trove_provider_network_type }}"
+    provider_physical_network: >-
+      {{
+        openstack_trove_provider_physical_network
+        | default(openstack_trove_provider_network_name)
+      }}
+    provider_segmentation_id: >-
+      {{
+        openstack_trove_provider_network_segmentation_id | default(omit)
+      }}
+    external: true
+    state: present
+  register: _trove_mgmt_network
+
+- name: Ensure the Trove management subnet is present
+  openstack.cloud.subnet:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_trove_service_user }}"
+      password: "{{ openstack_trove_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    network: "{{ _trove_mgmt_network.id }}"
+    name: >-
+      {{
+        openstack_trove_provider_network_subnet_name
+        | default('%s-subnet' | format(openstack_trove_provider_network_name))
+      }}
+    cidr: "{{ openstack_trove_provider_network_cidr }}"
+    allocation_pool_start: "{{ openstack_trove_provider_network_allocation_pool['start'] }}"
+    allocation_pool_end: "{{ openstack_trove_provider_network_allocation_pool['end'] }}"
+
+- name: Ensure the Trove management security group is present
+  openstack.cloud.security_group:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_trove_service_user }}"
+      password: "{{ openstack_trove_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    name: trove-mgmt-sec-grp
+    project: service
+    state: present
+    description: Trove Management Security Group
+  register: _trove_mgmt_security_group
+
+- name: Ensure the Trove management security group rules are present
+  openstack.cloud.security_group_rule:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_trove_service_user }}"
+      password: "{{ openstack_trove_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    security_group: trove-mgmt-sec-grp
+    protocol: "{{ item.protocol }}"
+    port_range_min: "{{ item.port | default(-1) }}"
+    port_range_max: "{{ item.port | default(-1) }}"
+    project: service
+    description: "{{ item.description }}"
+    state: present
+  loop:
+    - protocol: icmp
+      description: Pings
+    - protocol: tcp
+      port: 22
+      description: SSH access
+
+- name: Ensure the Trove management public key is present
+  openstack.cloud.keypair:
+    auth:
+      auth_url: "{{ _controller_http_host }}:5000/"
+      username: "{{ openstack_trove_service_user }}"
+      password: "{{ openstack_trove_service_password }}"
+      project_name: service
+      user_domain_name: "{{ _openstack_domain_name }}"
+      project_domain_name: "{{ _openstack_domain_name }}"
+    name: trove-mgmt
+    public_key: "{{ openstack_trove_management_public_key }}"
+    state: present
+
+- name: Ensure the OpenStack Trove configuration is present
+  dubzland.openstack.openstack_config_template:
+    src: "{{ item }}.j2"
+    dest: "/etc/trove/{{ item }}"
+    owner: root
+    group: trove
+    mode: "0640"
+  loop:
+    - trove.conf
+    - trove-guestagent.conf
+  notify: Restart OpenStack Trove services
+  register: _trove_configuration
+
+- name: Perform a Trove DB sync
+  ansible.builtin.command:
+    cmd: trove-manage db_sync
+  changed_when: false
+  become: true
+  become_user: trove
