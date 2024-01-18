@@ -1,0 +1,108 @@
+---
+argument_specs:
+  main:
+    short_description: |-
+      Install and configure the OpenStack Trove DBaaS component.
+    description:
+      - Creates databases and configures users
+      - Creates OpenStack services and associated users
+      - Creates OpenStack endpoints within OpenStack Keystone
+      - Installs required operating system packages
+      - Applies desired configuration using templates
+    options:
+      openstack_trove_db_name:
+        type: str
+        default: trove
+        description: Name of the MySQL database created.
+      openstack_trove_db_user:
+        type: str
+        default: trove
+        description: Database user created for the OpenStack Trove component.
+      openstack_trove_db_password:
+        type: str
+        required: true
+        description: Database password created for the O(openstack_trove_db_user).
+      openstack_trove_service_user:
+        type: str
+        default: trove
+        description: User created in OpenStack Keystone for the Trove component.
+      openstack_trove_service_password:
+        type: str
+        required: true
+        description: Service password assigned to the O(openstack_trove_service_user).
+      openstack_trove_provider_network_name:
+        type: str
+        required: true
+        description: Name of the created Neutron provider network for DBaaS traffic.
+      openstack_trove_provider_network_type:
+        type: str
+        required: true
+        choices:
+          - vlan
+          - flat
+        description: Type of the underlying OVN provider network being configured.
+      openstack_trove_provider_physical_network:
+        type: str
+        required: true
+        description: >-
+          Underlying OVN network to use for DBaaS traffic. This network must
+          be created separately in Neutron, and any necessary bridges must
+          already exist. This is done automatically by the
+          C(dubzland.openstack.openstack_neutron) role.
+      openstack_trove_provider_network_segmentation_id:
+        type: int
+        description: >-
+          VLAN tag to associate with this Neutron network.  Required if
+          O(openstack_trove_provider_network_type) is V(vlan).
+      openstack_trove_provider_subnet_name:
+        type: str
+        default: "{{ openstack_trove_provider_network_name }}-subnet"
+        description: Name of the created Neutron provider subnet for DBaaS traffic.
+      openstack_trove_provider_network_ip:
+        type: str
+        required: true
+        description: IP address of the controller node on the DBaaS network.
+      openstack_trove_provider_network_cidr:
+        type: str
+        required: true
+        description: Network CIDR for the DBaaS provider network.
+      openstack_trove_provider_network_allocation_pool:
+        type: dict
+        options:
+          start:
+            type: str
+            required: true
+            description: First IP address available in the DBaaS pool.
+          end:
+            type: str
+            required: true
+            description: Last IP address available in the DBaaS pool.
+        required: true
+        description: IP address pool to use for Trove instances.
+      openstack_trove_packages:
+        type: list
+        elements: str
+        default:
+          - bind9utils
+          - bind9-doc
+          - trove
+          - python3-trove-dashboard
+          - trove-mdns
+          - trove-producer
+          - trove-worker
+        description: List of packages installed on the controller node for the Trove component.
+      openstack_trove_services:
+        type: list
+        elements: str
+        default:
+          - trove-central
+          - trove-api
+          - trove-worker
+          - trove-producer
+          - trove-mdns
+          - apache2
+        description: Services to be restarted during install (and/or configuration changes) on the controller node.
+      openstack_trove_service_description:
+        type: str
+        default: OpenStack DNS
+        description: Human-readable description for the OpenStack Trove service within Keystone.

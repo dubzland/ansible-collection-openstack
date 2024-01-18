@@ -1,0 +1,44 @@
+#jinja2: trim_blocks:True,lstrip_blocks:True
+{{ ansible_managed | comment }}
+[DEFAULT]
+network_driver = trove.network.neutron.NeutronDriver
+management_networks = {{ _trove_mgmt_network.network.id }}
+management_security_groups = {{ _trove_mgmt_security_group.security_group.id }}
+nova_keypair = trove-mgmt
+transport_url = rabbit://openstack:{{ openstack_rabbitmq_password }}@{{ _controller_address }}:5672/
+control_exchange = trove
+reboot_time_out = 300
+usage_timeout = 900
+agent_call_high_timeout = 1200
+debug = True
+
+[keystone_authtoken]
+auth_url = {{ _controller_http_host }}:5000/
+memcached_servers = {{ _controller_address }}:11211
+auth_type = password
+project_domain_name = {{ _openstack_domain_name }}
+user_domain_name = {{ _openstack_domain_name }}
+project_name = service
+username = {{ openstack_trove_service_user }}
+password = {{ openstack_trove_service_password }}
+
+[service_credentials]
+auth_url = {{ _controller_http_host }}:5000/
+region_name = {{ _openstack_region_name }}
+project_domain_name = {{ _openstack_domain_name }}
+user_domain_name = {{ _openstack_domain_name }}
+project_name = service
+username = {{ openstack_trove_service_user }}
+password = {{ openstack_trove_service_password }}
+
+[database]
+connection = mysql+pymysql://{{ openstack_trove_db_user }}:{{ openstack_trove_db_password }}@{{ _mysql_address }}:3306/{{ openstack_trove_db_name }}
+
+[mariadb]
+tcp_ports = 3306,4444,4567,4568
+
+[mysql]
+tcp_ports = 3306
+
+[postgresql]
+tcp_ports = 5432

@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add the ability to configure vlan type provider networks in Neutron
+- OpenStack Trove role
+- OpenStack datastore version module
 
 ### Changed
 
