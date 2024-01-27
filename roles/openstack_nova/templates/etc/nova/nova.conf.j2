@@ -51,6 +51,9 @@ service_token_roles_required = true
 [libvirt]
 rbd_user = cinder
 rbd_secret_uuid = {{ _ceph_fsid }}
+images_type = rbd
+images_rbd_pool = vms
+images_rbd_ceph_conf = /etc/ceph/ceph.conf
 {% endif %}
 
 [neutron]
