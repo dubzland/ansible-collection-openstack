@@ -23,7 +23,7 @@ os_region_name = {{ _openstack_domain_name }}
 ## Glance
 glance_api_servers = {{ _controller_http_host }}:9292
 glance_api_version = 2
-default_volume_type = lvm
+default_volume_type = {{ openstack_cinder_default_volume_type }}
 
 [database]
 connection = mysql+pymysql://{{ openstack_cinder_db_user }}:{{ openstack_cinder_db_password }}@{{ _mysql_address }}:3306/{{ openstack_cinder_db_name }}

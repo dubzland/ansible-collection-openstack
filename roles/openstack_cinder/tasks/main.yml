@@ -86,6 +86,10 @@
   when: "'storage' in group_names"
   notify: Restart tgt
 
+- name: Include NFS tasks
+  ansible.builtin.include_tasks: nfs.yml
+  when: openstack_cinder_nfs_client
+
 - name: Ensure the OpenStack Cinder configuration is present
   dubzland.openstack.openstack_config_template:
     src: etc/cinder/cinder.conf.j2
