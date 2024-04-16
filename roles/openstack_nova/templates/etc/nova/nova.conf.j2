@@ -4,6 +4,7 @@ log_dir = /var/log/nova
 lock_path = /var/lock/nova
 state_path = {{ openstack_nova_state_path }}
 instances_path = {{ openstack_nova_instances_path }}
+resume_guests_state_on_host_boot: {{ openstack_nova_instances_resume_on_host_boot }}
 transport_url = rabbit://openstack:{{ openstack_rabbitmq_password }}@{{ _controller_address }}:5672/
 my_ip = {{ ansible_default_ipv4['address'] }}
 {% if openstack_nova_api_worker_count is defined %}

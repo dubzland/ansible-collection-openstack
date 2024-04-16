@@ -23,3 +23,5 @@ openstack_nova_ceph_client: true
 
 openstack_nova_state_path: /var/lib/nova
 openstack_nova_instances_path: "{{ openstack_nova_state_path }}/instances"
+
+openstack_nova_instances_resume_on_host_boot: false
