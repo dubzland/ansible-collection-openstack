@@ -109,3 +109,18 @@ argument_specs:
         type: bool
         default: true
         description: Controls installation and configuration of the ceph client.
+      openstack_nova_state_path:
+        type: path
+        default: /var/lib/nova
+        description: Local directory where OpenStack Nova managed state files are stored.
+      openstack_nova_instances_path:
+        type: path
+        default: /var/lib/nova/instances
+        description: Local directory where OpenStack Nova managed VM disks are stored.
+      openstack_nova_instances_resume_on_host_boot:
+        type: bool
+        default: false
+        description: Resume running instances when host reboots.
+      openstack_nova_vnc_base_url:
+        type: str
+        description: "VNC base url (default: http://<controller_ip>:6080/vnc_auto.html)"

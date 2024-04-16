@@ -107,6 +107,18 @@
     mode: "0640"
   notify: Restart OpenStack Nova services
 
+- name: Ensure the OpenStack Nova local directories have the proper permissions
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: nova
+    group: nova
+    mode: "0750"
+  loop:
+    - "{{ openstack_nova_state_path }}"
+    - "{{ openstack_nova_instances_path }}"
+  when: "'compute' in group_names"
+  notify: Restart OpenStack Nova services
+
 - name: Perform a Nova DB sync
   ansible.builtin.command:
     cmd: nova-manage api_db sync
