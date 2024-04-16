@@ -23,3 +23,9 @@ openstack_neutron_designate_enabled: false
 #   - name: provider
 #     bridge: br-provider
 #     interface: bond0
+
+openstack_neutron_tenant_network_types:
+  - geneve
+
+openstack_neutron_geneve_network_ranges:
+  - 1:1000

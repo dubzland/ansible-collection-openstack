@@ -26,7 +26,7 @@ network_vlan_ranges = {{ vlan_networks | join(',') }}
 {% endif %}
 {% if 'geneve' in _type_drivers %}
 [ml2_type_geneve]
-vni_ranges = 1:1000
+vni_ranges = {{ openstack_neutron_geneve_network_ranges | join(',') }}
 max_header_size = 38
 
 {% endif %}
