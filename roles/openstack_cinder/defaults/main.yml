@@ -6,6 +6,7 @@ openstack_cinder_db_user: cinder
 openstack_cinder_service_user: cinder
 # openstack_cinder_service_password:
 
+openstack_cinder_truenas_client: false
 openstack_cinder_nfs_client: false
 # openstack_cinder_nfs_shares:
 #  - hostname: nfs-host

@@ -86,6 +86,10 @@
   when: "'storage' in group_names"
   notify: Restart tgt
 
+- name: Include truenas tasks
+  ansible.builtin.include_tasks: truenas.yml
+  when: openstack_cinder_truenas_client
+
 - name: Include NFS tasks
   ansible.builtin.include_tasks: nfs.yml
   when: openstack_cinder_nfs_client

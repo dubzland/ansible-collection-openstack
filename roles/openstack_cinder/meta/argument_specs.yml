@@ -31,6 +31,10 @@ argument_specs:
         type: str
         required: true
         description: Service password assigned to the O(openstack_cinder_service_user).
+      openstack_cinder_truenas_client:
+        type: bool
+        default: false
+        description: Controls installation and configuration of the TrueNAS client.
       openstack_cinder_nfs_client:
         type: bool
         default: false
