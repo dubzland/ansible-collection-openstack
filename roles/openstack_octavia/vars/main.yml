@@ -10,6 +10,7 @@ openstack_octavia_packages:
   - python3-octavia
   - python3-octavia-dashboard
   - python3-octaviaclient
+  - python3-venv
   - qemu-utils
 openstack_octavia_services:
   - octavia-api
