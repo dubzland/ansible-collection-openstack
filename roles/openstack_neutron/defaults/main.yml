@@ -18,6 +18,7 @@ openstack_neutron_designate_enabled: false
 # openstack_neutron_provider_networks:
 #   - name: provider
 #     type: vlan
+#     range: 134:134
 # openstack_neutron_provider_network_mappings:
 #   - name: provider
 #     bridge: br-provider

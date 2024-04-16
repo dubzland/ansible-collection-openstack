@@ -13,9 +13,15 @@ overlay_ip_version = 4
 network_vlan_ranges = {{ openstack_neutron_provider_networks | selectattr('type', 'equalto', 'flat') | map(attribute='name') | join(',') }}
 
 {% endif %}
-{% if 'vlan' in _type_drivers %}
+{%- if 'vlan' in _type_drivers -%}
+{%-   set vlan_networks = [] -%}
+{%-   for network in openstack_neutron_provider_networks -%}
+{%-     if network['type'] == 'vlan' -%}
+{{-       vlan_networks.append("%s:%s" % (network['name'], network['range'])) -}}
+{%-     endif -%}
+{%-   endfor -%}
 [ml2_type_vlan]
-network_vlan_ranges = {{ openstack_neutron_provider_networks | selectattr('type', 'equalto', 'vlan') | map(attribute='name') | join(',') }}
+network_vlan_ranges = {{ vlan_networks | join(',') }}
 
 {% endif %}
 {% if 'geneve' in _type_drivers %}
