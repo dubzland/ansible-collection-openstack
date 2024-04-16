@@ -46,6 +46,26 @@ argument_specs:
         type: str
         default: OpenStack Image
         description: Human-readable description for the OpenStack Glance service within Keystone.
+      openstack_glance_default_backend:
+        type: str
+        default: filesystem
+        description: Default backend configured for the Image service.
+      openstack_glance_file_backend_enabled:
+        type: bool
+        default: true
+        description: Controls whether the filesystem backend is enabled.
+      openstack_glance_file_backend_datadir:
+        type: path
+        default: /var/lib/glance/images
+        description: Local filesystem directory where Glance images are stored.
+      openstack_glance_swift_backend_enabled:
+        type: bool
+        default: true
+        description: Controls whether the swift backend is enabled.
+      openstack_glance_swift_backend_container:
+        type: str
+        default: glance_images
+        description: OpenStack Swift container to hold Glance images.
       openstack_glance_worker_count:
         type: int
         required: false

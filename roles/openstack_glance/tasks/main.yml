@@ -72,7 +72,18 @@
     owner: root
     group: glance
     mode: "0640"
+  when: openstack_glance_swift_backend_enabled
   notify: Restart OpenStack Glance services
+
+- name: Ensure the file backend data directory has the proper permissions
+  ansible.builtin.file:
+    path: "{{ openstack_glance_file_backend_datadir }}"
+    owner: glance
+    group: glance
+    mode: "0750"
+  when: openstack_glance_file_backend_enabled
+  notify: Restart OpenStack Glance services
+
 
 - name: Ensure the Openstack Glance configuration is present
   dubzland.openstack.openstack_config_template:

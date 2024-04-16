@@ -6,5 +6,11 @@ openstack_glance_db_user: glance
 openstack_glance_service_user: glance
 # openstack_glance_service_password:
 
-openstack_glance_swift_container: glance_images
+openstack_glance_default_backend: file
+
+openstack_glance_file_backend_enabled: true
+openstack_glance_file_backend_datadir: /var/lib/glance/images
+
+openstack_glance_swift_backend_enabled: false
+openstack_glance_swift_backend_container: glance_images
 # openstack_glance_worker_count:
