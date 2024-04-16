@@ -47,7 +47,7 @@ password = {{ openstack_nova_service_password }}
 service_token_roles = service
 service_token_roles_required = true
 
-{% if 'compute' in group_names %}
+{% if 'compute' in group_names and openstack_nova_ceph_client %}
 [libvirt]
 rbd_user = cinder
 rbd_secret_uuid = {{ _ceph_fsid }}

@@ -36,6 +36,9 @@
         openstack_cinder_controller_services if ('controller' in group_names)
         else openstack_cinder_storage_services
       }}
+
+- name: Set OpenStack Cinder ceph facts
+  ansible.builtin.set_fact:
     _ceph_bootstrap_host: >-
       {{
         hostvars[groups['controller'][0]]['ansible_local']['ceph']['bootstrap']['host']
@@ -44,6 +47,7 @@
       {{
         hostvars[groups['controller'][0]]['ansible_local']['ceph']['cluster']['fsid']
       }}
+  when: openstack_cinder_ceph_client
 
 - name: Include component tasks
   ansible.builtin.include_tasks: component.yml
@@ -74,7 +78,7 @@
         owner: root
         group: cinder
         mode: "0640"
-  when: "'storage' in group_names"
+  when: "('storage' in group_names) and openstack_cinder_ceph_client"
 
 - name: Ensure tgt is configured
   ansible.builtin.copy:

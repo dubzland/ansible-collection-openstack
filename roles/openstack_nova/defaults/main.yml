@@ -18,3 +18,5 @@ openstack_nova_neutron_service_user: neutron
 # openstack_nova_metadata_worker_count:
 # openstack_nova_conductor_worker_count:
 # openstack_nova_scheduler_worker_count:
+
+openstack_nova_ceph_client: true

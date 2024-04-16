@@ -31,6 +31,10 @@ argument_specs:
         type: str
         required: true
         description: Service password assigned to the O(openstack_cinder_service_user).
+      openstack_cinder_ceph_client:
+        type: bool
+        default: true
+        description: Controls installation and configuration of the Ceph client.
       openstack_cinder_truenas_client:
         type: bool
         default: false
@@ -65,7 +69,6 @@ argument_specs:
         default:
           - cinder-volume
           - tgt
-          - ceph-common
         description: List of packages installed on the storage nodes for the Cinder component.
       openstack_cinder_storage_nfs_packages:
         type: list
