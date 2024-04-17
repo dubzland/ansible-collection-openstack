@@ -21,6 +21,10 @@ openstack_nova_neutron_service_user: neutron
 
 openstack_nova_ceph_client: true
 
+# openstack_nova_nfs_storage:
+#   hostname: nas01
+#   path: /mnt/nova-instances
+
 openstack_nova_state_path: /var/lib/nova
 openstack_nova_instances_path: "{{ openstack_nova_state_path }}/instances"
 

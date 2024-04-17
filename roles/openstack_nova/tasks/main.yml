@@ -65,9 +65,9 @@
   ansible.builtin.include_tasks: ceph.yml
   when: "'compute' in group_names and openstack_nova_ceph_client"
 
-- name: Ensure the cinder secret exists in libvirt
-  ansible.builtin.include_tasks: ceph_nova_auth.yml
-  when: "'compute' in group_names and openstack_nova_ceph_client"
+- name: Execute NFS tasks
+  ansible.builtin.include_tasks: nfs.yml
+  when: "'compute' in group_names and openstack_nova_nfs_storage is defined"
 
 - name: Assign the vnc base url
   ansible.builtin.set_fact:
@@ -81,18 +81,6 @@
     owner: root
     group: nova
     mode: "0640"
-  notify: Restart OpenStack Nova services
-
-- name: Ensure the OpenStack Nova local directories have the proper permissions
-  ansible.builtin.file:
-    path: "{{ item }}"
-    owner: nova
-    group: nova
-    mode: "0750"
-  loop:
-    - "{{ openstack_nova_state_path }}"
-    - "{{ openstack_nova_instances_path }}"
-  when: "'compute' in group_names"
   notify: Restart OpenStack Nova services
 
 - name: Perform a Nova DB sync

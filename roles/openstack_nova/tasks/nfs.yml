@@ -1,0 +1,13 @@
+---
+- name: Ensure required packages are installed
+  ansible.builtin.package:
+    name: "{{ openstack_nova_compute_nfs_packages }}"
+    state: present
+
+- name: Ensure required NFS directories are mounted
+  ansible.posix.mount:
+    src: "{{ openstack_nova_nfs_storage['hostname'] }}:{{ openstack_nova_nfs_storage['path'] }}"
+    path: /var/lib/nova/instances
+    opts: rw
+    state: mounted
+    fstype: nfs
