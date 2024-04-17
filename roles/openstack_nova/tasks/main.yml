@@ -37,14 +37,6 @@
         else openstack_nova_compute_services
       }}
 
-- name: Set OpenStack Cinder ceph facts
-  ansible.builtin.set_fact:
-    _ceph_bootstrap_host: >-
-      {{ hostvars[groups['controller'][0]]['ansible_local']['ceph']['bootstrap']['host'] }}
-    _ceph_fsid: >-
-      {{ hostvars[groups['controller'][0]]['ansible_local']['ceph']['cluster']['fsid'] }}
-  when: openstack_nova_ceph_client
-
 - name: Include component tasks
   ansible.builtin.include_tasks: component.yml
   when: "'controller' in group_names"
@@ -63,13 +55,6 @@
     state: present
   loop: "{{ _nova_packages }}"
 
-- name: Ensure required Ceph packages are installed
-  ansible.builtin.package:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ openstack_nova_ceph_packages }}"
-  when: "'compute' in group_names and openstack_nova_ceph_client"
-
 - name: Ensure the iscsid service is enabled
   ansible.builtin.service:
     name: iscsid
@@ -77,16 +62,8 @@
     enabled: true
   when: "'compute' in group_names"
 
-- name: Ensure ceph is configured
-  ansible.builtin.import_role:
-    name: dubzland.openstack.openstack_ceph_client
-  vars:
-    openstack_ceph_client_bootstrap_host: "{{ _ceph_bootstrap_host }}"
-    openstack_ceph_client_keys:
-      - name: cinder
-        owner: root
-        group: nova
-        mode: "0640"
+- name: Execute Ceph tasks
+  ansible.builtin.include_tasks: ceph.yml
   when: "'compute' in group_names and openstack_nova_ceph_client"
 
 - name: Ensure the cinder secret exists in libvirt
