@@ -4,7 +4,6 @@
     name: "{{ openstack_cinder_storage_nfs_packages }}"
     state: present
   notify: Restart OpenStack Cinder services
-  when: "('storage' in group_names) and openstack_cinder_ceph_client"
 
 - name: Ensure cinder NFS shares are configured
   ansible.builtin.template:
@@ -14,4 +13,4 @@
     group: cinder
     mode: "0640"
   notify: Restart OpenStack Cinder services
-  when: "('storage' in group_names) and openstack_cinder_nfs_shares is defined"
+  when: "openstack_cinder_nfs_shares is defined"

@@ -91,11 +91,11 @@
 
 - name: Include truenas tasks
   ansible.builtin.include_tasks: truenas.yml
-  when: openstack_cinder_truenas_client
+  when: "('storage' in group_names) and openstack_cinder_truenas_client"
 
 - name: Include NFS tasks
   ansible.builtin.include_tasks: nfs.yml
-  when: openstack_cinder_nfs_client
+  when: "('storage' in group_names) and openstack_cinder_nfs_client"
 
 - name: Ensure the OpenStack Cinder configuration is present
   dubzland.openstack.openstack_config_template:

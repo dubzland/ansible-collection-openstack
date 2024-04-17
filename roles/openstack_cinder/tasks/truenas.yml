@@ -6,7 +6,6 @@
     update: false
     version: "{{ openstack_cinder_ixsystems_repository_commit }}"
   changed_when: false
-  when: "'storage' in group_names"
 
 - name: Ensure iXsystems driver is symlinked
   ansible.builtin.file:
@@ -15,4 +14,3 @@
     owner: root
     group: root
     state: link
-  when: "'storage' in group_names"
