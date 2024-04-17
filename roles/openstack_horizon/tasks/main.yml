@@ -26,9 +26,8 @@
 
 - name: Ensure required OpenStack Horizon packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_horizon_packages }}"
     state: present
-  loop: "{{ openstack_horizon_packages }}"
 
 - name: Ensure Horizon is configured
   dubzland.openstack.openstack_config_template:

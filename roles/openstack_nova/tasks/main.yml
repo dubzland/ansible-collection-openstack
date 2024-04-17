@@ -51,9 +51,8 @@
 
 - name: Ensure required OpenStack Nova packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ _nova_packages }}"
     state: present
-  loop: "{{ _nova_packages }}"
 
 - name: Ensure the iscsid service is enabled
   ansible.builtin.service:

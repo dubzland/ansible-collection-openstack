@@ -48,9 +48,8 @@
 
 - name: Ensure the required Placement service packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_placement_packages }}"
     state: present
-  loop: "{{ openstack_placement_packages }}"
 
 - name: Ensure the OpenStack Placement configuration is present
   dubzland.openstack.openstack_config_template:

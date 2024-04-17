@@ -44,9 +44,8 @@
 
 - name: Ensure required Designate packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_designate_packages }}"
     state: present
-  loop: "{{ openstack_designate_packages }}"
 
 - name: Ensure the Designate bind9 keys are present
   ansible.builtin.template:
