@@ -13,5 +13,3 @@ openstack_neutron_controller_services:
 openstack_neutron_compute_services:
   - neutron-ovn-metadata-agent
 openstack_neutron_service_description: OpenStack Networking
-openstack_neutron_tenant_network_types:
-  - geneve
