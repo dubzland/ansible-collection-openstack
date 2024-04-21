@@ -48,9 +48,8 @@
 
 - name: Ensure required OpenStack Barbican packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_barbican_packages }}"
     state: present
-  loop: "{{ openstack_barbican_packages }}"
 
 - name: Ensure the OpenStack Barbican configuration is present
   dubzland.openstack.openstack_config_template:

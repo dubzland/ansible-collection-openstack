@@ -90,9 +90,8 @@
 
 - name: Ensure required Heat packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_heat_packages }}"
     state: present
-  loop: "{{ openstack_heat_packages }}"
 
 - name: Ensure the OpenStack Heat configuration is present
   dubzland.openstack.openstack_config_template:

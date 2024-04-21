@@ -51,9 +51,8 @@
 
 - name: Ensure required OpenStack Cinder packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ _cinder_packages }}"
     state: present
-  loop: "{{ _cinder_packages }}"
   notify: Restart OpenStack Cinder services
 
 - name: Include Ceph tasks

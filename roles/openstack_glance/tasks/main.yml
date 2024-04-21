@@ -61,9 +61,8 @@
 
 - name: Ensure required OpenStack Glance packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_glance_packages }}"
     state: present
-  loop: "{{ openstack_glance_packages }}"
 
 - name: Ensure the Openstack Glance configuration is present
   dubzland.openstack.openstack_config_template:

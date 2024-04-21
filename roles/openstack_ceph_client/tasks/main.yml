@@ -1,9 +1,8 @@
 ---
 - name: Ensure required Ceph packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_ceph_client_packages }}"
     state: present
-  loop: "{{ openstack_ceph_client_packages }}"
 
 - name: Ensure the ceph configuration directory exists
   ansible.builtin.file:

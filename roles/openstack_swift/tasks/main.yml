@@ -49,9 +49,8 @@
 
 - name: Ensure required OpenStack Swift packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ _swift_packages }}"
     state: present
-  loop: "{{ _swift_packages }}"
 
 - name: Ensure the OpenStack Swift configuration is generated on the controller
   ansible.builtin.template:

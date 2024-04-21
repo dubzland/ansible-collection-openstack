@@ -43,9 +43,8 @@
 
 - name: Ensure the Keystone packages are installed
   ansible.builtin.apt:
-    name: "{{ item }}"
+    name: "{{ openstack_keystone_packages }}"
     state: present
-  loop: "{{ openstack_keystone_packages }}"
 
 - name: Ensure the Keystone configuration is present
   dubzland.openstack.openstack_config_template:

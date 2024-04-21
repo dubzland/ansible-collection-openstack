@@ -48,9 +48,8 @@
 
 - name: Ensure required Octavia packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_octavia_packages }}"
     state: present
-  loop: "{{ openstack_octavia_packages }}"
 
 - name: Ensure the Octavia certificate directories exist
   ansible.builtin.file:
