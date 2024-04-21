@@ -12,7 +12,6 @@ platform.
 
 This collection has been tested against following ansible-core versions:
 
-- 2.13
 - 2.14
 - 2.15
 - 2.16
