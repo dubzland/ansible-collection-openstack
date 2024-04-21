@@ -5,10 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0]
+
+### Added
+
+- Install python3-venv for Octavia (#11)
+- Allow Nova instances to restart on node reboot (#10)
+- Allow overridding Nova paths (#9)
+- Allow more control over provider network configuration (#5)
+- Allow NoVNC proxy base url to be specified (#4)
+- Allow extended storage configuration (#2)
 
 ### Changed
 
+- Remove unnecessary Apache2 restarts during installation. (#8)
+- Install packages in bulk (instead of in loops) (#6)
+- Bump supported Ansible version to 2.14.0 (#3)
 - Project now uses ci-templates for testing (#18)
 - Move repository to `dubzland/ansible-collections/openstack` (#17)
 
@@ -47,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenStack Magnum role
 - OpenStack Swift role
 
-[unreleased]: https://git.dubzland.com/dubzland/ansible-collections/openstack/-/compare/v1.1.0...HEAD
+[unreleased]: https://git.dubzland.com/dubzland/ansible-collections/openstack/-/compare/v1.2.0...HEAD
+[1.2.0]: https://git.dubzland.com/dubzland/ansible-collections/openstack/-/compare/v1.1.0...v1.2.0
 [1.1.0]: https://git.dubzland.com/dubzland/ansible-collections/openstack/-/compare/v1.0.0...v1.1.0
 [1.0.0]: https://git.dubzland.com/dubzland/ansible-collections/openstack/-/tree/v1.0.0
