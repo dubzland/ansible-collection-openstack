@@ -107,6 +107,18 @@ argument_specs:
         description: >-
           List of mappings from OVN networks to physical networks.  Required
           for compute nodes.
+      openstack_neutron_tenant_network_types:
+        type: list
+        elements: str
+        default:
+          - geneve
+        description: List of allowed tenant network types.
+      openstack_neutron_geneve_network_ranges:
+        type: list
+        elements: str
+        default:
+          - 1:1000
+        description: List of VLAN ranges allowed for geneve tenant networks.
       openstack_neutron_controller_packages:
         type: list
         elements: str
