@@ -66,6 +66,10 @@
   ansible.builtin.include_tasks: ceph.yml
   when: "'compute' in group_names and openstack_nova_ceph_integration"
 
+- name: Include NFS tasks
+  ansible.builtin.include_tasks: nfs.yml
+  when: "'compute' in group_names and openstack_nova_nfs_storage is defined"
+
 - name: Ensure the OpenStack Nova configuration is present
   dubzland.openstack.openstack_config_template:
     src: etc/nova/nova.conf.j2
