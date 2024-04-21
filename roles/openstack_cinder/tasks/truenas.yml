@@ -1,0 +1,16 @@
+---
+- name: Ensure the iXsystems repository is present
+  ansible.builtin.git:
+    repo: "{{ openstack_cinder_ixsystems_repository_url }}"
+    dest: /opt/ixsystems/cinder
+    update: false
+    version: "{{ openstack_cinder_ixsystems_repository_commit }}"
+  changed_when: false
+
+- name: Ensure iXsystems driver is symlinked
+  ansible.builtin.file:
+    src: /opt/ixsystems/cinder/driver/ixsystems
+    dest: /usr/lib/python3/dist-packages/cinder/volume/drivers/ixsystems
+    owner: root
+    group: root
+    state: link

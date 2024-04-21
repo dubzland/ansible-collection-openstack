@@ -52,6 +52,10 @@ argument_specs:
         type: bool
         default: false
         description: Controls installation and configuration of the Ceph RBD client for Cinder.
+      openstack_cinder_truenas_integration:
+        type: bool
+        default: false
+        description: Controls installation and configuration of the TrueNAS client.
       openstack_cinder_controller_packages:
         type: list
         elements: str
