@@ -65,15 +65,6 @@
     state: present
   loop: "{{ openstack_glance_packages }}"
 
-- name: Ensure the OpenStack Glance backends are configured
-  ansible.builtin.template:
-    src: etc/glance/glance-swift-store.conf.j2
-    dest: /etc/glance/glance-swift-store.conf
-    owner: root
-    group: glance
-    mode: "0640"
-  notify: Restart OpenStack Glance services
-
 - name: Ensure the Openstack Glance configuration is present
   dubzland.openstack.openstack_config_template:
     src: etc/glance/glance-api.conf.j2
@@ -81,6 +72,25 @@
     owner: root
     group: glance
     mode: "0640"
+  notify: Restart OpenStack Glance services
+
+- name: Ensure the OpenStack Swift backend is configured
+  ansible.builtin.template:
+    src: etc/glance/glance-swift-store.conf.j2
+    dest: /etc/glance/glance-swift-store.conf
+    owner: root
+    group: glance
+    mode: "0640"
+  notify: Restart OpenStack Glance services
+  when: openstack_glance_swift_backend_enabled
+
+- name: Ensure the file backend data directory has the proper permissions
+  ansible.builtin.file:
+    path: "{{ openstack_glance_file_backend_datadir }}"
+    owner: glance
+    group: glance
+    mode: "0750"
+  when: openstack_glance_file_backend_enabled
   notify: Restart OpenStack Glance services
 
 - name: Perform a Glance DB sync
