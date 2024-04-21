@@ -78,10 +78,9 @@
 
 - name: Ensure required OpenStack Magnum packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_magnum_packages }}"
     state: present
   register: _magnum_package_install
-  loop: "{{ openstack_magnum_packages }}"
 
 # See: https://review.opendev.org/c/openstack/magnum/+/799505
 - name: Apply the kube_dashboard_version patch
@@ -96,14 +95,14 @@
     src: dashboard.patch
     basedir: /usr/lib/python3/dist-packages/magnum_ui/
     strip: 2
+  register: _magnum_dashboard_patch
 
-- name: Ensure the Horizon assets are compressed # noqa: no-handler
+- name: Ensure the Horizon assets are collected # noqa: no-handler
   ansible.builtin.command:
-    cmd: python3 manage.py compress
+    cmd: su -s /bin/sh -c "python3 manage.py collectstatic --no-input" horizon
     chdir: /usr/share/openstack-dashboard
-  changed_when: false
-  when: _magnum_package_install is changed
-  notify: Restart OpenStack Magnum services
+  notify: Restart Apache2
+  when: _magnum_dashboard_patch is changed
 
 - name: Ensure the OpenStack Magnum configuration is present
   dubzland.openstack.openstack_config_template:
