@@ -33,8 +33,8 @@ argument_specs:
         description: Service password assigned to the O(openstack_cinder_service_user).
       openstack_cinder_ceph_integration:
         type: bool
-        default: true
-        description: Controls installation and configuration of the Ceph client for Cinder.
+        default: false
+        description: Controls installation and configuration of the Ceph RBD client for Cinder.
       openstack_cinder_controller_packages:
         type: list
         elements: str

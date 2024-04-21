@@ -49,8 +49,10 @@ service_token_roles_required = true
 
 {% if 'compute' in group_names %}
 [libvirt]
+{%   if openstack_nova_ceph_integration %}
 rbd_user = cinder
 rbd_secret_uuid = {{ _ceph_fsid }}
+{%   endif %}
 {% endif %}
 
 [neutron]
