@@ -109,3 +109,7 @@ argument_specs:
         type: bool
         default: false
         description: Controls installation and configuration of the Ceph RBD client for Nova.
+      openstack_nova_ceph_rbd_root_disks:
+        type: bool
+        default: false
+        description: Toggles storage of instance boot disks in Ceph RBD.

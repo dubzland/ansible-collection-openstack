@@ -20,3 +20,4 @@ openstack_nova_neutron_service_user: neutron
 # openstack_nova_scheduler_worker_count:
 
 openstack_nova_ceph_integration: false
+openstack_nova_ceph_rbd_root_disks: false
