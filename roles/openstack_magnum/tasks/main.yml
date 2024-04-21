@@ -78,10 +78,9 @@
 
 - name: Ensure required OpenStack Magnum packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_magnum_packages }}"
     state: present
   register: _magnum_package_install
-  loop: "{{ openstack_magnum_packages }}"
 
 # See: https://review.opendev.org/c/openstack/magnum/+/799505
 - name: Apply the kube_dashboard_version patch

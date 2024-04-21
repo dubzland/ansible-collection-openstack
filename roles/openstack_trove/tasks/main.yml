@@ -48,9 +48,8 @@
 
 - name: Ensure required trove packages are installed
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: "{{ openstack_trove_packages }}"
     state: present
-  loop: "{{ openstack_trove_packages }}"
 
 - name: Ensure the trove repository is present
   ansible.builtin.git:
