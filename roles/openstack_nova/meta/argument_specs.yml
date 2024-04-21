@@ -113,6 +113,10 @@ argument_specs:
         type: path
         default: /var/lib/nova/instances
         description: Local directory where OpenStack Nova managed VM disks are stored.
+      openstack_nova_instances_resume_on_host_boot:
+        type: bool
+        default: false
+        description: Resume running instances when host reboots.
       openstack_nova_ceph_integration:
         type: bool
         default: false

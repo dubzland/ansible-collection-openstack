@@ -22,6 +22,8 @@ openstack_nova_neutron_service_user: neutron
 openstack_nova_state_path: /var/lib/nova
 openstack_nova_instances_path: "{{ openstack_nova_state_path }}/instances"
 
+openstack_nova_instances_resume_on_host_boot: false
+
 openstack_nova_ceph_integration: false
 openstack_nova_ceph_rbd_root_disks: false
 
