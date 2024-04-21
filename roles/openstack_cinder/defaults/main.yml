@@ -6,6 +6,11 @@ openstack_cinder_db_user: cinder
 openstack_cinder_service_user: cinder
 # openstack_cinder_service_password:
 
+openstack_cinder_nfs_client: false
+# openstack_cinder_nfs_shares:
+#  - hostname: nfs-host
+#    path: /shares/nova-boot
+
 openstack_cinder_ceph_integration: false
 
 openstack_cinder_volume_types:
@@ -29,3 +34,5 @@ openstack_cinder_volume_types:
       report_discard_supported: true
   - name: __DEFAULT__
     state: absent
+
+openstack_cinder_default_volume_type: lvm

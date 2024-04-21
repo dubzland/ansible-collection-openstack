@@ -31,6 +31,23 @@ argument_specs:
         type: str
         required: true
         description: Service password assigned to the O(openstack_cinder_service_user).
+      openstack_cinder_nfs_client:
+        type: bool
+        default: false
+        description: Controls installation and configuration of the NFS client.
+      openstack_cinder_nfs_shares:
+        type: list
+        elements: dict
+        options:
+          hostname:
+            type: str
+            required: true
+            description: Hostname or IP address of the NFS server.
+          path:
+            type: path
+            required: true
+            description: Path on the NFS server used for NFS storage.
+        description: List of NFS shares to make available to OpenStack Cinder.
       openstack_cinder_ceph_integration:
         type: bool
         default: false
@@ -50,6 +67,12 @@ argument_specs:
           - tgt
           - ceph-common
         description: List of packages installed on the storage nodes for the Cinder component.
+      openstack_cinder_storage_nfs_packages:
+        type: list
+        elements: str
+        default:
+          - nfs-common
+        description: List of packages to install on storage nodes when NFS storage is enabled.
       openstack_cinder_controller_services:
         type: list
         elements: str
@@ -68,6 +91,10 @@ argument_specs:
         type: str
         default: OpenStack Block Storage
         description: Human-readable description for the OpenStack Cinder service within Keystone.
+      openstack_cinder_default_volume_type:
+        type: str
+        default: lvm
+        description: Default type for Cinder volumes.
       openstack_cinder_volume_types:
         type: list
         elements: dict
