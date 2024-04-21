@@ -13,6 +13,8 @@ openstack_cinder_nfs_client: false
 
 openstack_cinder_ceph_integration: false
 
+openstack_cinder_truenas_integration: false
+
 openstack_cinder_volume_types:
   - name: lvm
     description: iSCSI Block Device
