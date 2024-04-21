@@ -125,3 +125,7 @@ argument_specs:
             required: true
             description: Local directory to contain NFS mounts.
         description: Local NFS mount configuration
+      openstack_nova_vnc_base_url:
+        type: str
+        default: "http://<controler hostname>:6080/vnc_auto.html"
+        description: Base URL used to construct VNC console links.
