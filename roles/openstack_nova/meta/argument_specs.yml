@@ -105,6 +105,14 @@ argument_specs:
       openstack_nova_scheduler_worker_count:
         type: int
         description: Limit the umber of OpenStack Nova scheduler workers to run.
+      openstack_nova_state_path:
+        type: path
+        default: /var/lib/nova
+        description: Local directory where OpenStack Nova managed state files are stored.
+      openstack_nova_instances_path:
+        type: path
+        default: /var/lib/nova/instances
+        description: Local directory where OpenStack Nova managed VM disks are stored.
       openstack_nova_ceph_integration:
         type: bool
         default: false
