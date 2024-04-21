@@ -36,10 +36,6 @@
         openstack_nova_controller_services if ('controller' in group_names)
         else openstack_nova_compute_services
       }}
-    _ceph_bootstrap_host: >-
-      {{ hostvars[groups['controller'][0]]['ansible_local']['ceph']['bootstrap']['host'] }}
-    _ceph_fsid: >-
-      {{ hostvars[groups['controller'][0]]['ansible_local']['ceph']['cluster']['fsid'] }}
 
 - name: Include component tasks
   ansible.builtin.include_tasks: component.yml
@@ -66,21 +62,13 @@
     enabled: true
   when: "'compute' in group_names"
 
-- name: Ensure ceph is configured
-  ansible.builtin.import_role:
-    name: dubzland.openstack.openstack_ceph_client
-  vars:
-    openstack_ceph_client_bootstrap_host: "{{ _ceph_bootstrap_host }}"
-    openstack_ceph_client_keys:
-      - name: cinder
-        owner: root
-        group: nova
-        mode: "0640"
-  when: "'compute' in group_names"
+- name: Include Ceph tasks
+  ansible.builtin.include_tasks: ceph.yml
+  when: "'compute' in group_names and openstack_nova_ceph_integration"
 
-- name: Ensure the cinder secret exists in libvirt
-  ansible.builtin.include_tasks: ceph_nova_auth.yml
-  when: "'compute' in group_names"
+- name: Include NFS tasks
+  ansible.builtin.include_tasks: nfs.yml
+  when: "'compute' in group_names and openstack_nova_nfs_storage is defined"
 
 - name: Ensure the OpenStack Nova configuration is present
   dubzland.openstack.openstack_config_template:

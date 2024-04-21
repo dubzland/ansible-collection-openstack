@@ -1,8 +1,26 @@
 ---
+- name: Set OpenStack Nova Ceph facts
+  ansible.builtin.set_fact:
+    _ceph_bootstrap_host: >-
+      {{ hostvars[groups['controller'][0]]['ansible_local']['ceph']['bootstrap']['host'] }}
+    _ceph_fsid: >-
+      {{ hostvars[groups['controller'][0]]['ansible_local']['ceph']['cluster']['fsid'] }}
+
 - name: Ensure libvirt is running
   ansible.builtin.service:
     name: libvirtd
     state: started
+
+- name: Ensure ceph is configured
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_ceph_client
+  vars:
+    openstack_ceph_client_bootstrap_host: "{{ _ceph_bootstrap_host }}"
+    openstack_ceph_client_keys:
+      - name: cinder
+        owner: root
+        group: nova
+        mode: "0640"
 
 - name: Check for ceph secret in libvirt
   ansible.builtin.shell:

@@ -49,8 +49,15 @@ service_token_roles_required = true
 
 {% if 'compute' in group_names %}
 [libvirt]
+{%   if openstack_nova_ceph_integration %}
 rbd_user = cinder
 rbd_secret_uuid = {{ _ceph_fsid }}
+{%     if openstack_nova_ceph_rbd_root_disks %}
+images_type = rbd
+images_rbd_pool = vms
+images_rbd_ceph_conf = /etc/ceph/ceph.conf
+{%     endif %}
+{%   endif %}
 {% endif %}
 
 [neutron]

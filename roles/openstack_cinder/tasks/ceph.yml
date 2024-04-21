@@ -1,0 +1,23 @@
+---
+- name: Set OpenStack Cinder ceph facts
+  ansible.builtin.set_fact:
+    _ceph_bootstrap_host: >-
+      {{
+        hostvars[groups['controller'][0]]['ansible_local']['ceph']['bootstrap']['host']
+      }}
+    _ceph_fsid: >-
+      {{
+        hostvars[groups['controller'][0]]['ansible_local']['ceph']['cluster']['fsid']
+      }}
+
+- name: Ensure ceph is configured
+  ansible.builtin.import_role:
+    name: dubzland.openstack.openstack_ceph_client
+  vars:
+    openstack_ceph_client_bootstrap_host: "{{ _ceph_bootstrap_host }}"
+    openstack_ceph_client_keys:
+      - name: cinder
+        owner: root
+        group: cinder
+        mode: "0640"
+  when: "'storage' in group_names"

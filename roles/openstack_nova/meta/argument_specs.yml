@@ -105,3 +105,23 @@ argument_specs:
       openstack_nova_scheduler_worker_count:
         type: int
         description: Limit the umber of OpenStack Nova scheduler workers to run.
+      openstack_nova_ceph_integration:
+        type: bool
+        default: false
+        description: Controls installation and configuration of the Ceph RBD client for Nova.
+      openstack_nova_ceph_rbd_root_disks:
+        type: bool
+        default: false
+        description: Toggles storage of instance boot disks in Ceph RBD.
+      openstack_nova_nfs_storage:
+        type: dict
+        options:
+          hostname:
+            type: str
+            required: true
+            description: Hostname/IP address of the host providing NFS storage.
+          path:
+            type: path
+            required: true
+            description: Local directory to contain NFS mounts.
+        description: Local NFS mount configuration
