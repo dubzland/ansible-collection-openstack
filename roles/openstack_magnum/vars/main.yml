@@ -7,5 +7,4 @@ openstack_magnum_packages:
 openstack_magnum_services:
   - magnum-api
   - magnum-conductor
-  - apache2
 openstack_magnum_service_description: OpenStack Container Infrastructure Management

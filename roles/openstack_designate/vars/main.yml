@@ -13,5 +13,4 @@ openstack_designate_services:
   - designate-worker
   - designate-producer
   - designate-mdns
-  - apache2
 openstack_designate_service_description: OpenStack DNS
