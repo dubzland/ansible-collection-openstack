@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: Josh Williams <jdubz@dubzland.com>
-# MIT License (see LICENSE or https://opensource.org/license/mit/)
-# SPDX-License-Identifier: MIT
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import absolute_import, division, print_function
 
@@ -21,15 +21,32 @@ author:
 requirements:
   - python >= 3.8
 seealso:
-- module: ansible.builtin.copy
-- module: ansible.builtin.template
+  - module: ansible.builtin.copy
+  - module: ansible.builtin.template
 extends_documentation_fragment:
-- action_common_attributes
-- action_common_attributes.flow
-- action_common_attributes.files
-- backup
-- files
-- validate
+  - action_common_attributes
+  - action_common_attributes.flow
+  - action_common_attributes.files
+  - backup
+  - files
+  - validate
+attributes:
+  action:
+    support: full
+  async:
+    support: none
+  bypass_host_loop:
+    support: none
+  check_mode:
+    support: full
+  diff_mode:
+    support: full
+  platform:
+    platforms: posix
+  safe_file_operations:
+    support: full
+  vault:
+    support: full
 """
 
 EXAMPLES = """

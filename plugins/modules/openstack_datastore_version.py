@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: Josh Williams <jdubz@dubzland.com>
-# MIT License (see LICENSE or https://opensource.org/license/mit/)
-# SPDX-License-Identifier: MIT
+# GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import absolute_import, division, print_function
 
@@ -237,14 +237,17 @@ class OpenStackDatastoreVersion(object):
 def main():
     argument_spec = dict(
         cloud=dict(type="str", required=True),
-        manager=dict(type="str", required=True, choices=("mysql", "postgresql")),
+        manager=dict(
+            type="str", required=True, choices=("mysql", "postgresql", "mariadb")
+        ),
         datastore=dict(type="str", required=True),
         version=dict(type="str", required=True),
         image_tags=dict(type="list", elements="str", required=False),
         image_id=dict(type="str", required=False),
-        active=dict(type="bool", default=True),
         validation_rules=dict(type="path", required=True),
-        state=dict(default="present", choices=["present", "absent"]),
+        state=dict(
+            default="present", choices=["present", "absent", "enabled", "disabled"]
+        ),
     )
     module = AnsibleModule(
         argument_spec=argument_spec,
