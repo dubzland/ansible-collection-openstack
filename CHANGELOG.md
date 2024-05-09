@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Project now uses ci-templates for testing (#18)
+- Move repository to `dubzland/ansible-collections/openstack` (#17)
 
 ## [1.1.0] - 2024-01-17
 
@@ -46,5 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenStack Magnum role
 - OpenStack Swift role
 
-[1.1.0]: https://git.dubzland.com/dubzland/ansible-collection-openstack/-/compare/1.0.0...1.1.0
-[1.0.0]: https://git.dubzland.com/dubzland/ansible-collection-openstack/-/tree/1.0.0
+[unreleased]: https://git.dubzland.com/dubzland/ansible-collections/openstack/-/compare/v1.1.0...HEAD
+[1.1.0]: https://git.dubzland.com/dubzland/ansible-collections/openstack/-/compare/v1.0.0...v1.1.0
+[1.0.0]: https://git.dubzland.com/dubzland/ansible-collections/openstack/-/tree/v1.0.0

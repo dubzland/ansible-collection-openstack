@@ -1,6 +1,6 @@
 # Ansible Collection: OpenStack
 
-[![Gitlab pipeline status (self-hosted)](https://git.dubzland.com/dubzland/ansible-collection-openstack/badges/main/pipeline.svg)](https://git.dubzland.com/dubzland/ansible-collection-openstack/pipelines?scope=all&page=1&ref=main)
+[![Gitlab pipeline status (self-hosted)](https://git.dubzland.com/dubzland/ansible-collections/openstack/badges/main/pipeline.svg)](https://git.dubzland.com/dubzland/ansible-collections/openstack/pipelines?scope=all&page=1&ref=main)
 [![Ansible Galaxy](https://img.shields.io/badge/dynamic/json?style=flat&label=galaxy&prefix=v&url=https://galaxy.ansible.com/api/v3/collections/dubzland/openstack/&query=highest_version.version)](https://galaxy.ansible.com/ui/repo/published/dubzland/openstack/)
 [![Liberapay patrons](https://img.shields.io/liberapay/patrons/jdubz)](https://liberapay.com/jdubz/donate)
 [![Liberapay receiving](https://img.shields.io/liberapay/receives/jdubz)](https://liberapay.com/jdubz/donate)
@@ -55,7 +55,7 @@ Also tested against the current development version of `ansible-core`.
 
 This collection is primarily licensed and distributed as a whole under the MIT License.
 
-See [LICENSE](https://git.dubzland.com/dubzland/ansible-collection-openstack/blob/main/LICENSE) for the full text.
+See [LICENSE](https://git.dubzland.com/dubzland/ansible-collections/openstack/blob/main/LICENSE) for the full text.
 
 ## Author
 

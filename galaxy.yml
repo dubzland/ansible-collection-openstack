@@ -22,17 +22,17 @@ dependencies:
   openstack.cloud: "*"
   openvswitch.openvswitch: "*"
 
-repository: https://git.dubzland.com/dubzland/ansible-collection-openstack
+repository: https://git.dubzland.com/dubzland/ansible-collections/openstack
 
 # The URL to any online docs
 documentation: |
   https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/
 
 # The URL to the homepage of the collection/project
-homepage: https://git.dubzland.com/dubzland/ansible-collection-openstack
+homepage: https://git.dubzland.com/dubzland/ansible-collections/openstack
 
 # The URL to the collection issue tracker
-issues: https://git.dubzland.com/dubzland/ansible-collection-openstack/-/issues
+issues: https://git.dubzland.com/dubzland/ansible-collections/openstack/-/issues
 build_ignore:
   - .ansible-lint
   - .cache
