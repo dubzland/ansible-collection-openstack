@@ -52,6 +52,23 @@
     name: "{{ _swift_packages }}"
     state: present
 
+# See: https://review.opendev.org/c/openstack/horizon/+/884545
+- name: Apply the Horizon dashboard patch
+  ansible.posix.patch:
+    src: dashboard.patch
+    basedir: /usr/lib/python3/dist-packages/openstack_dashboard/
+    strip: 2
+  register: _swift_dashboard_patch
+  when: "'controller' in group_names"
+
+- name: Ensure the Horizon assets are collected # noqa: no-handler
+  ansible.builtin.command:
+    cmd: su -s /bin/sh -c "python3 manage.py collectstatic --no-input" horizon
+    chdir: /usr/share/openstack-dashboard
+  notify: Restart Apache2
+  changed_when: false
+  when: "'controller' in group_names and _swift_dashboard_patch is changed"
+
 - name: Ensure the OpenStack Swift configuration is generated on the controller
   ansible.builtin.template:
     src: "etc/swift/{{ item }}.j2"

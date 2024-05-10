@@ -4,3 +4,8 @@
     name: "{{ item }}"
     state: restarted
   loop: "{{ _swift_services }}"
+
+- name: Restart Apache2
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
