@@ -96,9 +96,9 @@
     basedir: /usr/lib/python3/dist-packages/magnum_ui/
     strip: 2
 
-- name: Ensure the Horizon assets are compressed # noqa: no-handler
+- name: Ensure the Horizon assets are collected # noqa: no-handler
   ansible.builtin.command:
-    cmd: python3 manage.py compress
+    cmd: su -s /bin/sh -c "python3 manage.py collectstatic --no-input" horizon
     chdir: /usr/share/openstack-dashboard
   changed_when: false
   when: _magnum_package_install is changed
