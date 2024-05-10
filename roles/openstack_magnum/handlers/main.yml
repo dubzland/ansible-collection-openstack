@@ -4,3 +4,8 @@
     name: "{{ item }}"
     state: restarted
   loop: "{{ openstack_magnum_services }}"
+
+- name: Restart Apache2
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
