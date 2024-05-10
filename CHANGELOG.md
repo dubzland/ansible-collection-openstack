@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Apply patch for Swift dashboard (#7)
 - Project now uses ci-templates for testing (#18)
 - Move repository to `dubzland/ansible-collections/openstack` (#17)
 
