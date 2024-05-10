@@ -1,9 +1,11 @@
 # Ansible Collection: OpenStack
 
-[![Gitlab pipeline status (self-hosted)](https://git.dubzland.com/dubzland/ansible-collections/openstack/badges/main/pipeline.svg)](https://git.dubzland.com/dubzland/ansible-collections/openstack/pipelines?scope=all&page=1&ref=main)
-[![Ansible Galaxy](https://img.shields.io/badge/dynamic/json?style=flat&label=galaxy&prefix=v&url=https://galaxy.ansible.com/api/v3/collections/dubzland/openstack/&query=highest_version.version)](https://galaxy.ansible.com/ui/repo/published/dubzland/openstack/)
-[![Liberapay patrons](https://img.shields.io/liberapay/patrons/jdubz)](https://liberapay.com/jdubz/donate)
-[![Liberapay receiving](https://img.shields.io/liberapay/receives/jdubz)](https://liberapay.com/jdubz/donate)
+[![Gitlab pipeline][pipeline-badge]][pipeline-url]
+[![Gitlab coverage][coverage-badge]][coverage-url]
+[![Galaxy Version][galaxy-badge]][galaxy-url]
+[![license][license-badge]][license-url]
+[![Liberapay patrons][liberapay-patrons-badge]][liberapay-url]
+[![Liberapay receiving][liberapay-receives-badge]][liberapay-url]
 
 Installs and configures various components of the OpenStack cloud computing
 platform.
@@ -61,6 +63,17 @@ See [LICENSE](https://git.dubzland.com/dubzland/ansible-collections/openstack/bl
 
 - [Josh Williams](https://dubzland.com)
 
+[pipeline-badge]: https://img.shields.io/gitlab/pipeline-status/dubzland%2Fansible-collections%2Fopenstack?gitlab_url=https%3A%2F%2Fgit.dubzland.com&branch=main&style=flat-square&logo=gitlab
+[pipeline-url]: https://git.dubzland.com/dubzland/ansible-collections/openstack/pipelines?scope=all&page=1&ref=main
+[coverage-badge]: https://img.shields.io/gitlab/pipeline-coverage/dubzland%2Fansible-collections%2Fopenstack?gitlab_url=https%3A%2F%2Fgit.dubzland.com&branch=main&style=flat-square&logo=gitlab
+[coverage-url]: https://git.dubzland.com/dubzland/ansible-collections/openstack/pipelines?scope=all&page=1&ref=main
+[galaxy-badge]: https://img.shields.io/badge/dynamic/json?style=flat-square&label=galaxy&prefix=v&url=https://galaxy.ansible.com/api/v3/collections/dubzland/openstack/&query=highest_version.version
+[galaxy-url]: https://galaxy.ansible.com/ui/repo/published/dubzland/openstack/
+[license-badge]: https://img.shields.io/gitlab/license/dubzland%2Fcontainer-images%2Fci-python?gitlab_url=https%3A%2F%2Fgit.dubzland.com&style=flat-square
+[license-url]: https://git.dubzland.com/dubzland/container-images/ci-python/-/blob/main/LICENSE
+[liberapay-patrons-badge]: https://img.shields.io/liberapay/patrons/jdubz?style=flat-square&logo=liberapay
+[liberapay-receives-badge]: https://img.shields.io/liberapay/receives/jdubz?style=flat-square&logo=liberapay
+[liberapay-url]: https://liberapay.com/jdubz/donate
 [openstack_barbican]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_barbican_role.html
 [openstack_bootstrap]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_bootstrap_role.html
 [openstack_ceph_client]: https://docs.dubzland.io/ansible-collections/collections/dubzland/openstack/openstack_ceph_client_role.html
